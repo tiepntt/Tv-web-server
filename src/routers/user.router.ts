@@ -4,5 +4,6 @@ var UserController = require("../controllers/user.controller");
 router.get("/", UserController.getAll);
 router.post("/create", UserController.create);
 router.get("/:id", UserController.getById);
+router.delete("/:id", UserController.getById);
 
 module.exports = router;
