@@ -5,9 +5,7 @@
 - TypeORM
 - Mysql
 
-###
-
-Steps to run this project:
+### Steps to run this project:
 
 1. Run `npm i` command
 2. Create database name <b>tv_db</b>
