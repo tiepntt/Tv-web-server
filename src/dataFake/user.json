@@ -1,0 +1,10 @@
+{
+  "user": {
+    "name": "Nguyen Thai Tiep",
+    "born": "2000-20-06",
+    "userName": "nguyentiep",
+    "password": "12424",
+    "roleName": 1,
+    "departmentName": 1
+  }
+}
