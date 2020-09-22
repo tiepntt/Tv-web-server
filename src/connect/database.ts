@@ -2,9 +2,9 @@ import "reflect-metadata";
 import { Connection, createConnection } from "typeorm";
 var config = require("./config");
 import { StaticData } from "./staticdata";
-import { Role } from "../entity/Role";
+import { Role } from "../entity/User/Role";
 
-import { Department } from "../entity/Department";
+import { Department } from "../entity/User/Department";
 createConnection(config)
   .then(async (connection) => {
     let RoleRepository = connection.getRepository(Role);

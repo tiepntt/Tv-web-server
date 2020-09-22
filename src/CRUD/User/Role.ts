@@ -1,12 +1,12 @@
 import { getRepository } from "typeorm";
-import { HandelStatus } from "../controllers/HandelAction";
+import { HandelStatus } from "../../controllers/HandelAction";
 
-import { Role } from "../entity/Role";
-import { User } from "../entity/User";
+import { Role } from "../../entity/User/Role";
+import { User } from "../../entity/User/User";
 
-module.exports.create = async (config) => {};
+module.exports.create = async (config) => { };
 
-module.exports.getAll = async () => {};
+module.exports.getAll = async () => { };
 module.exports.addUser = async (_id: number, user) => {
   let RoleRepo = getRepository(Role);
   let role = await RoleRepo.findOne({ id: _id });

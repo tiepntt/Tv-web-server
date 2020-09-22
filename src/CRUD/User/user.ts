@@ -1,10 +1,10 @@
 import { type } from "os";
 import { config } from "process";
 import { getRepository } from "typeorm";
-import { HandelStatus } from "../controllers/HandelAction";
-import { Department } from "../entity/Department";
-import { Role } from "../entity/Role";
-import { User } from "../entity/User";
+import { HandelStatus } from "../../controllers/HandelAction";
+import { Department } from "../../entity/User/Department";
+import { Role } from "../../entity/User/Role";
+import { User } from "../../entity/User/User";
 
 type ConfigUser = {
   id?: number;
@@ -77,7 +77,7 @@ module.exports.getById = async (_id: string) => {
     department: user.department.name,
   });
 };
-module.exports.checkAccount = ({ username, password }) => {};
+module.exports.checkAccount = ({ username, password }) => { };
 const DateConfig = (dateString: string) => {
   // if (!dateString) {
   //   return;
