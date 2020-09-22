@@ -14,6 +14,7 @@ type ConfigUser = {
   password?: string;
   roleId?: number;
   departmentId?: number;
+  avatar?: string;
 };
 
 module.exports.create = async (config: ConfigUser) => {
@@ -35,6 +36,9 @@ module.exports.create = async (config: ConfigUser) => {
   user.born = new Date("2000-20-06") || null;
   user.username = config.userName;
   user.password = config.password;
+  user.password =
+    config.avatar ||
+    "https://www.minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg";
 
   let role = await RoleRepo.findOne({ id: config.roleId });
   console.log(role);
@@ -46,6 +50,7 @@ module.exports.create = async (config: ConfigUser) => {
   if (!role || !department) {
     return HandelStatus(404);
   }
+
   user.role = role;
   user.department = department;
   await UserRepo.save(user);
@@ -75,9 +80,10 @@ module.exports.getById = async (_id: string) => {
     name: user.Name,
     born: user.born,
     department: user.department.name,
+    avatar: user.avatar,
   });
 };
-module.exports.checkAccount = ({ username, password }) => { };
+module.exports.checkAccount = ({ username, password }) => {};
 const DateConfig = (dateString: string) => {
   // if (!dateString) {
   //   return;

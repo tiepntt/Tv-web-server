@@ -5,20 +5,25 @@ import {
   Column,
   PrimaryColumn,
   OneToMany,
-  JoinColumn, ManyToOne
+  JoinColumn,
+  ManyToOne,
 } from "typeorm";
 import { Book } from "./Book";
 
 export type bookDetailConfig = {
-  id?: string,
+  id?: string;
   bookid?: string;
-
-}
+};
 @Entity()
 export class BookDetail {
-  @PrimaryColumn({ nullable: false })
-  id: string;
-  @ManyToOne(type => Book, o => o.bookdetails, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+  @PrimaryColumn()
+  id: number;
+  @Column({ nullable: false })
+  idBookDetails: string;
+  @ManyToOne((type) => Book, (o) => o.bookdetails, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   book: Book;
 }
