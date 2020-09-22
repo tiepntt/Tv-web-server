@@ -1,10 +1,11 @@
 import "reflect-metadata";
-import { Connection, createConnection } from "typeorm";
+import { createConnection } from "typeorm";
 var config = require("./config");
 import { StaticData } from "./staticdata";
 import { Role } from "../entity/User/Role";
 
 import { Department } from "../entity/User/Department";
+import { Faculty } from "../entity/Student/Faculty";
 createConnection(config)
   .then(async (connection) => {
     let RoleRepository = connection.getRepository(Role);
@@ -25,6 +26,16 @@ createConnection(config)
         let department = new Department();
         department.name = departmentData.name;
         await DepartmentRepository.save(department);
+      });
+    }
+    let FacultyRepository = connection.getRepository(Faculty);
+    var dataFaculty = await FacultyRepository.find();
+
+    if (dataFaculty.length === 0) {
+      StaticData.Faculty.forEach(async (FacultyData) => {
+        let faculty = new Faculty();
+        faculty.name = FacultyData.name;
+        await FacultyRepository.save(faculty);
       });
     }
 
