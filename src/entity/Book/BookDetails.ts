@@ -9,14 +9,16 @@ import {
 } from "typeorm";
 import { Book } from "./Book";
 
+export type bookDetailConfig = {
+  id?: string,
+  bookid?: string;
+
+}
 @Entity()
 export class BookDetail {
   @PrimaryColumn({ nullable: false })
   id: string;
-  @ManyToOne(type => Book, o => o.bookdetails)
+  @ManyToOne(type => Book, o => o.bookdetails, { onUpdate: "CASCADE", onDelete: "CASCADE" })
   @JoinColumn()
   book: Book;
-  @Column({ default: 0, nullable: true })
-  amount: number;
-
 }

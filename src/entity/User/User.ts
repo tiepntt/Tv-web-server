@@ -25,11 +25,11 @@ export class User {
   @Column({ charset: "utf8" })
   password: string;
 
-  @ManyToOne((type) => Role, (role) => role.users)
+  @ManyToOne((type) => Role, (role) => role.users, { onUpdate: "CASCADE", onDelete: "CASCADE" })
   @JoinColumn()
   role: Role;
 
-  @ManyToOne((type) => Department, (department) => department.users)
+  @ManyToOne((type) => Department, (department) => department.users, { onUpdate: "CASCADE", onDelete: "CASCADE" })
   @JoinColumn()
   department: Department;
 }
