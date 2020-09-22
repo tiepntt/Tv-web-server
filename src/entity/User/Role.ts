@@ -15,7 +15,7 @@ export class Role {
   @Column({ type: "nvarchar", length: 555, charset: "utf8" })
   name: string;
 
-  @OneToMany((type) => User, (user) => user.id)
+  @OneToMany((type) => User, (user) => user.id, { onUpdate: "CASCADE", onDelete: "CASCADE" })
   @JoinColumn()
   users: User[];
 }
