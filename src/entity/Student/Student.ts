@@ -1,23 +1,45 @@
-import { type } from "os";
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    PrimaryColumn,
-    OneToMany,
-    JoinColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  JoinColumn,
+  PrimaryColumn,
+  ManyToOne,
 } from "typeorm";
 import { BookOrder } from "../Book/BookOrder";
+import { Faculty } from "./Faculty";
 
-
+export type StudentConfig = {
+  id?: string;
+  name?: string;
+  born?: string;
+  class?: string;
+  note?: string;
+  facultyId?: string;
+  idStudent?: string;
+};
 @Entity()
 export class Student {
-    @PrimaryGeneratedColumn()
-    id: number;
-    @Column({ nullable: false })
-    name: string;
-    @OneToMany(type => BookOrder, o => o.student, { onUpdate: "CASCADE", onDelete: "CASCADE" })
-    @JoinColumn()
-    bookorders: BookOrder[];
-
-}   
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column({ nullable: false })
+  idStudent: string;
+  @Column({ nullable: false, type: "nvarchar", length: 555 })
+  name: string;
+  @Column({ nullable: true })
+  born: Date;
+  @Column({ nullable: true })
+  class: string;
+  @Column({ nullable: true, type: "text" })
+  note: string;
+  @OneToMany((type) => BookOrder, (o) => o.student, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  @JoinColumn()
+  bookorders: BookOrder[];
+  @ManyToOne((type) => Faculty, (o) => o.students)
+  @JoinColumn()
+  faculty: Faculty;
+}
