@@ -12,11 +12,11 @@ import { BookOrder } from "../Book/BookOrder";
 
 @Entity()
 export class Student {
-    @PrimaryColumn({ nullable: false })
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
     @Column({ nullable: false })
     name: string;
-    @OneToMany(type => BookOrder, o => o.student)
+    @OneToMany(type => BookOrder, o => o.student, { onUpdate: "CASCADE", onDelete: "CASCADE" })
     @JoinColumn()
     bookorders: BookOrder[];
 
