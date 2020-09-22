@@ -1,6 +1,6 @@
-import { HandelStatus } from "./HandelAction";
+import { HandelStatus } from "../HandelAction";
 
-var UserService = require("../CRUD/user");
+var UserService = require("../../CRUD/User/user");
 module.exports.getAll = async (req, res) => {
   let users = await UserService.getAll();
   var Data = [];
