@@ -1,14 +1,10 @@
-import { type } from "os";
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  PrimaryColumn,
-  OneToMany,
   JoinColumn,
   OneToOne,
   ManyToOne,
-  ManyToMany,
 } from "typeorm";
 import { Student } from "../Student/Student";
 import { User } from "../User/User";

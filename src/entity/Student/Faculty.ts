@@ -3,7 +3,6 @@ import {
   Column,
   OneToMany,
   JoinColumn,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Student } from "./Student";

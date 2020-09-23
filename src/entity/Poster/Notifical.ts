@@ -5,9 +5,7 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
-    PrimaryColumn,
-    OneToMany,
-    JoinColumn, ManyToMany, ManyToOne
+    JoinColumn, ManyToOne
 } from "typeorm";
 import { Comment } from "./Comment";
 
@@ -17,7 +15,7 @@ import { Poster } from "./Poster";
 export class NotificalPoster {
     @PrimaryGeneratedColumn()
     id: number;
-    @Column({ type: "text" })
+    @Column({ type: "text", charset: 'utf8' })
     context: string;
     @ManyToOne(type => Poster)
     @JoinColumn()

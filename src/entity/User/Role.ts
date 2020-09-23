@@ -1,9 +1,8 @@
-import { type } from "os";
+
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  PrimaryColumn,
   OneToMany,
   JoinColumn,
 } from "typeorm";

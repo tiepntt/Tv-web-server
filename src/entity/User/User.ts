@@ -3,7 +3,6 @@ import {
   Column,
   JoinColumn,
   PrimaryGeneratedColumn,
-  OneToOne,
   ManyToOne,
 } from "typeorm";
 import { Department } from "./Department";

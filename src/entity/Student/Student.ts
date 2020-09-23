@@ -4,7 +4,6 @@ import {
   Column,
   OneToMany,
   JoinColumn,
-  PrimaryColumn,
   ManyToOne,
 } from "typeorm";
 import { BookOrder } from "../Book/BookOrder";
