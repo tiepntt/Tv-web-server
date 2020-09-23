@@ -22,4 +22,7 @@ export const StaticData = {
     { name: "Cơ kĩ thuật và tự động hóa" },
     { name: "Vật lý kĩ thuật & công nghệ Nano" },
   ],
+  user: [
+    { name: "admin", password: "123qwe", userName: "admin", roleId: 1, departmentId: 1 }]
+
 };

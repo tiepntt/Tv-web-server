@@ -19,7 +19,7 @@ export class NotificalPoster {
     id: number;
     @Column({ type: "text" })
     context: string;
-    @ManyToOne(type => Poster, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+    @ManyToOne(type => Poster)
     @JoinColumn()
     poster: Poster;
 }

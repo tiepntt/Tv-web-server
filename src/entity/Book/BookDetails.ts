@@ -1,12 +1,10 @@
 import { type } from "os";
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   PrimaryColumn,
-  OneToMany,
   JoinColumn,
-  ManyToOne,
+  ManyToOne, PrimaryGeneratedColumn
 } from "typeorm";
 import { Book } from "./Book";
 
@@ -16,14 +14,11 @@ export type bookDetailConfig = {
 };
 @Entity()
 export class BookDetail {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
   @Column({ nullable: false })
   idBookDetails: string;
-  @ManyToOne((type) => Book, (o) => o.bookdetails, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @ManyToOne((type) => Book)
   @JoinColumn()
   book: Book;
 }

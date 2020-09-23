@@ -20,10 +20,10 @@ export class Comment {
     content: string;
     @Column({ nullable: true })
     asset: string;
-    @OneToMany(type => Poster, o => o.likes, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+    @OneToMany(type => Poster, o => o.likes)
     @JoinColumn()
     poster: Poster;
-    @ManyToOne(type => User, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+    @ManyToOne(type => User)
     @JoinColumn()
     user: User;
 

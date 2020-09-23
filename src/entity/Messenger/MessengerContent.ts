@@ -14,13 +14,13 @@ import { User } from "../User/User";
 @Entity()
 export class MesengerContent {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number;Y
 
     @Column({ nullable: true, type: "text" })
     content: string;
     @Column({ nullable: true, type: "text" })
     assets: string;
-    @ManyToOne(type => User, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+    @ManyToOne(type => User)
     @JoinColumn()
     user: User;
 
