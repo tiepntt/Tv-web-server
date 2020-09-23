@@ -3,9 +3,8 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
-    PrimaryColumn,
     OneToMany,
-    JoinColumn, ManyToMany
+    JoinColumn
 } from "typeorm";
 import { Poster } from "./Poster";
 
@@ -20,7 +19,7 @@ export class Like {
     urlassets: string;
     @Column({ nullable: true })
     content: string;
-    @OneToMany(type => Poster, o => o.likes, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+    @OneToMany(type => Poster, o => o.likes)
     @JoinColumn()
     poster: Poster;
 }

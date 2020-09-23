@@ -4,7 +4,6 @@ import {
   Column,
   OneToMany,
   JoinColumn,
-  PrimaryColumn,
   ManyToOne,
 } from "typeorm";
 import { BookOrder } from "../Book/BookOrder";
@@ -25,7 +24,7 @@ export class Student {
   id: number;
   @Column({ nullable: false })
   idStudent: string;
-  @Column({ nullable: false, type: "nvarchar", length: 555 })
+  @Column({ nullable: false, type: "nvarchar", length: 555, charset : 'utf8' })
   name: string;
   @Column({ nullable: true })
   born: Date;

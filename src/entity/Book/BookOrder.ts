@@ -1,14 +1,10 @@
-import { type } from "os";
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  PrimaryColumn,
-  OneToMany,
   JoinColumn,
   OneToOne,
   ManyToOne,
-  ManyToMany,
 } from "typeorm";
 import { Student } from "../Student/Student";
 import { User } from "../User/User";
@@ -40,10 +36,10 @@ export class BookOrder {
   })
   student: Student;
 
-  @ManyToOne((type) => User, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+  @ManyToOne((type) => User)
   @JoinColumn()
   User1: User;
-  @ManyToOne((type) => User, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+  @ManyToOne((type) => User)
   @JoinColumn()
   User2: User;
 }

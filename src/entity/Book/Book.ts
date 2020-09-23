@@ -1,7 +1,6 @@
 import {
   Entity,
   Column,
-  PrimaryColumn,
   OneToMany,
   JoinColumn,
   PrimaryGeneratedColumn,
@@ -19,7 +18,7 @@ export class Book {
   id: number;
   @Column({ nullable: false })
   idBook: string;
-  @Column({ nullable: false })
+  @Column({ nullable: false, charset: 'utf8' })
   name: string;
   @Column()
   price: number;

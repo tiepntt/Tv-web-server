@@ -3,7 +3,6 @@ import {
   Column,
   JoinColumn,
   PrimaryGeneratedColumn,
-  OneToOne,
   ManyToOne,
 } from "typeorm";
 import { Department } from "./Department";
@@ -27,17 +26,11 @@ export class User {
   @Column({ nullable: true })
   avatar: string;
 
-  @ManyToOne((type) => Role, (role) => role.users, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @ManyToOne((type) => Role, (role) => role.users)
   @JoinColumn()
   role: Role;
 
-  @ManyToOne((type) => Department, (department) => department.users, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @ManyToOne((type) => Department)
   @JoinColumn()
   department: Department;
 }

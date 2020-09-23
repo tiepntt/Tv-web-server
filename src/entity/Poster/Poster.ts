@@ -3,9 +3,8 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
-    PrimaryColumn,
     OneToMany,
-    JoinColumn, ManyToMany
+    JoinColumn, 
 } from "typeorm";
 import { Comment } from "./Comment";
 
@@ -19,7 +18,7 @@ export class Poster {
     amount: number;
     @Column({ nullable: true })
     urlassets: string;
-    @Column({ nullable: true, type: "text" })
+    @Column({ nullable: true, type: "text", charset: 'utf8' })
     content: string;
     @OneToMany(type => Like, o => o.poster, { onUpdate: "CASCADE", onDelete: "CASCADE" })
     @JoinColumn()

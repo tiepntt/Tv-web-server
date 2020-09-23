@@ -15,16 +15,23 @@ export const Create = async (bookOrderConfig: BookOrderConfig) => {
     !bookOrderConfig.studentId ||
     !bookOrderConfig.userId1
   ) {
+
     return HandelStatus(204);
   }
   let user = await UserRepo.findOne(bookOrderConfig.userId1);
+
+
+
   let bookdetail = await BookDetailRepo.findOne({
     idBookDetails: bookOrderConfig.bookdetailId,
   });
   let student = await StudentRepo.findOne({
     idStudent: bookOrderConfig.studentId,
   });
+
+
   if (!user || !bookdetail || !student) {
+
     return HandelStatus(500);
   }
   let bookOrder = new BookOrder();
@@ -35,3 +42,5 @@ export const Create = async (bookOrderConfig: BookOrderConfig) => {
   await BookOrderRepo.save(bookOrder);
   return HandelStatus(200);
 };
+
+

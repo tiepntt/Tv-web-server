@@ -6,6 +6,8 @@ import { Role } from "../entity/User/Role";
 
 import { Department } from "../entity/User/Department";
 import { Faculty } from "../entity/Student/Faculty";
+import { User } from "../entity/User/User";
+import { create } from "../CRUD/User/user";
 createConnection(config)
   .then(async (connection) => {
     let RoleRepository = connection.getRepository(Role);
@@ -36,6 +38,14 @@ createConnection(config)
         let faculty = new Faculty();
         faculty.name = FacultyData.name;
         await FacultyRepository.save(faculty);
+      });
+    }
+    let UserRepository = connection.getRepository(User);
+    var users = await UserRepository.find();
+
+    if (users.length === 0) {
+      StaticData.user.forEach(async (item) => {
+        let users = await create(item);
       });
     }
 

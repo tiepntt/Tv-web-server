@@ -21,7 +21,7 @@ export const getData = async (id, range) => {
   var data = await gdApi.spreadsheets.values.get(opt);
   return data.data.values;
 };
-export const pushData = async (client, range, data, id) => {
+export const pushData = async ( range, data, id) => {
   const gdApi = google.sheets({
     version: "v4",
     auth: client,
