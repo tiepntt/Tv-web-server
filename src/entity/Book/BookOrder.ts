@@ -30,7 +30,7 @@ export class BookOrder {
   @OneToOne((type) => BookDetail)
   @JoinColumn()
   bookdetail: BookDetail;
-  @ManyToOne((type) => Student, (o) => o.bookorders, {
+  @ManyToOne((type) => Student, (o) => o.bookOrders, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
   })

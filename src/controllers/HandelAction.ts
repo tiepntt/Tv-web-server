@@ -13,6 +13,12 @@ export const HandelStatus = (
       return { status: status, message: message || "Thành công" };
     case 302:
       return { status: status, message: message || "Đã tồn tại" };
+    case 303: {
+      return {
+        status: status,
+        message: message || "Bạn không phải thành viên nhập liệu.",
+      };
+    }
     case 404:
       return { status: status, message: message || "Không tồn tại" };
     case 500:
