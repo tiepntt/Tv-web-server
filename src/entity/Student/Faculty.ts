@@ -7,10 +7,11 @@ import {
 } from "typeorm";
 import { Student } from "./Student";
 
+
 @Entity()
 export class Faculty {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
   @Column({ nullable: false, type: "nvarchar", length: 555, charset: "utf8" })
   name: string;
   @OneToMany((type) => Student, (o) => o.faculty, {

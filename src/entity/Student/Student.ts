@@ -24,7 +24,7 @@ export class Student {
   id: number;
   @Column({ nullable: false })
   idStudent: string;
-  @Column({ nullable: false, type: "nvarchar", length: 555, charset : 'utf8' })
+  @Column({ nullable: false, type: "nvarchar", length: 555, charset: "utf8" })
   name: string;
   @Column({ nullable: true })
   born: Date;
@@ -37,7 +37,7 @@ export class Student {
     onDelete: "CASCADE",
   })
   @JoinColumn()
-  bookorders: BookOrder[];
+  bookOrders: BookOrder[];
   @ManyToOne((type) => Faculty, (o) => o.students)
   @JoinColumn()
   faculty: Faculty;

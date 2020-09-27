@@ -1,9 +1,9 @@
-
 import {
   Entity,
   Column,
   JoinColumn,
-  ManyToOne, PrimaryGeneratedColumn
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Book } from "./Book";
 
@@ -17,7 +17,7 @@ export class BookDetail {
   id: number;
   @Column({ nullable: false })
   idBookDetails: string;
-  @ManyToOne((type) => Book)
+  @ManyToOne((type) => Book, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinColumn()
   book: Book;
 }
