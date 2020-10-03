@@ -6,6 +6,7 @@ var app = express();
 require("./connect/database");
 import * as cors from "cors";
 import * as bodyParser from "body-parser";
+import { ClearData } from "./service/google-api/api";
 
 const options: cors.CorsOptions = {
   allowedHeaders: [
@@ -39,6 +40,7 @@ app.use("/poster", PosterRouter);
 app.use("/admin", AdminRouter);
 
 app.get("/", (req, res) => {
+  // ClearData("")
   res.send("Xin chao");
 });
 app.use(express.static(path.join(__dirname, "public")));

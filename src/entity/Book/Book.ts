@@ -18,7 +18,7 @@ export class Book {
   id: number;
   @Column({ nullable: false })
   idBook: string;
-  @Column({ nullable: false, charset: 'utf8' })
+  @Column({ nullable: false, charset: "utf8", type: "nvarchar" })
   name: string;
   @Column()
   price: number;

@@ -21,7 +21,7 @@ export const getData = async (id, range) => {
   var data = await gdApi.spreadsheets.values.get(opt);
   return data.data.values;
 };
-export const pushData = async ( range, data, id) => {
+export const pushData = async (range, data, id) => {
   const gdApi = google.sheets({
     version: "v4",
     auth: client,
@@ -36,5 +36,18 @@ export const pushData = async ( range, data, id) => {
   };
 
   var data = await gdApi.spreadsheets.values.update(opt);
+  return data;
+};
+export const ClearData =  async (idSheet) => {
+  const gdApi = google.sheets({
+    version: "v4",
+    auth: client,
+  });
+  const opt = {
+    spreadsheetId: idSheet,
+    range: "A1:Z10000",
+  };
+
+  var data = await gdApi.spreadsheets.values.clear(opt);
   return data;
 };

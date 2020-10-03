@@ -13,15 +13,15 @@ export class User {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column({ charset: "utf8" })
+  @Column({ charset: "utf8", type: "nvarchar" })
   Name: string;
 
   @Column({ nullable: true, default: "2000-01-01" })
   born: Date;
-  @Column({ charset: "utf8" })
+  @Column({ charset: "utf8", type: "nvarchar" })
   username: string;
 
-  @Column({ charset: "utf8" })
+  @Column({ charset: "utf8", type: "nvarchar" })
   password: string;
   @Column({ nullable: true })
   avatar: string;

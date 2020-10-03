@@ -5,7 +5,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.7",
     "@types/node": "^8.0.29",
-    "ts-node": "3.3.0",
+    "ts-node": "^3.3.0",
     "typescript": "3.3.3333"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "typeorm": "0.2.26"
   },
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "migration": "ts-node ./node_modules/typeorm/cli.js migration:run"
   }
 }
