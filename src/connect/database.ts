@@ -10,44 +10,46 @@ import { User } from "../entity/User/User";
 import { create } from "../CRUD/User/user";
 createConnection(config)
   .then(async (connection) => {
-    let RoleRepository = connection.getRepository(Role);
-    var dataRole = await RoleRepository.find();
-    if (dataRole.length === 0) {
-      StaticData.Role.forEach(async (roleData) => {
-        let role = new Role();
-        role.name = roleData.name;
-        await RoleRepository.save(role);
-      });
-    }
+    // let qRun = connection.createQueryRunner();
 
-    let DepartmentRepository = connection.getRepository(Department);
-    var dataDepartment = await DepartmentRepository.find();
+    // let RoleRepository = connection.getRepository(Role);
+    // var dataRole = await RoleRepository.find();
+    // if (dataRole.length === 0) {
+    //   StaticData.Role.forEach(async (roleData) => {
+    //     let role = new Role();
+    //     role.name = roleData.name;
+    //     await RoleRepository.save(role);
+    //   });
+    // }
 
-    if (dataDepartment.length === 0) {
-      StaticData.Department.forEach(async (departmentData) => {
-        let department = new Department();
-        department.name = departmentData.name;
-        await DepartmentRepository.save(department);
-      });
-    }
-    let FacultyRepository = connection.getRepository(Faculty);
-    var dataFaculty = await FacultyRepository.find();
+    // let DepartmentRepository = connection.getRepository(Department);
+    // var dataDepartment = await DepartmentRepository.find();
 
-    if (dataFaculty.length === 0) {
-      StaticData.Faculty.forEach(async (FacultyData) => {
-        let faculty = new Faculty();
-        faculty.name = FacultyData.name;
-        await FacultyRepository.save(faculty);
-      });
-    }
-    let UserRepository = connection.getRepository(User);
-    var users = await UserRepository.find();
+    // if (dataDepartment.length === 0) {
+    //   StaticData.Department.forEach(async (departmentData) => {
+    //     let department = new Department();
+    //     department.name = departmentData.name;
+    //     await DepartmentRepository.save(department);
+    //   });
+    // }
+    // let FacultyRepository = connection.getRepository(Faculty);
+    // var dataFaculty = await FacultyRepository.find();
 
-    if (users.length === 0) {
-      StaticData.user.forEach(async (item) => {
-        let users = await create(item);
-      });
-    }
+    // if (dataFaculty.length === 0) {
+    //   StaticData.Faculty.forEach(async (FacultyData) => {
+    //     let faculty = new Faculty();
+    //     faculty.name = FacultyData.name;
+    //     await FacultyRepository.save(faculty);
+    //   });
+    // }
+    // let UserRepository = connection.getRepository(User);
+    // var users = await UserRepository.find();
+
+    // if (users.length === 0) {
+    //   StaticData.user.forEach(async (item) => {
+    //     let users = await create(item);
+    //   });
+    // }
 
     console.log("Connect Database");
   })
