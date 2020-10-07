@@ -14,12 +14,12 @@ export const Create = async (bookOrderConfig: BookOrderConfig) => {
   if (
     !bookOrderConfig.bookdetailId ||
     !bookOrderConfig.studentId ||
-    !bookOrderConfig.userId1
+    !bookOrderConfig.userCheckIn
   ) {
     return HandelStatus(204);
   }
 
-  let user = await UserRepo.findOne(bookOrderConfig.userId1);
+  let user = await UserRepo.findOne(bookOrderConfig.userCheckIn);
 
   let bookdetail = await BookDetailRepo.findOne({
     idBookDetails: bookOrderConfig.bookdetailId,
@@ -33,7 +33,7 @@ export const Create = async (bookOrderConfig: BookOrderConfig) => {
   }
   let bookOrder = new BookOrder();
   bookOrder.student = student;
-  bookOrder.User1 = user;
+  bookOrder.UserCheckIn = user;
   bookOrder.bookdetail = bookdetail;
   bookOrder.BorrowDate = new Date(bookOrderConfig.BorrowDate) || new Date();
   await BookOrderRepo.save(bookOrder);
@@ -61,7 +61,7 @@ export const PayBook = async (Id, UserId, date?: string) => {
   if (date) {
     bookOrder.PayDate = new Date(genBorn(date));
   }
-  bookOrder.User2 = user;
+  bookOrder.UserCheckOut = user;
 
   await BookOrderRepo.update(bookOrder.id, bookOrder);
   return HandelStatus(200);

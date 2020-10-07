@@ -83,7 +83,11 @@ module.exports.getById = async (_id: string) => {
     avatar: user.avatar,
   });
 };
-module.exports.checkAccount = ({ username, password }) => {};
+export const getUserByAccount = async (username, password) => {
+  let UserRepo = getRepository(User);
+  let user = await UserRepo.findOne({ username: username, password: password });
+  return user;
+};
 const DateConfig = (dateString: string) => {
   // if (!dateString) {
   //   return;

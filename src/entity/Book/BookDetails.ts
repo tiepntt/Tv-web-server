@@ -16,7 +16,7 @@ export type bookDetailConfig = {
 export class BookDetail {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false, unique: true, length: 10 })
   idBookDetails: string;
   @ManyToOne((type) => Book, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinColumn()

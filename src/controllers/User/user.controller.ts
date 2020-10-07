@@ -56,22 +56,22 @@ module.exports.UploadFile = async (req, res, next) => {
   if (!processedFile) {
     next();
   } else {
-    let orgName = processedFile.originalname || "";
-    // Tên gốc trong máy tính của người upload
-    orgName = orgName.trim().replace(/ /g, "-");
-    const fullPathInServ = processedFile.path;
-    // Đường dẫn đầy đủ của file vừa đc upload lên server
-    // Đổi tên của file vừa upload lên, vì multer đang đặt default ko có đuôi file
-    const newFullPath = `${fullPathInServ}-${orgName}`;
+    // let orgName = processedFile.originalname || "";
+    // // Tên gốc trong máy tính của người upload
+    // orgName = orgName.trim().replace(/ /g, "-");
+    // const fullPathInServ = processedFile.path;
+    // // Đường dẫn đầy đủ của file vừa đc upload lên server
+    // // Đổi tên của file vừa upload lên, vì multer đang đặt default ko có đuôi file
+    // const newFullPath = `${fullPathInServ}-${orgName}`;
 
-    var nameFile = newFullPath.split("\\");
-    var path = __dir + nameFile[nameFile.length - 1];
-    var path2 = GetNameFile(path);
+    // var nameFile = newFullPath.split("\\");
+    // var path = __dir + nameFile[nameFile.length - 1];
+    // var path2 = GetNameFile(path);
 
-    fs.renameSync(fullPathInServ, newFullPath);
-    res.locals.fileName = path2;
+    // fs.renameSync(fullPathInServ, newFullPath);
+    // res.locals.fileName = path2;
 
-    res.locals.filePath = nameFile[nameFile.length - 1];
+    res.locals.filePath = req.file.path;
     // next();
     next();
   }

@@ -1,10 +1,9 @@
-var keys = require("../Cre/gapiDriver.json");
 var { google } = require("googleapis");
 
 export const client = new google.auth.JWT(
-  keys.client_email,
+  process.env.G_API_CLIENT_EMAIL,
   null,
-  keys.private_key,
+  process.env.G_API_PRIVATE_KEY,
   ["https://www.googleapis.com/auth/spreadsheets"]
 );
 
@@ -38,7 +37,7 @@ export const pushData = async (range, data, id) => {
   var data = await gdApi.spreadsheets.values.update(opt);
   return data;
 };
-export const ClearData =  async (idSheet) => {
+export const ClearData = async (idSheet) => {
   const gdApi = google.sheets({
     version: "v4",
     auth: client,

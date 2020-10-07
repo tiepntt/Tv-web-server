@@ -10,38 +10,38 @@ import { User } from "../entity/User/User";
 import { create } from "../CRUD/User/user";
 createConnection(config)
   .then(async (connection) => {
-    // let qRun = connection.createQueryRunner();
+    let qRun = connection.createQueryRunner();
 
-    // let RoleRepository = connection.getRepository(Role);
-    // var dataRole = await RoleRepository.find();
-    // if (dataRole.length === 0) {
-    //   StaticData.Role.forEach(async (roleData) => {
-    //     let role = new Role();
-    //     role.name = roleData.name;
-    //     await RoleRepository.save(role);
-    //   });
-    // }
+    let RoleRepository = connection.getRepository(Role);
+    var dataRole = await RoleRepository.find();
+    if (dataRole.length === 0) {
+      StaticData.Role.forEach(async (roleData) => {
+        let role = new Role();
+        role.name = roleData.name;
+        await RoleRepository.save(role);
+      });
+    }
 
-    // let DepartmentRepository = connection.getRepository(Department);
-    // var dataDepartment = await DepartmentRepository.find();
+    let DepartmentRepository = connection.getRepository(Department);
+    var dataDepartment = await DepartmentRepository.find();
 
-    // if (dataDepartment.length === 0) {
-    //   StaticData.Department.forEach(async (departmentData) => {
-    //     let department = new Department();
-    //     department.name = departmentData.name;
-    //     await DepartmentRepository.save(department);
-    //   });
-    // }
-    // let FacultyRepository = connection.getRepository(Faculty);
-    // var dataFaculty = await FacultyRepository.find();
+    if (dataDepartment.length === 0) {
+      StaticData.Department.forEach(async (departmentData) => {
+        let department = new Department();
+        department.name = departmentData.name;
+        await DepartmentRepository.save(department);
+      });
+    }
+    let FacultyRepository = connection.getRepository(Faculty);
+    var dataFaculty = await FacultyRepository.find();
 
-    // if (dataFaculty.length === 0) {
-    //   StaticData.Faculty.forEach(async (FacultyData) => {
-    //     let faculty = new Faculty();
-    //     faculty.name = FacultyData.name;
-    //     await FacultyRepository.save(faculty);
-    //   });
-    // }
+    if (dataFaculty.length === 0) {
+      StaticData.Faculty.forEach(async (FacultyData) => {
+        let faculty = new Faculty();
+        faculty.name = FacultyData.name;
+        await FacultyRepository.save(faculty);
+      });
+    }
     // let UserRepository = connection.getRepository(User);
     // var users = await UserRepository.find();
 

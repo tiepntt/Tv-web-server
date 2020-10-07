@@ -14,9 +14,12 @@ export class Department {
   id: number;
   @Column({ type: "nvarchar", length: 555, charset: "utf8" })
   name: string;
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true, nullable: true, type: "varchar", length: 10 })
   Code: string;
-  @OneToMany((type) => User, (user) => user.department, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+  @OneToMany((type) => User, (user) => user.department, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   users: User[];
 }

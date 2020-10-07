@@ -22,7 +22,7 @@ export type StudentConfig = {
 export class Student {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false, unique: true, length: 10 })
   idStudent: string;
   @Column({ nullable: false, type: "nvarchar", length: 555, charset: "utf8" })
   name: string;

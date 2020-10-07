@@ -6,11 +6,9 @@ var app = express();
 require("./connect/database");
 import * as cors from "cors";
 import * as bodyParser from "body-parser";
-// import { ClearData } from "./service/google-api/api";
 const redis = require("redis");
 const client = redis.createClient();
-const kue = require("kue")
-// const queue = kue.createQueue();
+const kue = require("kue");
 
 const options: cors.CorsOptions = {
   allowedHeaders: [
@@ -44,9 +42,7 @@ app.use("/poster", PosterRouter);
 app.use("/admin", AdminRouter);
 app.use("/kue-api/", kue.app);
 
-
 app.get("/", (req, res) => {
-  // ClearData("")
   res.send("Xin chao");
 });
 app.use(express.static(path.join(__dirname, "public")));

@@ -21,6 +21,8 @@ export const HandelStatus = (
     }
     case 404:
       return { status: status, message: message || "Không tồn tại" };
+    case 401:
+      return { status: status, message: message || "Đăng nhập thất bại" };
     case 500:
       return { status: status, message: message || "Thất bại" };
   }

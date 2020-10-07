@@ -16,8 +16,8 @@ export type BookOrderConfig = {
   PayDate?: string;
   bookdetailId?: string;
   studentId?: string;
-  userId1?: number;
-  userId2?: number;
+  userCheckIn?: number;
+  userCheckOut?: number;
 };
 @Entity()
 export class BookOrder {

@@ -3,7 +3,8 @@ import {
   Column,
   OneToMany,
   JoinColumn,
-  PrimaryGeneratedColumn, ManyToOne
+  PrimaryGeneratedColumn,
+  ManyToOne,
 } from "typeorm";
 import { User } from "../User/User";
 import { BookDetail } from "./BookDetails";
@@ -17,8 +18,7 @@ export type BookConfig = {
 export class Book {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ nullable: false, unique: true })
-
+  @Column({ nullable: false, unique: true, length: 10 })
   idBook: string;
 
   @Column({ nullable: false, charset: "utf8", type: "nvarchar" })
@@ -40,5 +40,4 @@ export class Book {
   })
   @JoinColumn()
   bookdetails: BookDetail[];
-
 }
