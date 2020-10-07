@@ -1,5 +1,10 @@
 # WebServer TVHSV
 
+# Tech 
+    - Redis : https://github.com/MicrosoftArchive/redis/releases
+    - Type Orm Mysql
+    - Ts-node
+
 Steps to run this project:
 
 1. Run `npm i` command

@@ -18,7 +18,7 @@ export class User {
 
   @Column({ nullable: true, default: "2000-01-01" })
   born: Date;
-  @Column({ charset: "utf8", type: "nvarchar" })
+  @Column({ charset: "utf8", type: "nvarchar", unique: true })
   username: string;
 
   @Column({ charset: "utf8", type: "nvarchar" })

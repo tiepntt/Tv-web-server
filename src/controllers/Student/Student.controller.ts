@@ -61,7 +61,7 @@ module.exports.PushToSheets = async (req, res) => {
     res.send(HandelStatus(404));
     return;
   }
-  var students = await await GetAll();
+  var students =  await GetAll();
   var result = await mapToArr((students as any).result);
   var resPush = await pushData("A1", result, Id);
   res.send(resPush);

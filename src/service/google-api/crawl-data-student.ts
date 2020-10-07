@@ -21,7 +21,6 @@ export const getId = async () => {
   await request.get(url, (err, response, body) => {
     var content = cheerio.load(body);
     var result = content(body).find("select.target option")["1"];
-    console.log(result.attribs.value);
   });
 };
 
@@ -60,6 +59,7 @@ const getData = async (options, id, cache) => {
   });
 };
 export const getAllData = (id, k) => {
+
   var headerMsv = `${toMSV(k)}0000`;
   var msv = parseInt(headerMsv);
   var max = parseInt(`${toMSV(k)}9999`);

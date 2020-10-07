@@ -38,8 +38,8 @@ export class BookOrder {
 
   @ManyToOne((type) => User)
   @JoinColumn()
-  User1: User;
+  UserCheckIn: User;
   @ManyToOne((type) => User)
   @JoinColumn()
-  User2: User;
+  UserCheckOut: User;
 }
