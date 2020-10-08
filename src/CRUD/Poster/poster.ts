@@ -49,15 +49,16 @@ export const GetByIdDetails = async (id) => {
   let PosterRepo = getRepository(Poster);
   let LikeRepo = getRepository(Like);
   let CommentRepo = getRepository(Comment);
-  var post = await PosterRepo.findOne(id);
+  var post = await PosterRepo.createQueryBuilder("post").leftJoin("post.userCreate", "user").select("post").addSelect("user.id").addSelect("user.Name").getOne();
 
   var likes = await LikeRepo.createQueryBuilder("like")
-    .leftJoin("like.userCreate", "user")
-    .select("user.name");
+    .leftJoin("like.user", "user")
+    .select("user.Id, user.Name")
+    .getMany();
   var comments = await CommentRepo.createQueryBuilder("comment")
-    .leftJoin("comment.user", "user")
-    .select("comment")
-    .addSelect("user.name, user.id");
+    .leftJoinAndSelect("comment.user", "user").getMany();
+  console.log({ post, likes, comments });
+
   return HandelStatus(200, null, { post, likes, comments });
 };
 export const GetById = async (id) => {

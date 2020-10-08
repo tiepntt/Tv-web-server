@@ -3,8 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  JoinColumn,
+  JoinColumn, OneToOne
 } from "typeorm";
+import { User } from "../User/User";
 import { Poster } from "./Poster";
 
 @Entity()
@@ -20,4 +21,8 @@ export class Like {
   @OneToMany((type) => Poster, (o) => o.likes)
   @JoinColumn()
   poster: Poster;
+  @OneToOne((type) => User)
+  @JoinColumn()
+  user: User;
+
 }

@@ -4,8 +4,10 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany,
+  OneToMany, OneToOne
 } from "typeorm";
+import { Comment } from "../Poster/Comment";
+import { Like } from "../Poster/Like";
 import { Poster } from "../Poster/Poster";
 import { Department } from "./Department";
 import { Role } from "./Role";
@@ -43,4 +45,11 @@ export class User {
   })
   @JoinColumn()
   posts: Poster[];
+
+  @OneToMany(type => Comment, o => o.user, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @JoinColumn()
+  comments: Comment[];
+  @OneToMany(type => Like, o => o.user, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @JoinColumn()
+  likes: Like[];
 }

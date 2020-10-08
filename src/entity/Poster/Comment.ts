@@ -28,7 +28,7 @@ export class Comment {
   @OneToMany((type) => Poster, (o) => o.likes)
   @JoinColumn()
   poster: Poster;
-  @ManyToOne((type) => User, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @ManyToOne((type) => User, o => o.comments)
   @JoinColumn()
   user: User;
   @Column()
