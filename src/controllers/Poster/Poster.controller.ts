@@ -1,6 +1,17 @@
-module.exports.Create = async (req, res) => {
-  var a = await req.body;
-  console.log(a);
+import { Create } from "../../CRUD/Poster/poster";
+import { genBorn } from "../../libs/Book";
 
-  res.send({ status: 200 });
+module.exports.Create = async (req, res) => {
+  console.log(req);
+
+  var poster = {
+    content: req.body.content,
+    userCreateId: req.body.userCreateId,
+    createTime: req.createTime ? new Date(genBorn(req.createTime)) : new Date(),
+    urlAssets: req.file ? req.file.path : null,
+  };
+  console.log(poster);
+
+  var result = await Create(poster);
+  res.send(result);
 };

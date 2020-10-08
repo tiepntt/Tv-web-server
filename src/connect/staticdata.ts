@@ -1,8 +1,9 @@
 export const StaticData = {
   Role: [
-    { name: "Ban chủ nhiệm" },
-    { name: "Thành viên" },
-    { name: "Nhập Liệu" },
+    { name: "Ban chủ nhiệm", code: "BCN" },
+    { name: "Thành viên", code: "TV" },
+    { name: "Nhập Liệu", code: "NL" },
+    { name: "Sự kiện", code: "SK" },
   ],
 
   Department: [
@@ -23,6 +24,12 @@ export const StaticData = {
     { name: "Vật lý kĩ thuật & công nghệ Nano" },
   ],
   user: [
-    { name: "admin", password: "123qwe", userName: "admin", roleId: 1, departmentId: 1 }]
-
+    {
+      name: "admin",
+      password: "123qwe",
+      userName: "admin",
+      roleId: 1,
+      departmentId: 1,
+    },
+  ],
 };

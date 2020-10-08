@@ -4,14 +4,16 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
+import { Poster } from "../Poster/Poster";
 import { Department } from "./Department";
 import { Role } from "./Role";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ charset: "utf8", type: "nvarchar" })
   Name: string;
@@ -33,4 +35,12 @@ export class User {
   @ManyToOne((type) => Department)
   @JoinColumn()
   department: Department;
+  @Column({ default: false })
+  isBlock: boolean;
+  @OneToMany((type) => Poster, (o) => o.userCreate, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn()
+  posts: Poster[];
 }

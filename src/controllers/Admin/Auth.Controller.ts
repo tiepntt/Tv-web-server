@@ -1,3 +1,4 @@
+import { nextTick } from "process";
 import { getUserByAccount } from "../../CRUD/User/user";
 import { HandelStatus } from "../HandelAction";
 
@@ -36,4 +37,21 @@ export const Logout = (req, res) => {};
 
 export const Register = (req, res) => {};
 export const ResetPassWord = (req, res) => {};
-
+export const CheckToken = async (req, res, next) => {
+  var token = req.headers.token;
+  if (!token) {
+    res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
+  }
+  var payload = await jwt.verify(
+    token,
+    process.env.TOKEN_SECRET_TV,
+    (err, verifiedJwt) => {
+      if (err) {
+        res.send(HandelStatus(401, err.message));
+      } else {
+        res.locals.userLogin = verifiedJwt;
+        next();
+      }
+    }
+  );
+};

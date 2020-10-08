@@ -1,4 +1,5 @@
 import { request } from "express";
+import { CheckToken } from "../controllers/Admin/Auth.Controller";
 
 var express = require("express");
 var router = express.Router();

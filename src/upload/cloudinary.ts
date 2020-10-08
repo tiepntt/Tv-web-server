@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   allowedFormats: ["jpg", "jpeg", "png"],
   params: {
-    folder: (req, file) => "Tv",
+    folder: (req, file) => "Hello",
   },
 });
 

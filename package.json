@@ -24,6 +24,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "mysql": "^2.14.1",
     "nodemailer": "^6.4.11",
+    "object-mapper": "^6.2.0",
     "path": "^0.12.7",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.10",

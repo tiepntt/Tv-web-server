@@ -2,7 +2,6 @@ import { getRepository } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
 
 import { Role } from "../../entity/User/Role";
-import { User } from "../../entity/User/User";
 
 module.exports.create = async (config) => { };
 

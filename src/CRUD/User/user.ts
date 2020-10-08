@@ -76,6 +76,7 @@ module.exports.getById = async (_id: string) => {
   if (!user) {
     return HandelStatus(404, null, user);
   }
+
   return HandelStatus(200, null, {
     name: user.Name,
     born: user.born,
@@ -85,7 +86,12 @@ module.exports.getById = async (_id: string) => {
 };
 export const getUserByAccount = async (username, password) => {
   let UserRepo = getRepository(User);
-  let user = await UserRepo.findOne({ username: username, password: password });
+  // let user = await UserRepo.findOne({ username: username, password: password })
+  let user = await UserRepo.createQueryBuilder("user")
+    .leftJoinAndSelect("user.role", "role")
+    .where("user.username =:username", { username: username })
+    .andWhere("user.password =:password ", { password: password })
+    .getOne();
   return user;
 };
 const DateConfig = (dateString: string) => {
@@ -93,4 +99,9 @@ const DateConfig = (dateString: string) => {
   //   return;
   // }
   // return date;
+};
+export const GetUserById = async (id) => {
+  let UserRepo = getRepository(User);
+  let user = await UserRepo.findOne(id);
+  return user;
 };

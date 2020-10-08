@@ -8,7 +8,14 @@ import {
 } from "typeorm";
 import { User } from "../User/User";
 import { Poster } from "./Poster";
-
+export type commentConfig = {
+  id?: number;
+  content?: string;
+  asset?: string;
+  userId?: number;
+  createTime?: Date;
+  posterId?: number;
+};
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()
@@ -24,4 +31,6 @@ export class Comment {
   @ManyToOne((type) => User, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinColumn()
   user: User;
+  @Column()
+  createTime: Date;
 }

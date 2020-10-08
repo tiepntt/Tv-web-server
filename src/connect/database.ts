@@ -18,6 +18,7 @@ createConnection(config)
       StaticData.Role.forEach(async (roleData) => {
         let role = new Role();
         role.name = roleData.name;
+        role.Code = roleData.code;
         await RoleRepository.save(role);
       });
     }
@@ -42,14 +43,14 @@ createConnection(config)
         await FacultyRepository.save(faculty);
       });
     }
-    // let UserRepository = connection.getRepository(User);
-    // var users = await UserRepository.find();
+    let UserRepository = connection.getRepository(User);
+    var users = await UserRepository.find();
 
-    // if (users.length === 0) {
-    //   StaticData.user.forEach(async (item) => {
-    //     let users = await create(item);
-    //   });
-    // }
+    if (users.length === 0) {
+      StaticData.user.forEach(async (item) => {
+        let users = await create(item);
+      });
+    }
 
     console.log("Connect Database");
   })

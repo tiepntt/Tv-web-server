@@ -1,3 +1,5 @@
+import { CheckToken } from "../controllers/Admin/Auth.Controller";
+
 var express = require("express");
 var router = express.Router();
 // var multer = require("multer");
@@ -7,12 +9,12 @@ var uploadMulter = require("../upload/cloudinary");
 router.get("/", UserController.getAll);
 router.post(
   "/create",
+  CheckToken,
   uploadMulter.single("avatar"),
-  UserController.UploadFile,
   UserController.create
 );
-// router.get("/:id", UserController.getById);
-// router.delete("/:id", UserController.getById);
+router.get("/:id", CheckToken, UserController.getById);
+router.delete("/:id", CheckToken, UserController.getById);
 // router.put(
 //   "/changeAvartar",
 //   imageUploader.single("avatar"),
