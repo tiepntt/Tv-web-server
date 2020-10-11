@@ -25,7 +25,7 @@ export class Comment {
   content: string;
   @Column({ nullable: true })
   asset: string;
-  @OneToMany((type) => Poster, (o) => o.likes)
+  @ManyToOne((type) => Poster, (o) => o.likes)
   @JoinColumn()
   poster: Poster;
   @ManyToOne((type) => User, o => o.comments)

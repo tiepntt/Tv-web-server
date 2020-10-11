@@ -6,16 +6,21 @@ import { Student, StudentConfig } from "../../entity/Student/Student";
 
 export const Create = async (studentConfig: StudentConfig) => {
   let StudentRepo = getRepository(Student);
-  let FacultyRepo = getRepository(Faculty);
-  if (!studentConfig.id || !studentConfig.name) {
+  let FacultyRepo = getRepository( Faculty );
+  
+  if (!studentConfig.idStudent || !studentConfig.name) {
     return HandelStatus(204);
   }
-  let studentGet = await StudentRepo.findOne(studentConfig.id);
-  if (studentGet) {
+  let studentGet = await StudentRepo.findOne({idStudent : studentConfig.idStudent});
+  if ( studentGet )
+  {
+    console.log(studentConfig.idStudent);
+    
     return HandelStatus(302);
   }
+
   let student = new Student();
-  student.idStudent = studentConfig.id;
+  student.idStudent = studentConfig.idStudent;
   student.name = studentConfig.name;
 
   student.class = studentConfig.class || null;
@@ -31,14 +36,13 @@ export const Create = async (studentConfig: StudentConfig) => {
 export const Update = async (studentConfig: StudentConfig) => {
   let StudentRepo = getRepository(Student);
   let FacultyRepo = getRepository(Faculty);
-  if (!studentConfig.id) {
+  if (!studentConfig.id && !studentConfig.idStudent) {
     return HandelStatus(204);
   }
-  let student = await StudentRepo.findOne(studentConfig.id);
+  let student = await StudentRepo.findOne({idStudent : studentConfig.idStudent});
   if (!student) {
     return HandelStatus(404);
   }
-  student.idStudent = studentConfig.id;
   student.name = studentConfig.name;
 
   student.class = studentConfig.class || student.class;
@@ -56,16 +60,24 @@ export const GetAll = async () => {
   var result = await StudentRepo.find();
   return HandelStatus(200, null, result);
 };
+export const removeById = async ( id ) =>
+{
+  let StudentRepo = getRepository( Student )
+  let student = await StudentRepo.findOne( { idStudent: id } );
+  if ( !student ) return HandelStatus( 404 );
+  await StudentRepo.remove( student );
+  return HandelStatus( 200 );
+}
 export const GetBookOrderById = async (studentId) => {
   let StudentRepo = getRepository(Student);
   let BookOrderRepo = getRepository(BookOrder);
 
-  // var student = await StudentRepo.findOne({idStudent : studentId});
-  // var BookBorrowed = await BookOrderRepo.createQueryBuilder(
-  //   "bookOrder"
-  // ).leftJoinAndSelect("bookOrder.student", "student").where("book.")
-  // if (!student) return HandelStatus(404);
-  // return HandelStatus(200, null, student);
+  var student = await StudentRepo.findOne({idStudent : studentId});
+  var BookBorrowed = await BookOrderRepo.createQueryBuilder(
+    "bookOrder"
+  ).leftJoinAndSelect("bookOrder.student", "student").where("book.")
+  if (!student) return HandelStatus(404);
+  return HandelStatus(200, null, student);
 };
 export const GetInfoStudentById = async (idStudent) => {
   let StudentRepo = getRepository(Student);

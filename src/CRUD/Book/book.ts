@@ -3,7 +3,8 @@ import { HandelStatus } from "../../controllers/HandelAction";
 import { Book, BookConfig } from "../../entity/Book/Book";
 
 export const Create = async (bookConfig: BookConfig) => {
-  let BookRepo = getRepository(Book);
+  let BookRepo = getRepository( Book );
+  
   if (!bookConfig.name || !bookConfig.price || !bookConfig.id) {
     return HandelStatus(204);
   }
@@ -21,7 +22,9 @@ export const Create = async (bookConfig: BookConfig) => {
 };
 export const Update = async (bookConfig: BookConfig) => {
   let BookRepo = getRepository(Book);
-  if (!bookConfig.id) {
+  if ( !bookConfig.id )
+  {
+    
     return HandelStatus(204);
   }
   var book = new Book();

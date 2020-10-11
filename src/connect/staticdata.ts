@@ -1,9 +1,11 @@
 export const StaticData = {
   Role: [
-    { name: "Ban chủ nhiệm", code: "BCN" },
+     { name: "Lead", code: "Lead",isSendEmail : true,isCreateOrEditSheet : true, isCreateOrEditBook : true, isCreateOrEditStudent : true, createOrEditUser : true  },
+    { name: "Ban chủ nhiệm", code: "BCN",isSendEmail : true,isCreateOrEditSheet : true, isCreateOrEditBook : true,isCreateOrEditStudent : true },
     { name: "Thành viên", code: "TV" },
-    { name: "Nhập Liệu", code: "NL" },
+    { name: "Nhập Liệu", code: "NL",isSendEmail : false,isCreateOrEditBook : true,isCreateOrEditStudent : true  },
     { name: "Sự kiện", code: "SK" },
+   
   ],
 
   Department: [

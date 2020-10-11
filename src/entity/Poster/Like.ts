@@ -3,26 +3,28 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  JoinColumn, OneToOne
+  JoinColumn, OneToOne, ManyToOne
 } from "typeorm";
 import { User } from "../User/User";
 import { Poster } from "./Poster";
 
+export type LikeConfig = {
+  id?: number;
+  createTime?: Date;
+  userId?: number;
+  posterId?: number;
+}
 @Entity()
 export class Like {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ default: 0, nullable: true })
-  amount: number;
-  @Column({ nullable: true })
-  urlAssets: string;
-  @Column({ nullable: true })
-  content: string;
-  @OneToMany((type) => Poster, (o) => o.likes)
+  @ManyToOne((type) => Poster, (o) => o.likes)
   @JoinColumn()
   poster: Poster;
-  @OneToOne((type) => User)
+  @ManyToOne((type) => User, user => user.likes)
   @JoinColumn()
   user: User;
+  @Column()
+  createTime: Date;
 
 }

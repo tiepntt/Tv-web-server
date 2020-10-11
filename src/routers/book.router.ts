@@ -1,40 +1,45 @@
-import { CheckToken } from "../controllers/Admin/Auth.Controller";
+import { CheckIsCreateOrEditBook, CheckIsCreateOrEditSheet, CheckToken } from "../controllers/Admin/Auth.Controller";
 
 var express = require("express");
 var router = express.Router();
 var BookController = require("../controllers/Book/Book.Controller");
 var BookDetailsController = require("../controllers/Book/BookDetail.Controller");
 var BookOrderController = require("../controllers/Book/BookOrder.Controller");
+//book
+router.post("/create",CheckIsCreateOrEditBook, BookController.Create);
+router.get("/", BookController.GetAll);
+router.put("/",CheckIsCreateOrEditBook, BookController.Update);
+router.get("/:IdBook", BookController.GetById);
+router.delete("/RemoveById",CheckIsCreateOrEditBook, BookController.RemoveById);
+router.post("/CreateBySheet",CheckIsCreateOrEditSheet, BookController.CreateBySheet);
 
-router.post("/create", CheckToken, BookController.Create);
-router.get("/", CheckToken, BookController.GetAll);
-router.put("/", CheckToken, BookController.Update);
-router.get("/:IdBook", CheckToken, BookController.GetById);
-router.delete("/RemoveById", CheckToken, BookController.RemoveById);
-router.post("/CreateBySheet", CheckToken, BookController.CreateBySheet);
 
+//bookDetails
 router.post(
   "/bookDetail/CreateBySheet",
-  CheckToken,
+  CheckIsCreateOrEditSheet,
   BookDetailsController.CreateBySheet
 );
-router.get("/bookDetail/:IdBook", CheckToken, BookDetailsController.GetAll);
+
+router.get("/bookDetail/:IdBook", BookDetailsController.GetAll);
 router.get(
   "/bookDetail/getById/:Id",
-  CheckToken,
   BookDetailsController.GetById
 );
+router.delete("/bookDetail/:id",CheckIsCreateOrEditBook, BookDetailsController.removeById)
 
+
+//BookOrder
 router.post(
   "/bookOrder/CreateBySheet",
-  CheckToken,
+  CheckIsCreateOrEditSheet,
   BookOrderController.CreateBySheet
 );
 router.post(
   "/bookOrder/PayBySheet",
-  CheckToken,
+  CheckIsCreateOrEditSheet,
   BookOrderController.PayBySheets
 );
-router.post("/bookOrder/create", CheckToken, BookOrderController.Create);
-
+router.post("/bookOrder/create",CheckIsCreateOrEditBook, BookOrderController.Create);
+router.post("/bookOrder/pay",CheckIsCreateOrEditBook, BookOrderController.Paid )
 module.exports = router;

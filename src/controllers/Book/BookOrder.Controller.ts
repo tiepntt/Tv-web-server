@@ -21,7 +21,7 @@ module.exports.CreateBySheet = async (req, res) => {
         studentId: item[0],
         BorrowDate: genBorn(item[2]),
         bookdetailId: item[1],
-        userId1: item[3],
+        userId1: res.locals.userId,
       };
 
       var result = await Create(bookConfig);
@@ -54,7 +54,7 @@ module.exports.Create = async (req, res) => {
 };
 module.exports.Paid = async (req, res) => {
   var bookDetailId = req.body.bookDetailId;
-  var UserId = req.body.UserId;
+  var UserId = res.locals.userId;
   let result = await PayBook(bookDetailId, UserId);
   res.send(result);
 };

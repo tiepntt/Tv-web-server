@@ -19,6 +19,11 @@ createConnection(config)
         let role = new Role();
         role.name = roleData.name;
         role.Code = roleData.code;
+        role.isCreateOrEditBook = roleData.isCreateOrEditBook;
+        role.isCreateOrEditSheet = roleData.isCreateOrEditSheet;
+        role.isCreateOrEditUser = roleData.createOrEditUser;
+        role.isSendEmail = roleData.isSendEmail;
+        role.isCreateOrEditStudent = roleData.isCreateOrEditStudent;
         await RoleRepository.save(role);
       });
     }

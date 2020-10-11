@@ -1,11 +1,13 @@
 var { google } = require("googleapis");
-
+var keys = require("../Cre/gapi-sheets.json")
 export const client = new google.auth.JWT(
-  process.env.G_API_CLIENT_EMAIL,
+  keys.client_email,
   null,
-  process.env.G_API_PRIVATE_KEY,
+  keys.private_key,
   ["https://www.googleapis.com/auth/spreadsheets"]
 );
+
+
 
 export const getData = async (id, range) => {
   const gdApi = google.sheets({

@@ -22,9 +22,13 @@ export class Role {
   @Column({ unique: true, length: 10 })
   Code: string;
   @Column({ default: false })
-  isCreateOrUpdateBook: boolean;
+  isSendEmail: boolean;
   @Column({ default: false })
-  isCreateOrUpdateBookOrder: boolean;
+  isCreateOrEditSheet: boolean;
+  @Column({ default: false })
+  isCreateOrEditBook: boolean;
   @Column({ default: false })
   isCreateOrEditUser: boolean;
+  @Column({ default: false })
+  isCreateOrEditStudent: boolean;
 }

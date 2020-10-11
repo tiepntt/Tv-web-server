@@ -1,5 +1,5 @@
 import { getRepository } from "typeorm";
-import { Create, GetAll, GetById, Update } from "../../CRUD/Book/bookDetails";
+import { Create, GetAll, GetById, RemoveById, Update } from "../../CRUD/Book/bookDetails";
 
 import { BookDetail } from "../../entity/Book/BookDetails";
 import { getIdBook } from "../../libs/Book";
@@ -47,5 +47,10 @@ module.exports.GetById = async (req, res) => {
   var result = await GetById(idBookDetails);
   res.send(result);
 };
-module.exports.RemoveById = async (req, res) => {};
-module.exports.Update = async (req, res) => {};
+module.exports.removeById = async ( req, res ) =>
+{
+  var idBookDetails = req.params.id;
+  var result = await RemoveById( idBookDetails );
+  res.send( result );
+};
+

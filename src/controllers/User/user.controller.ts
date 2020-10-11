@@ -1,13 +1,15 @@
 import { HandelStatus } from "../HandelAction";
 import { __dir } from "../../libs/path";
-var fs = require("fs");
+import { changeRoleOrDepartment, RemoveById } from "../../CRUD/User/user";
+import { genBorn } from "../../libs/Book";
 
 var UserService = require("../../CRUD/User/user");
-module.exports.getAll = async (req, res) => {
+export const getAll = async (req, res) => {
   let users = await UserService.getAll();
   var Data = [];
   await users.forEach((user) => {
-    Data.push({
+    Data.push( {
+      id : user.id,
       name: user.Name,
       userName: user.username,
       role: user.role.name,
@@ -19,7 +21,7 @@ module.exports.getAll = async (req, res) => {
 
   res.send(HandelStatus(200, null, Data));
 };
-module.exports.create = async (req, res) => {
+export const create = async (req, res) => {
   var userSend = req.body.user;
   var userConfig = {
     name: req.body.name || null,
@@ -27,22 +29,22 @@ module.exports.create = async (req, res) => {
     password: req.body.password || null,
     roleId: req.body.roleId || null,
     departmentId: req.body.departmentId || null,
-    born: req.body.born || null,
+    born: new Date(req.body.born||null) || null,
   };
-
-  if (!userSend && !userConfig.name) {
+  if (!userConfig.name) {
     res.send(HandelStatus(204));
     return;
   }
+  
+  
   var user = userSend || userConfig;
   user.avatar = req.file ? req.file.path : null;
 
   var response = await UserService.create(user);
   res.send(response);
 };
-module.exports.getById = async (req, res) => {
+export const getById = async (req, res) => {
   var id = req.params.id;
-
   if (!id) {
     res.send(HandelStatus(204, null, id));
     return;
@@ -50,7 +52,37 @@ module.exports.getById = async (req, res) => {
   var response = await UserService.getById(id);
   res.send(response);
 };
-module.exports.UploadFile = async (req, res, next) => {
+
+export const update = async ( req, res ) =>
+{
+  var userConfig = {
+    id: req.body.id || null,
+    name: req.body.name || null,
+    userName: req.body.userName || null,
+    password: req.body.password || null,
+    roleId: req.body.roleId || null,
+    departmentId: req.body.departmentId || null,
+    born: new Date( genBorn(req.body.born) ) || null,
+    avatar : req.file ? req.file.path : null
+  };
+
+  if ( !userConfig.name) {
+    res.send( HandelStatus( 204 ) );
+    console.log(userConfig);
+    
+    return;
+  }
+  var user = userConfig;
+
+  var response = await UserService.update(user, res.locals.userId);
+  res.send(response);
+}
+export const updateRole = async ( req, res ) =>
+{
+  let result = await changeRoleOrDepartment( req.body.userConfig );
+  res.send(result)
+}
+export const UploadFile = async (req, res, next) => {
   const processedFile = req.file;
 
   if (!processedFile) {
@@ -60,6 +92,12 @@ module.exports.UploadFile = async (req, res, next) => {
     next();
   }
 };
+export const deleteById = async ( req, res ) =>
+{
+  var id = req.params.id;
+  let result = await RemoveById( id );
+  res.send( result );
+}
 const GetNameFile = (str: string) => {
   var nameFile = str.replace("/public", "");
   return nameFile;

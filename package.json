@@ -6,9 +6,10 @@
     "@types/cors": "^2.8.7",
     "@types/node": "^8.0.29",
     "ts-node": "^3.3.0",
-    "typescript": "3.3.3333"
+    "typescript": "^3.3.3333"
   },
   "dependencies": {
+    "-": "0.0.1",
     "@types/body-parser": "^1.19.0",
     "@types/nodemailer": "^6.4.0",
     "body-parser": "^1.19.0",
@@ -20,6 +21,8 @@
     "http": "0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "kue": "^0.11.6",
+    "moment": "^2.29.1",
+    "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "multer-storage-cloudinary": "^4.0.0",
     "mysql": "^2.14.1",
@@ -37,5 +40,16 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "migration": "ts-node ./node_modules/typeorm/cli.js migration:run"
-  }
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NguyenThaiTiep/Tv-web-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NguyenThaiTiep/Tv-web-server/issues"
+  },
+  "homepage": "https://github.com/NguyenThaiTiep/Tv-web-server#readme"
 }

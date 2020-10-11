@@ -72,7 +72,7 @@ export const GetBookOrderBorrowed = async (studentId) => {
     .leftJoinAndSelect("bookOrder.student", "student")
     .leftJoinAndSelect("bookOrder.bookdetail", "bookdetail")
     .leftJoinAndSelect("bookdetail.book", "book")
-    .leftJoinAndSelect("bookOrder.User1", "user")
+    .leftJoinAndSelect("bookOrder.UserCheckIn", "UserCheckIn")
     .where("bookOrder.PayDate is NULL")
     .andWhere("student.idStudent = :id", { id: studentId })
     .orderBy({ "bookOrder.BorrowDate": "DESC" })
@@ -84,7 +84,7 @@ export const GetBookOrderBorrowed = async (studentId) => {
         idBook: ((element as any).bookdetail as any).idBookDetails,
         book: ((element as any).bookdetail as any).book.name,
         BorrowDate: (element as any).BorrowDate,
-        user1: (element as any).User1.Name,
+        UserCheckIn: (element as any).UserCheckIn.Name,
       });
     });
   }
@@ -96,7 +96,8 @@ export const GetBookOrderPaid = async (studentId) => {
     .leftJoinAndSelect("bookOrder.student", "student")
     .leftJoinAndSelect("bookOrder.bookdetail", "bookdetail")
     .leftJoinAndSelect("bookdetail.book", "book")
-    .leftJoinAndSelect("bookOrder.User1", "user")
+    .leftJoinAndSelect( "bookOrder.UserCheckIn", "UserCheckIn" )
+    .leftJoinAndSelect("bookOrder.UserCheckIn", "UserCheckOut")
     .where("bookOrder.PayDate is not NULL")
     .andWhere("student.idStudent = :id", { id: studentId })
     .orderBy({ "bookOrder.BorrowDate": "DESC" })
@@ -108,7 +109,9 @@ export const GetBookOrderPaid = async (studentId) => {
         idBook: ((element as any).bookdetail as any).idBookDetails,
         book: ((element as any).bookdetail as any).book.name,
         BorrowDate: (element as any).BorrowDate,
-        user1: (element as any).User1.Name,
+        userCheckin: ( element as any ).userCheckIn.Name,
+        PaidDate: (element as any).BorrowDate,
+        userCheckOut: (element as any).UserCheckOut.Name,
       });
     });
   }

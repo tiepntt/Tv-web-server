@@ -5,7 +5,15 @@ import { Role } from "../../entity/User/Role";
 
 module.exports.create = async (config) => { };
 
-module.exports.getAll = async () => { };
+export const getAll = async () =>
+{ 
+  let RoleRepo = getRepository( Role );
+  let roles = await RoleRepo.createQueryBuilder( "role" )
+    .select( "role.name" )
+    .addSelect( "role.Code" )
+    .addSelect( "role.id" ).getMany();
+  return HandelStatus( 200, null, roles );
+};
 module.exports.addUser = async (_id: number, user) => {
   let RoleRepo = getRepository(Role);
   let role = await RoleRepo.findOne({ id: _id });
