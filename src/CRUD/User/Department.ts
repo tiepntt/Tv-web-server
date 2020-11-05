@@ -4,7 +4,6 @@ import { Department } from "../../entity/User/Department"
 
 export const getAll = async () =>
 {
-    let DepartmentRepo = getRepository( Department );
-    let departments = await  DepartmentRepo.find();
+    let departments = await getRepository(Department).find();
     return HandelStatus( 200, null, departments );
 }

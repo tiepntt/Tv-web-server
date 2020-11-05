@@ -1,15 +1,9 @@
+import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
-import {
-  GetBookOrderBorrowed,
-  GetBookOrderPaid,
-} from "../../CRUD/Book/BookOder";
-import {
-  Create,
-  GetAll,
-  GetInfoStudentById,
-  removeById,
-  Update,
-} from "../../CRUD/Student/Student";
+import { BookOrderService } from "../../CRUD/Book/BookOder";
+import { StudentService } from "../../CRUD/Student/Student";
+
+import { StudentInpuDto } from "../../dto/student/student.dto";
 import { Student } from "../../entity/Student/Student";
 import { genBorn } from "../../libs/Book";
 import { mapToArr } from "../../libs/Map";
@@ -19,7 +13,7 @@ import { getAllData, getId } from "../../service/google-api/crawl-data-student";
 import { IdData } from "../../service/Id/id";
 import { HandelStatus } from "../HandelAction";
 
-export const CreateBySheets = async (req, res) => {
+const CreateBySheets = async (req, res) => {
   let StudentRepo = getRepository(Student);
   if (!req.body.k) {
     res.send(HandelStatus(204));
@@ -41,17 +35,18 @@ export const CreateBySheets = async (req, res) => {
         class: item[3],
         born: genBorn(item[2]),
       };
+      let input = plainToClass(StudentInpuDto, studentConfig);
       if (studentGet) {
-        await Update(studentConfig);
+        await StudentService.Update(input);
       } else {
-        await Create(studentConfig);
+        await StudentService.Create(input);
       }
     }
   });
   res.send(HandelStatus(200));
 };
 
-export const PushToSheets = async (req, res) => {
+const PushToSheets = async (req, res) => {
   let StudentRepo = getRepository(Student);
   if (!req.body.k) {
     res.send(HandelStatus(204));
@@ -62,67 +57,67 @@ export const PushToSheets = async (req, res) => {
     res.send(HandelStatus(404));
     return;
   }
-  var students =  await GetAll();
+  var students = await StudentService.GetAll();
   var result = await mapToArr((students as any).result);
   var resPush = await pushData("A1", result, Id);
   res.send(resPush);
 };
-export const GetBookBorrowed = async (req, res) => {
+const GetBookBorrowed = async (req, res) => {
   var idStudent = req.params.id;
-  var student = await GetInfoStudentById(idStudent);
-  if (student.status != 200)  return res.send(HandelStatus(404));
+  var student = await StudentService.GetInfoStudentById(idStudent);
+  if (student.status != 200) return res.send(HandelStatus(404));
 
-  var bookBorrowed = await GetBookOrderBorrowed(idStudent);
-  var bookPaid = await GetBookOrderPaid(idStudent);
+  var bookBorrowed = await BookOrderService.GetBookOrderBorrowed(idStudent);
+  var bookPaid = await BookOrderService.GetBookOrderPaid(idStudent);
   res.send(
     HandelStatus(200, null, {
       studentInfo: student.result,
-      bookBorrowed: {
-        amount: bookBorrowed.length,
-        book: bookBorrowed,
-      },
-      bookPaid: {
-        amount: bookPaid.length,
-        book: bookPaid,
-      },
+      bookBorrowed: bookBorrowed,
+      bookPaid: bookPaid,
     })
   );
 };
-export const AddToSheet = async (req, res) => {
+const AddToSheet = async (req, res) => {
   var id = req.body.id;
   var k = req.body.k;
   var result = await getAllData(id, k);
   res.send(result);
 };
-export const create = async ( req, res ) =>
-{
-  if ( !req.body.studentConfig )
-  {
-    return res.send(HandelStatus(204));
-  }
-  var result = await Create( req.body.studentConfig );
-  res.send( result );
-}
-export const update = async ( req, res ) =>
-{
-  if ( !req.body.studentConfig )
-  {
-    return res.send(HandelStatus(204));
-  }
-  var result = await Update( req.body.studentConfig );
-  res.send( result );
-  
-}
-export const remove = async ( req, res ) =>
-{
+const create = async (req, res) => {
+  let studenInput = req.body.student;
+  if (!studenInput) return HandelStatus(400);
+  let student = plainToClass(StudentInpuDto, studenInput, {
+    excludeExtraneousValues: true,
+  });
+  var result = await StudentService.Create(student);
+  res.send(result);
+};
+const update = async (req, res) => {
+  let studenInput = req.body.student;
+  if (!studenInput) return HandelStatus(400);
+  let student = plainToClass(StudentInpuDto, studenInput, {
+    excludeExtraneousValues: true,
+  });
+  var result = await StudentService.Update(student);
+  res.send(result);
+};
+const remove = async (req, res) => {
   let idStudent = req.params.id;
-  let result = await removeById( idStudent );
-  res.send( result );
-}
-export const getById = async ( req, res ) =>
-{
+  let result = await StudentService.removeById(idStudent);
+  res.send(result);
+};
+const getById = async (req, res) => {
   let id = req.params.id;
-  let result = await GetInfoStudentById( id );
-  return res.send( result );
-}
-
+  let result = await StudentService.GetInfoStudentById(id);
+  return res.send(result);
+};
+export const StudentController = {
+  CreateBySheets,
+  PushToSheets,
+  GetBookBorrowed,
+  create,
+  AddToSheet,
+  update,
+  remove,
+  getById,
+};

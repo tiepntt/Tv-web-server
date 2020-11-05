@@ -32,10 +32,7 @@ export class Student {
   class: string;
   @Column({ nullable: true, type: "text" })
   note: string;
-  @OneToMany((type) => BookOrder, (o) => o.student, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany((type) => BookOrder, (o) => o.student)
   @JoinColumn()
   bookOrders: BookOrder[];
   @ManyToOne((type) => Faculty, (o) => o.students)

@@ -19,6 +19,8 @@ export const HandelStatus = (
         message: message || "Bạn không phải thành viên nhập liệu.",
       };
     }
+    case 400:
+      return { status: status, message: message || "Dữ liệu không phù hợp" };
     case 404:
       return { status: status, message: message || "Không tồn tại" };
     case 401:

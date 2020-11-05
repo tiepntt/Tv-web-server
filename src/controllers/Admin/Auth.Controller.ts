@@ -1,19 +1,17 @@
 import { nextTick } from "process";
-import { getUserByAccount } from "../../CRUD/User/user";
+import { getRepository } from "typeorm";
+import { UserService } from "../../CRUD/User/user";
+import { User } from "../../entity/User/User";
 import { HandelStatus } from "../HandelAction";
 
 var jwt = require("jsonwebtoken");
 
-export const Login = async (req, res) => {
-  if (!req.body.account) {
-    res.send(HandelStatus(401));
-  }
-
-  var account = req.body.account;
-
-  var user = await getUserByAccount(
-    account.username || "",
-    account.password || "null"
+const Login = async (req, res) => {
+  let account = req.body.account;
+  if (!account) return HandelStatus(400);
+  let user = await UserService.getUserByAccount(
+    account.username,
+    account.password
   );
   if (!user) {
     res.send(HandelStatus(401));
@@ -25,24 +23,23 @@ export const Login = async (req, res) => {
     check: true,
   };
   var token = jwt.sign(payload, process.env.TOKEN_SECRET_TV, {
-    expiresIn: 1440, // expires in 24 hours
+    expiresIn: 14400, // expires in 24 hours
   });
 
-  res.json( {
-    status : 200,
+  res.json({
+    status: 200,
     message: "authentication done ",
     token: token,
   });
 };
-export const Logout = async ( req, res ) =>
-{
-  if(!req.header) {
+const Logout = async (req, res) => {
+  if (!req.header) {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
   var token = req.headers.token;
   if (!token) {
-    res.send( HandelStatus( 401, "Bạn chưa đăng nhập" ) );
+    res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
   var payload = await jwt.verify(
@@ -50,27 +47,40 @@ export const Logout = async ( req, res ) =>
     process.env.TOKEN_SECRET_TV,
     (err, verifiedJwt) => {
       if (err) {
-        res.send( HandelStatus( 401, err.message ) );
+        res.send(HandelStatus(401, err.message));
         return;
       } else {
-        jwt.destroy( verifiedJwt );
-        res.send(HandelStatus(200))
+        jwt.destroy(verifiedJwt);
+        res.send(HandelStatus(200));
       }
     }
   );
 };
+const removeToken = async (token) => {
+  var payload = await jwt.verify(
+    token,
+    process.env.TOKEN_SECRET_TV,
+    (err, verifiedJwt) => {
+      if (err) {
+        return;
+      } else {
+        jwt.destroy(verifiedJwt);
+      }
+    }
+  );
+  return HandelStatus(401, "Bạn cần đăng nhập");
+};
 
-export const Register = (req, res) => {};
-export const ResetPassWord = (req, res) => {};
-export const CheckToken = async ( req, res, next ) =>
-{
-  if(!req.header) {
+const Register = (req, res) => {};
+const ResetPassWord = (req, res) => {};
+export const CheckToken = async (req, res, next) => {
+  if (!req.header) {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
   var token = req.headers.token;
   if (!token) {
-    res.send( HandelStatus( 401, "Bạn chưa đăng nhập" ) );
+    res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
   var payload = await jwt.verify(
@@ -78,7 +88,7 @@ export const CheckToken = async ( req, res, next ) =>
     process.env.TOKEN_SECRET_TV,
     (err, verifiedJwt) => {
       if (err) {
-        res.send( HandelStatus( 401, err.message ) );
+        res.send(HandelStatus(401, err.message));
         return;
       } else {
         res.locals.userLogin = verifiedJwt;
@@ -88,55 +98,98 @@ export const CheckToken = async ( req, res, next ) =>
     }
   );
 };
-export const CheckIsCreateOrEditUser = async ( req, res, next ) =>
-{
+export const CheckIsCreateOrEditUser = async (req, res, next) => {
   var user = res.locals.userLogin;
-  if ( !user.role || !user.role.isCreateOrEditUser )
-  {
-    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"))
+  let userRepo = getRepository(User);
+  let userGet = await userRepo
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.role", "role")
+    .where("user.Id =:id", { id: user.userId })
+    .getOne();
+  if (!user.role || !user.role.isCreateOrEditUser) {
+    if (!userGet || userGet.role.isCreateOrEditUser) {
+      await removeToken(req.header.token);
+      return res.send(HandelStatus(401));
+    }
+    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"));
     return;
   }
   next();
-}
-export const CheckIsCreateOrEditStudent = async ( req, res, next ) =>
-{
+};
+export const CheckIsCreateOrEditStudent = async (req, res, next) => {
   var user = res.locals.userLogin;
-  if ( !user.role || !user.role.isCreateOrEditStudent )
-  {
-    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"))
+  let userRepo = getRepository(User);
+  let userGet = await userRepo
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.role", "role")
+    .where("user.Id =:id", { id: user.userId })
+    .getOne();
+  if (!user.role || !user.role.isCreateOrEditStudent) {
+    if (!userGet || userGet.role.isCreateOrEditStudent) {
+      await removeToken(req.header.token);
+      return res.send(HandelStatus(401));
+    }
+    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"));
     return;
   }
   next();
-}
-export const CheckIsCreateOrEditBook= async ( req, res, next ) =>
-{
+};
+export const CheckIsCreateOrEditBook = async (req, res, next) => {
   var user = res.locals.userLogin;
-  if ( !user.role || !user.role.isCreateOrEditBook )
-  {
-    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"))
+  let userRepo = getRepository(User);
+  let userGet = await userRepo
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.role", "role")
+    .where("user.Id =:id", { id: user.userId })
+    .getOne();
+  if (!user.role || !user.role.isCreateOrEditBook) {
+    if (!userGet || userGet.role.isCreateOrEditUser) {
+      await removeToken(req.header.token);
+      return res.send(HandelStatus(401));
+    }
+    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"));
     return;
   }
   next();
-}
-export const CheckIsCreateOrEditSheet= async ( req, res, next ) =>
-{
+};
+export const CheckIsCreateOrEditSheet = async (req, res, next) => {
   var user = res.locals.userLogin;
-  if ( !user.role || !user.role.isCreateOrEditSheet )
-  {
-    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"))
+  let userRepo = getRepository(User);
+  let userGet = await userRepo
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.role", "role")
+    .where("user.Id =:id", { id: user.userId })
+    .getOne();
+  if (!user.role || !user.role.isCreateOrEditSheet) {
+    if (!userGet || userGet.role.isCreateOrEditUser) {
+      await removeToken(req.header.token);
+      return res.send(HandelStatus(401));
+    }
+    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"));
     return;
   }
   next();
-}
-export const CheckIsSendEmail= async ( req, res, next ) =>
-{
+};
+export const CheckIsSendEmail = async (req, res, next) => {
   var user = res.locals.userLogin;
-  if ( !user.role || !user.role.isSendEmail )
-  {
-    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"))
+  let userRepo = getRepository(User);
+  let userGet = await userRepo
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.role", "role")
+    .where("user.Id =:id", { id: user.userId })
+    .getOne();
+  if (!user.role || !user.role.isSendEmail) {
+    if (!userGet || userGet.role.isCreateOrEditUser) {
+      await removeToken(req.header.token);
+      return res.send(HandelStatus(401));
+    }
+    res.send(HandelStatus(303, "Bạn không có quyền làm điều này"));
     return;
   }
   next();
-}
-
-
+};
+export const AuthController = {
+  Login,
+  Logout,
+  removeToken,
+};

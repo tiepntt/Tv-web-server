@@ -1,7 +1,15 @@
+import { deserialize, plainToClass } from "class-transformer";
 import { type } from "os";
 import { config } from "process";
 import { getRepository } from "typeorm";
+import { deflateRawSync } from "zlib";
+import { mapObject } from "../../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
+import {
+  UserInputDto,
+  UserTitleDto,
+  UserUpdateInputDto,
+} from "../../dto/user/user.dto";
 import { Department } from "../../entity/User/Department";
 import { Role } from "../../entity/User/Role";
 import { User } from "../../entity/User/User";
@@ -17,135 +25,124 @@ type ConfigUser = {
   avatar?: string;
 };
 
-export const create = async (config: ConfigUser) => {
+const create = async (config: UserInputDto) => {
   if (
     !config.name ||
     !config.password ||
-    !config.userName ||
+    !config.username ||
     !config.roleId ||
     !config.departmentId
   ) {
-    console.log("hi");
     return HandelStatus(204);
   }
   let UserRepo = getRepository(User);
   let RoleRepo = getRepository(Role);
+  let userGet = await UserRepo.findOne({ username: config.username });
+  if (userGet) return HandelStatus(302, "tên đăng nhập đã được sử dụng");
   let DepartmentRepo = getRepository(Department);
-
-  let user = new User();
-  user.Name = config.name;
-  user.born = config.born||new Date("2000-20-06");
-  user.username = config.userName;
-  user.password = config.password;
-  user.avatar =
-    config.avatar ||
-    "https://www.minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg";
-
-  let role = await RoleRepo.findOne({ id: config.roleId });
-
-  let department = await DepartmentRepo.findOne({
-    id: config.departmentId,
-  });
-
+  let user = plainToClass(User, config);
+  let role = await RoleRepo.findOne(config.roleId);
+  let department = await DepartmentRepo.findOne(config.departmentId);
   if (!role || !department) {
     return HandelStatus(404);
   }
-
   user.role = role;
   user.department = department;
-  await UserRepo.save(user);
-  return HandelStatus(200);
+  try {
+    await UserRepo.save(user);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
 };
-export const update = async ( config: ConfigUser, userUpdateId ) =>
-{
+const update = async (config: UserUpdateInputDto, userUpdateId) => {
   console.log(config);
-  
-  if ( !config.id  || !userUpdateId) return HandelStatus( 204 );
-  let UserRepo = getRepository( User );
-  let user = await UserRepo.findOne( config.id );
-  let userUpdate = await UserRepo.createQueryBuilder("user").leftJoinAndSelect("user.role", "role").where("user.id=:id", {id : userUpdateId}).getOne();
-  if ( !user || !userUpdate || userUpdate != user && userUpdate.role.isCreateOrEditUser == false )
-  {
-    console.log(user, userUpdate);
-    
-    return HandelStatus( 404 );
-  }
-  user.Name = config.name || user.Name;
-  user.avatar = config.avatar || user.avatar;
-  user.born = config.born || user.born;
-  await UserRepo.update( config.id, user );
-  return HandelStatus( 200 );
-}
-export const getAll = async () => {
-  let UserRepo = getRepository(User);
-  let users = await UserRepo.createQueryBuilder("user")
-    .leftJoinAndSelect("user.role", "role")
-    .leftJoinAndSelect("user.department", "department")
-    .getMany();
 
-  return users;
+  if (!config.id || !userUpdateId) return HandelStatus(204);
+  let UserRepo = getRepository(User);
+  let user = await UserRepo.findOne(config.id);
+  if (!user) return HandelStatus(404);
+  user = mapObject(user, config);
+  // us
+  try {
+    await UserRepo.update(config.id, user);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
 };
-export const getById = async (_id: string) => {
+const getAll = async () => {
   let UserRepo = getRepository(User);
-  let user = await UserRepo.createQueryBuilder("user")
-    .leftJoinAndSelect("user.role", "role")
-    .leftJoinAndSelect("user.department", "department")
-    .where("user.id = :id", { id: _id })
-    .getOne();
-  if (!user) {
-    return HandelStatus(404, null, user);
-  }
-
-  return HandelStatus( 200, null, {
-    id : user.id,
-    name: user.Name,
-    born: user.born,
-    department: user.department.name,
-    avatar: user.avatar,
+  let users = await UserRepo.find({
+    relations: ["role", "department"],
   });
+  try {
+    let result = deserialize(UserTitleDto, JSON.stringify(users), {
+      excludeExtraneousValues: true,
+    });
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
 };
-export const getUserByAccount = async (username, password) => {
+const getById = async (_id: string) => {
   let UserRepo = getRepository(User);
-  // let user = await UserRepo.findOne({ username: username, password: password })
-  let user = await UserRepo.createQueryBuilder("user")
-    .leftJoinAndSelect("user.role", "role")
-    .where("user.username =:username", { username: username })
-    .andWhere("user.password =:password ", { password: password })
-    .getOne();
+  let user = await UserRepo.findOne({
+    relations: ["department", "role"],
+    where: {
+      id: _id,
+    },
+  });
+  if (!user) {
+    return HandelStatus(404);
+  }
+  let result = deserialize(UserTitleDto, JSON.stringify(user), {
+    excludeExtraneousValues: true,
+  });
+  return HandelStatus(200, null, result);
+};
+const getUserByAccount = async (username, password) => {
+  let UserRepo = getRepository(User);
+  let user = await UserRepo.findOne({
+    relations: ["role", "department"],
+    where: { username: username, password: password },
+  });
   return user;
 };
-const DateConfig = (dateString: string) => {
-  // if (!dateString) {
-  //   return;
-  // }
-  // return date;
-};
-export const GetUserById = async (id) => {
+const GetUserById = async (id) => {
   let UserRepo = getRepository(User);
   let user = await UserRepo.findOne(id);
   return user;
 };
-export const changeRoleOrDepartment = async ( input : ConfigUser ) =>
-{
-  
-  if ( !input.id || !input.roleId || !input.departmentId) return HandelStatus( 204 );
-  let UserRepo = getRepository( User );
-  let RoleRepo = getRepository( Role );
-  let DepartmentRepo = getRepository( Department );
-  let user = await UserRepo.findOne( input.id );
-  let role = await RoleRepo.findOne( input.roleId );
-  let department = await DepartmentRepo.findOne( input.departmentId );
-  if ( !user || !role || !department ) return HandelStatus( 404 );
+const changeRoleOrDepartment = async (input: ConfigUser) => {
+  if (!input.id || !input.roleId || !input.departmentId)
+    return HandelStatus(204);
+  let UserRepo = getRepository(User);
+  let RoleRepo = getRepository(Role);
+  let DepartmentRepo = getRepository(Department);
+  let user = await UserRepo.findOne(input.id);
+  let role = await RoleRepo.findOne(input.roleId);
+  let department = await DepartmentRepo.findOne(input.departmentId);
+  if (!user || !role || !department) return HandelStatus(404);
   user.role = role || user.role;
   user.department = department || user.department;
-  await UserRepo.update( input.id, user );
-  return HandelStatus( 200 );
-}
-export const RemoveById = async ( id ) =>
-{
-  let UserRepo = getRepository( User );
-  let user = await UserRepo.findOne( id );
-  if ( !user ) return HandelStatus( 404 );
-  await UserRepo.remove( user );
-  return HandelStatus( 200 );
-}
+  await UserRepo.update(input.id, user);
+  return HandelStatus(200);
+};
+const RemoveById = async (id) => {
+  let UserRepo = getRepository(User);
+  let user = await UserRepo.findOne(id);
+  if (!user) return HandelStatus(404);
+  await UserRepo.remove(user);
+  return HandelStatus(200);
+};
+export const UserService = {
+  create,
+  update,
+  getAll,
+  getById,
+  getUserByAccount,
+  GetUserById,
+  changeRoleOrDepartment,
+  RemoveById,
+};

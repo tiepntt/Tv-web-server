@@ -3,20 +3,19 @@ import { getRepository } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
 import { Comment, commentConfig } from "../../entity/Poster/Comment";
 import { User } from "../../entity/User/User";
-import { GetUserById } from "../User/user";
+import { UserService } from "../User/user";
 import { GetPoster } from "./poster";
 
 
 export const Create = async (input: commentConfig) => {
   if (!input.posterId || !input.userId || (!input.content && !input.asset)) {
-    // console.log(input);
     
     return HandelStatus(204);
   }
   let CommentRepo = getRepository(Comment);
   let comment = new Comment();
   var poster = await GetPoster(input.posterId);
-  var user = await GetUserById(input.userId);
+  var user = await UserService.GetUserById(input.userId);
   if (!poster || !user){
       return HandelStatus(204);
   } 

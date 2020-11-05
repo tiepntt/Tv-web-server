@@ -4,6 +4,9 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from "typeorm";
 import { User } from "../User/User";
 import { Book } from "./Book";
@@ -21,8 +24,11 @@ export class BookDetail {
   @ManyToOne((type) => Book, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinColumn()
   book: Book;
+  @CreateDateColumn()
   createAt: Date;
-  @Column({ nullable: true })
+  @UpdateDateColumn()
+  update_at: Date;
+  @DeleteDateColumn()
   DeleteAt: Date;
   @ManyToOne((type) => User)
   @JoinColumn()

@@ -5,6 +5,9 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
+  UpdateDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
 } from "typeorm";
 import { User } from "../User/User";
 import { BookDetail } from "./BookDetails";
@@ -27,16 +30,18 @@ export class Book {
   price: number;
   @Column({ default: 0, nullable: true })
   amount: number;
-  @Column({ nullable: true })
-  createAt: Date;
-  @Column({ nullable: true })
-  DeleteAt: Date;
+  @DeleteDateColumn()
+  delete_at: Date;
+  @CreateDateColumn()
+  create_at: Date;
+  @UpdateDateColumn()
+  update_at: Date;
   @ManyToOne((type) => User)
   @JoinColumn()
   userDelete: User;
   @OneToMany((type) => BookDetail, (o) => o.book, {
     onUpdate: "CASCADE",
-    onDelete: "CASCADE",
+    onDelete: "SET NULL",
   })
   @JoinColumn()
   bookdetails: BookDetail[];

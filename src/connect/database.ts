@@ -7,7 +7,9 @@ import { Role } from "../entity/User/Role";
 import { Department } from "../entity/User/Department";
 import { Faculty } from "../entity/Student/Faculty";
 import { User } from "../entity/User/User";
-import { create } from "../CRUD/User/user";
+import { UserService } from "../CRUD/User/user";
+import { plainToClass } from "class-transformer";
+import { UserInputDto } from "../dto/user/user.dto";
 createConnection(config)
   .then(async (connection) => {
     let qRun = connection.createQueryRunner();
@@ -53,7 +55,9 @@ createConnection(config)
 
     if (users.length === 0) {
       StaticData.user.forEach(async (item) => {
-        let users = await create(item);
+        let input = plainToClass(UserInputDto, item);
+        let users = await UserService.create(input);
+        console.log(users);
       });
     }
 

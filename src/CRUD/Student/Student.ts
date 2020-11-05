@@ -1,87 +1,94 @@
+import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
+import { mapObject } from "../../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
-import { BookOrder } from "../../entity/Book/BookOrder";
+import { StudentInpuDto } from "../../dto/student/student.dto";
 import { Faculty } from "../../entity/Student/Faculty";
-import { Student, StudentConfig } from "../../entity/Student/Student";
+import { Student } from "../../entity/Student/Student";
 
-export const Create = async (studentConfig: StudentConfig) => {
+const Create = async (studentConfig: StudentInpuDto) => {
   let StudentRepo = getRepository(Student);
-  let FacultyRepo = getRepository( Faculty );
-  
+  let FacultyRepo = getRepository(Faculty);
+
   if (!studentConfig.idStudent || !studentConfig.name) {
     return HandelStatus(204);
   }
-  let studentGet = await StudentRepo.findOne({idStudent : studentConfig.idStudent});
-  if ( studentGet )
-  {
-    console.log(studentConfig.idStudent);
-    
+  let studentGet = await StudentRepo.findOne({
+    idStudent: studentConfig.idStudent,
+  });
+  if (studentGet) {
     return HandelStatus(302);
   }
-
-  let student = new Student();
-  student.idStudent = studentConfig.idStudent;
-  student.name = studentConfig.name;
-
-  student.class = studentConfig.class || null;
-  student.born = new Date(studentConfig.born) || null;
+  let student = plainToClass(Student, studentConfig);
   let faculty = await FacultyRepo.findOne(studentConfig.facultyId || 1);
   if (!faculty) {
     return HandelStatus(404, "Khoa không tồn tại");
   }
   student.faculty = faculty;
-  await StudentRepo.save(student);
-  return HandelStatus(200);
+  try {
+    await StudentRepo.save(student);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500, e.name);
+  }
 };
-export const Update = async (studentConfig: StudentConfig) => {
+const Update = async (studentConfig: StudentInpuDto) => {
   let StudentRepo = getRepository(Student);
   let FacultyRepo = getRepository(Faculty);
   if (!studentConfig.id && !studentConfig.idStudent) {
     return HandelStatus(204);
   }
-  let student = await StudentRepo.findOne({idStudent : studentConfig.idStudent});
+  let student = await StudentRepo.findOne({
+    idStudent: studentConfig.idStudent,
+  });
   if (!student) {
     return HandelStatus(404);
   }
-  student.name = studentConfig.name;
-
-  student.class = studentConfig.class || student.class;
-  student.born = new Date(studentConfig.born) || student.born;
+  student = mapObject(student, studentConfig);
   let faculty = await FacultyRepo.findOne(studentConfig.facultyId || 1);
   if (!faculty) {
     return HandelStatus(404, "Khoa không tồn tại");
   }
   student.faculty = faculty || student.faculty;
-  await StudentRepo.update(student.id, student);
-  return HandelStatus(200);
+  try {
+    await StudentRepo.update(student.id, student);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500, e.name);
+  }
 };
-export const GetAll = async () => {
+const GetAll = async () => {
   let StudentRepo = getRepository(Student);
   var result = await StudentRepo.find();
   return HandelStatus(200, null, result);
 };
-export const removeById = async ( id ) =>
-{
-  let StudentRepo = getRepository( Student )
-  let student = await StudentRepo.findOne( { idStudent: id } );
-  if ( !student ) return HandelStatus( 404 );
-  await StudentRepo.remove( student );
-  return HandelStatus( 200 );
-}
-export const GetBookOrderById = async (studentId) => {
-  let StudentRepo = getRepository(Student);
-  let BookOrderRepo = getRepository(BookOrder);
 
-  var student = await StudentRepo.findOne({idStudent : studentId});
-  var BookBorrowed = await BookOrderRepo.createQueryBuilder(
-    "bookOrder"
-  ).leftJoinAndSelect("bookOrder.student", "student").where("book.")
+const removeById = async (id) => {
+  let StudentRepo = getRepository(Student);
+  let student = await StudentRepo.findOne({ idStudent: id });
   if (!student) return HandelStatus(404);
-  return HandelStatus(200, null, student);
+
+  try {
+    await StudentRepo.remove(student);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
 };
-export const GetInfoStudentById = async (idStudent) => {
+const GetBookOrderById = async (studentId) => {
+  let StudentRepo = getRepository(Student);
+};
+const GetInfoStudentById = async (idStudent) => {
   let StudentRepo = getRepository(Student);
   var student = await StudentRepo.findOne({ idStudent: idStudent });
   if (!student) return HandelStatus(404);
   return HandelStatus(200, null, student);
+};
+export const StudentService = {
+  Create,
+  Update,
+  GetAll,
+  removeById,
+  GetBookOrderById,
+  GetInfoStudentById,
 };
