@@ -7,49 +7,59 @@ import { Role } from "../entity/User/Role";
 import { Department } from "../entity/User/Department";
 import { Faculty } from "../entity/Student/Faculty";
 import { User } from "../entity/User/User";
-import { create } from "../CRUD/User/user";
+import { UserService } from "../CRUD/User/user";
+import { plainToClass } from "class-transformer";
+import { UserInputDto } from "../dto/user/user.dto";
 createConnection(config)
   .then(async (connection) => {
-    // let qRun = connection.createQueryRunner();
+    let qRun = connection.createQueryRunner();
 
-    // let RoleRepository = connection.getRepository(Role);
-    // var dataRole = await RoleRepository.find();
-    // if (dataRole.length === 0) {
-    //   StaticData.Role.forEach(async (roleData) => {
-    //     let role = new Role();
-    //     role.name = roleData.name;
-    //     await RoleRepository.save(role);
-    //   });
-    // }
+    let RoleRepository = connection.getRepository(Role);
+    var dataRole = await RoleRepository.find();
+    if (dataRole.length === 0) {
+      StaticData.Role.forEach(async (roleData) => {
+        let role = new Role();
+        role.name = roleData.name;
+        role.Code = roleData.code;
+        role.isCreateOrEditBook = roleData.isCreateOrEditBook;
+        role.isCreateOrEditSheet = roleData.isCreateOrEditSheet;
+        role.isCreateOrEditUser = roleData.createOrEditUser;
+        role.isSendEmail = roleData.isSendEmail;
+        role.isCreateOrEditStudent = roleData.isCreateOrEditStudent;
+        await RoleRepository.save(role);
+      });
+    }
 
-    // let DepartmentRepository = connection.getRepository(Department);
-    // var dataDepartment = await DepartmentRepository.find();
+    let DepartmentRepository = connection.getRepository(Department);
+    var dataDepartment = await DepartmentRepository.find();
 
-    // if (dataDepartment.length === 0) {
-    //   StaticData.Department.forEach(async (departmentData) => {
-    //     let department = new Department();
-    //     department.name = departmentData.name;
-    //     await DepartmentRepository.save(department);
-    //   });
-    // }
-    // let FacultyRepository = connection.getRepository(Faculty);
-    // var dataFaculty = await FacultyRepository.find();
+    if (dataDepartment.length === 0) {
+      StaticData.Department.forEach(async (departmentData) => {
+        let department = new Department();
+        department.name = departmentData.name;
+        await DepartmentRepository.save(department);
+      });
+    }
+    let FacultyRepository = connection.getRepository(Faculty);
+    var dataFaculty = await FacultyRepository.find();
 
-    // if (dataFaculty.length === 0) {
-    //   StaticData.Faculty.forEach(async (FacultyData) => {
-    //     let faculty = new Faculty();
-    //     faculty.name = FacultyData.name;
-    //     await FacultyRepository.save(faculty);
-    //   });
-    // }
-    // let UserRepository = connection.getRepository(User);
-    // var users = await UserRepository.find();
+    if (dataFaculty.length === 0) {
+      StaticData.Faculty.forEach(async (FacultyData) => {
+        let faculty = new Faculty();
+        faculty.name = FacultyData.name;
+        await FacultyRepository.save(faculty);
+      });
+    }
+    let UserRepository = connection.getRepository(User);
+    var users = await UserRepository.find();
 
-    // if (users.length === 0) {
-    //   StaticData.user.forEach(async (item) => {
-    //     let users = await create(item);
-    //   });
-    // }
+    if (users.length === 0) {
+      StaticData.user.forEach(async (item) => {
+        let input = plainToClass(UserInputDto, item);
+        let users = await UserService.create(input);
+        console.log(users);
+      });
+    }
 
     console.log("Connect Database");
   })

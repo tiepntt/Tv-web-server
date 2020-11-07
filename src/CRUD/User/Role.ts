@@ -1,18 +1,22 @@
+import { deserialize } from "class-transformer";
 import { getRepository } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
+import { RoleTitleDto } from "../../dto/user/role.dto";
 
 import { Role } from "../../entity/User/Role";
-import { User } from "../../entity/User/User";
 
 module.exports.create = async (config) => { };
 
-module.exports.getAll = async () => { };
-module.exports.addUser = async (_id: number, user) => {
-  let RoleRepo = getRepository(Role);
-  let role = await RoleRepo.findOne({ id: _id });
-  if (!role) {
-    return HandelStatus(404);
+export const getAll = async () =>
+{ 
+  let RoleRepo = getRepository( Role );
+  let roles = await RoleRepo.find();
+  try {
+    let result = deserialize(RoleTitleDto, JSON.stringify(roles), {
+      excludeExtraneousValues: true,
+    });
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500);
   }
-  role.users.push(user);
-  return HandelStatus(200);
 };

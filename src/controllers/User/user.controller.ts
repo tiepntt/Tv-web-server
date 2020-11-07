@@ -1,48 +1,24 @@
 import { HandelStatus } from "../HandelAction";
 import { __dir } from "../../libs/path";
-var fs = require("fs");
+import { UserService } from "../../CRUD/User/user";
+import { genBorn } from "../../libs/Book";
+import { plainToClass } from "class-transformer";
+import { UserInputDto, UserUpdateInputDto } from "../../dto/user/user.dto";
 
-var UserService = require("../../CRUD/User/user");
-module.exports.getAll = async (req, res) => {
-  let users = await UserService.getAll();
-  var Data = [];
-  await users.forEach((user) => {
-    Data.push({
-      name: user.Name,
-      userName: user.username,
-      role: user.role.name,
-      department: user.department.name,
-      born: user.born,
-      avatar: user.avatar,
-    });
-  });
-  res.send(HandelStatus(200, null, Data));
+const getAll = async (req, res) => {
+  let result = await UserService.getAll();
+  return res.send(result);
 };
-module.exports.create = async (req, res) => {
-  var userSend = req.body.user;
-  var userConfig = {
-    name: req.body.name || null,
-    userName: req.body.userName || null,
-    password: req.body.password || null,
-    roleId: req.body.roleId || null,
-    departmentId: req.body.departmentId || null,
-    born: req.body.born || null,
-  };
-
-  if (!userSend && !userConfig.name) {
-    res.send(HandelStatus(204));
-    return;
-  }
-  var user = userSend || userConfig;
-  user.avatar = res.locals.fileName;
-
+const create = async (req, res) => {
+  var userSend = req.body;
+  let user = plainToClass(UserInputDto, userSend);
+  user.born = user.born || new Date();
+  user.avatar = req.file ? req.file.path : undefined;
   var response = await UserService.create(user);
   res.send(response);
 };
-module.exports.getById = async (req, res) => {
+const getById = async (req, res) => {
   var id = req.params.id;
-  console.log(id);
-
   if (!id) {
     res.send(HandelStatus(204, null, id));
     return;
@@ -50,33 +26,53 @@ module.exports.getById = async (req, res) => {
   var response = await UserService.getById(id);
   res.send(response);
 };
-module.exports.UploadFile = async (req, res, next) => {
+
+const update = async (req, res) => {
+  let body = req.body;
+  let userConfig = plainToClass(UserUpdateInputDto, body, {
+    excludeExtraneousValues: true,
+  });
+  userConfig.avatar = req.file ? req.file.path : undefined;
+  console.log(userConfig);
+  userConfig.id = res.locals ? res.locals.userId : undefined;
+  if (!userConfig.name) {
+    res.send(HandelStatus(204));
+    console.log(userConfig);
+    return;
+  }
+  var user = userConfig;
+  var response = await UserService.update(user, res.locals.userId);
+  res.send(response);
+};
+const updateRole = async (req, res) => {
+  let result = await UserService.changeRoleOrDepartment(req.body.userConfig);
+  res.send(result);
+};
+const UploadFile = async (req, res, next) => {
   const processedFile = req.file;
 
   if (!processedFile) {
     next();
   } else {
-    let orgName = processedFile.originalname || "";
-    // Tên gốc trong máy tính của người upload
-    orgName = orgName.trim().replace(/ /g, "-");
-    const fullPathInServ = processedFile.path;
-    // Đường dẫn đầy đủ của file vừa đc upload lên server
-    // Đổi tên của file vừa upload lên, vì multer đang đặt default ko có đuôi file
-    const newFullPath = `${fullPathInServ}-${orgName}`;
-
-    var nameFile = newFullPath.split("\\");
-    var path = __dir + nameFile[nameFile.length - 1];
-    var path2 = GetNameFile(path);
-
-    fs.renameSync(fullPathInServ, newFullPath);
-    res.locals.fileName = path2;
-
-    res.locals.filePath = nameFile[nameFile.length - 1];
-    // next();
+    res.locals.filePath = req.file.path;
     next();
   }
+};
+const deleteById = async (req, res) => {
+  var id = req.params.id;
+  let result = await UserService.RemoveById(id);
+  res.send(result);
 };
 const GetNameFile = (str: string) => {
   var nameFile = str.replace("/public", "");
   return nameFile;
+};
+export const UserController = {
+  getAll,
+  create,
+  getById,
+  update,
+  updateRole,
+  UploadFile,
+  deleteById,
 };

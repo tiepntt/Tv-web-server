@@ -22,7 +22,7 @@ export type StudentConfig = {
 export class Student {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true, length: 10 })
   idStudent: string;
   @Column({ nullable: false, type: "nvarchar", length: 555, charset: "utf8" })
   name: string;
@@ -32,10 +32,7 @@ export class Student {
   class: string;
   @Column({ nullable: true, type: "text" })
   note: string;
-  @OneToMany((type) => BookOrder, (o) => o.student, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany((type) => BookOrder, (o) => o.student)
   @JoinColumn()
   bookOrders: BookOrder[];
   @ManyToOne((type) => Faculty, (o) => o.students)

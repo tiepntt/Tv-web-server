@@ -3,10 +3,17 @@ var path = require("path");
 var http = require("http");
 require("dotenv").config();
 var app = express();
-require("./connect/database");
+var morgan = require( "morgan" );
+require( "./connect/database" );
+require("./upload/cloudinary")
 import * as cors from "cors";
 import * as bodyParser from "body-parser";
-import { ClearData } from "./service/google-api/api";
+import { CheckToken } from "./controllers/Admin/Auth.Controller";
+import { debug } from "console";
+import { Check } from "typeorm";
+const redis = require("redis");
+const client = redis.createClient();
+const kue = require("kue");
 
 const options: cors.CorsOptions = {
   allowedHeaders: [
@@ -32,20 +39,30 @@ var UserRouter = require("./routers/user.router");
 var BookRouter = require("./routers/book.router");
 var StudentRouter = require("./routers/student.router");
 var PosterRouter = require("./routers/poster.router");
-var AdminRouter = require("./routers/admin.router");
-app.use("/user", UserRouter);
-app.use("/book", BookRouter);
+var AdminRouter = require( "./routers/admin.router" );
+morgan.token('id', function getId (req) {
+  return req.id
+} )
+app.use( morgan( 'dev' ));
+app.use("/user",CheckToken, UserRouter);
+app.use("/book",CheckToken, BookRouter);
 app.use("/student", StudentRouter);
-app.use("/poster", PosterRouter);
+app.use("/poster",CheckToken, PosterRouter);
 app.use("/admin", AdminRouter);
+app.use( "/kue-api/",CheckToken, kue.app );
 
 app.get("/", (req, res) => {
-  // ClearData("")
-  res.send("Xin chao");
+  res.send("<h1>Chào mừng bạn đến với Thư Viện Hội Sinh viên UET</h1>");
 });
 app.use(express.static(path.join(__dirname, "public")));
 var server = http.createServer(app);
 
-server.listen(3001, () => {
-  console.log("Server is listening port 3000");
-});
+server.listen( 3001);
+server.on( 'listening', onListening );
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string' ?
+        'pipe ' + addr :
+        'port ' + addr.port;
+    debug('Listening on ' + bind);
+}

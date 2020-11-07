@@ -1,8 +1,31 @@
 export const StaticData = {
   Role: [
-    { name: "Ban chủ nhiệm" },
-    { name: "Thành viên" },
-    { name: "Nhập Liệu" },
+    {
+      name: "Lead",
+      code: "Lead",
+      isSendEmail: true,
+      isCreateOrEditSheet: true,
+      isCreateOrEditBook: true,
+      isCreateOrEditStudent: true,
+      createOrEditUser: true,
+    },
+    {
+      name: "Ban chủ nhiệm",
+      code: "BCN",
+      isSendEmail: true,
+      isCreateOrEditSheet: true,
+      isCreateOrEditBook: true,
+      isCreateOrEditStudent: true,
+    },
+    { name: "Thành viên", code: "TV" },
+    {
+      name: "Nhập Liệu",
+      code: "NL",
+      isSendEmail: false,
+      isCreateOrEditBook: true,
+      isCreateOrEditStudent: true,
+    },
+    { name: "Sự kiện", code: "SK" },
   ],
 
   Department: [
@@ -23,6 +46,12 @@ export const StaticData = {
     { name: "Vật lý kĩ thuật & công nghệ Nano" },
   ],
   user: [
-    { name: "admin", password: "123qwe", userName: "admin", roleId: 1, departmentId: 1 }]
-
+    {
+      name: "admin",
+      password: "123qwe",
+      username: "admin",
+      roleId: 1,
+      departmentId: 1,
+    },
+  ],
 };

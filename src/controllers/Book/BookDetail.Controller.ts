@@ -1,5 +1,7 @@
+import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
-import { Create, GetAll, GetById, Update } from "../../CRUD/Book/bookDetails";
+import { BookDetailService } from "../../CRUD/Book/bookDetails";
+import { BookDetailInputDto } from "../../dto/Book/book.detail.dto";
 
 import { BookDetail } from "../../entity/Book/BookDetails";
 import { getIdBook } from "../../libs/Book";
@@ -7,45 +9,68 @@ import { AddBySheet } from "../../service/google-api/addStudentBySheest";
 import { BookCopyId, BookId } from "../../service/Id/id";
 import { HandelStatus } from "../HandelAction";
 
-module.exports.Create = async (req, res) => {
-  if (!req.body.BookDetail) {
-    res.send(HandelStatus(404));
-    return;
-  }
-  let result = await Create(req.body.BookDetail);
+const Create = async (req, res) => {
+  let bookDetails = req.body.bookdetail;
+  if (!bookDetails) return res.send(HandelStatus(400));
+  let bookDetailInput = plainToClass(BookDetailInputDto, bookDetails, {
+    excludeExtraneousValues: true,
+  });
+  let result = await BookDetailService.Create(bookDetailInput);
   res.send(result);
 };
-module.exports.CreateBySheet = async (req, res) => {
+const CreateBySheet = async (req, res) => {
   let BookDetailsRepo = getRepository(BookDetail);
 
   let Id = BookCopyId;
   let arr = await AddBySheet(Id);
   var data = (arr.result as any).data;
-  await (data as any).forEach(async (item, index) => {
+  let result = { success: 0, fail: 0 };
+  for (let index = 0; index < data.length; index++) {
     if (index > 0) {
-      let book = await BookDetailsRepo.findOne({ idBookDetails: item[0] });
-      let bookConfig = {
-        id: item[0],
-        bookid: getIdBook(item[0]),
-      };
-      if (book) {
-        await Update(bookConfig);
-      } else {
-        await Create(bookConfig);
+      let item = data[index];
+      if (index > 0) {
+        let bookConfig = {
+          idBookDetails: item[0],
+          idBook: getIdBook(item[0]),
+        };
+        let bookdetail = plainToClass(BookDetailInputDto, bookConfig, {
+          excludeExtraneousValues: true,
+        });
+
+        let r = await BookDetailService.Create(bookdetail);
+
+        if (r.status == 200) {
+          result.success++;
+        } else {
+          result.fail++;
+          console.log(r, bookdetail);
+        }
       }
     }
-  });
-  res.send(HandelStatus(200));
+  }
+
+  res.send(HandelStatus(200, null, result));
 };
-module.exports.GetAll = async (req, res) => {
+const GetAll = async (req, res) => {
   var IdBook = req.params.IdBook;
-  var result = await GetAll(IdBook);
+  var result = await BookDetailService.GetAll(IdBook);
   res.send(result);
 };
-module.exports.GetById = async (req, res) => {
-  var idBookDetails = req.params.Id;
-  var result = await GetById(idBookDetails);
+const GetById = async (req, res) => {
+  var idBookDetails = req.params.IdBook;
+
+  var result = await BookDetailService.GetById(idBookDetails);
   res.send(result);
 };
-module.exports.RemoveById = async (req, res) => {};
-module.exports.Update = async (req, res) => {};
+const removeById = async (req, res) => {
+  var idBookDetails = req.params.id;
+  var result = await BookDetailService.RemoveById(idBookDetails);
+  res.send(result);
+};
+export const BookDetailController = {
+  Create,
+  CreateBySheet,
+  GetAll,
+  GetById,
+  removeById,
+};

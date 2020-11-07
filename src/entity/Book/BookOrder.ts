@@ -1,3 +1,4 @@
+import moment = require("moment");
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -5,6 +6,7 @@ import {
   JoinColumn,
   OneToOne,
   ManyToOne,
+  Timestamp,
 } from "typeorm";
 import { Student } from "../Student/Student";
 import { User } from "../User/User";
@@ -12,22 +14,25 @@ import { BookDetail } from "./BookDetails";
 
 export type BookOrderConfig = {
   id?: number;
-  BorrowDate?: string;
-  PayDate?: string;
+  BorrowDate?: Date;
+  PayDate?: Date;
   bookdetailId?: string;
   studentId?: string;
-  userId1?: number;
-  userId2?: number;
+  userCheckIn?: number;
+  userCheckOut?: number;
 };
 @Entity()
 export class BookOrder {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
-  BorrowDate: Date;
+  @Column({
+    nullable: true,
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  borrowDate: Date;
   @Column({ nullable: true })
-  PayDate: Date;
-  @OneToOne((type) => BookDetail)
+  payDate: Date;
+  @OneToOne((type) => BookDetail, { onDelete: "SET NULL", onUpdate: "CASCADE" })
   @JoinColumn()
   bookdetail: BookDetail;
   @ManyToOne((type) => Student, (o) => o.bookOrders, {
@@ -35,11 +40,14 @@ export class BookOrder {
     onDelete: "CASCADE",
   })
   student: Student;
-
+  @Column({
+    nullable: false,
+  })
+  deadline: Date;
   @ManyToOne((type) => User)
   @JoinColumn()
-  User1: User;
+  UserCheckIn: User;
   @ManyToOne((type) => User)
   @JoinColumn()
-  User2: User;
+  UserCheckOut: User;
 }

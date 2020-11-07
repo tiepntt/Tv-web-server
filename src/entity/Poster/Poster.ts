@@ -4,31 +4,46 @@ import {
   Column,
   OneToMany,
   JoinColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from "typeorm";
+import { User } from "../User/User";
 import { Comment } from "./Comment";
-
 import { Like } from "./Like";
+
+export type PosterConfig = {
+  id?: number;
+  content?: string;
+  userCreateId?: number;
+  createTime?: Date;
+  urlAssets?: string;
+};
 @Entity()
 export class Poster {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ default: 0, nullable: true })
-  amount: number;
   @Column({ nullable: true })
-  urlassets: string;
+  urlAssets: string;
   @Column({ nullable: true, type: "text", charset: "utf8" })
   content: string;
-  @OneToMany((type) => Like, (o) => o.poster, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany((type) => Like, (o) => o.poster)
   @JoinColumn()
   likes: Like[];
-  @OneToMany((type) => Comment, (o) => o.poster, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany((type) => Comment, (o) => o.poster)
   @JoinColumn()
   comments: Comment[];
+  @ManyToOne((type) => User, (o) => o.posts, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn()
+  userCreate: User;
+  @CreateDateColumn()
+  create_at: Date;
+  @UpdateDateColumn()
+  update_at: Date;
+  @DeleteDateColumn()
+  delete_at: Date;
 }

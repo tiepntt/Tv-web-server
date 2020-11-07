@@ -1,116 +1,155 @@
-import { getRepository } from "typeorm";
+import { plainToClass } from "class-transformer";
+import { getRepository} from "typeorm";
+import { mapObject } from "../../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
+import {
+  BookOrderCreateDto,
+  BookOrderGetDto,
+  BookOrderInfoDto,
+  BookOrderPayDto,
+} from "../../dto/Book/bookOrder.dto";
 import { BookDetail } from "../../entity/Book/BookDetails";
-import { BookOrder, BookOrderConfig } from "../../entity/Book/BookOrder";
+import { BookOrder } from "../../entity/Book/BookOrder";
 import { Student } from "../../entity/Student/Student";
 import { User } from "../../entity/User/User";
-import { genBorn } from "../../libs/Book";
 
-export const Create = async (bookOrderConfig: BookOrderConfig) => {
+const Create = async (bookOrderConfig: BookOrderCreateDto) => {
+  console.log(bookOrderConfig);
+
   let BookOrderRepo = getRepository(BookOrder);
   let UserRepo = getRepository(User);
   let BookDetailRepo = getRepository(BookDetail);
   let StudentRepo = getRepository(Student);
   if (
-    !bookOrderConfig.bookdetailId ||
-    !bookOrderConfig.studentId ||
-    !bookOrderConfig.userId1
-  ) {
+    !bookOrderConfig.idBookdetail ||
+    !bookOrderConfig.idStudent ||
+    !bookOrderConfig.userCheckInId
+  )
     return HandelStatus(204);
-  }
 
-  let user = await UserRepo.findOne(bookOrderConfig.userId1);
+  let user = await UserRepo.findOne(bookOrderConfig.userCheckInId);
 
   let bookdetail = await BookDetailRepo.findOne({
-    idBookDetails: bookOrderConfig.bookdetailId,
+    idBookDetails: bookOrderConfig.idBookdetail,
   });
   let student = await StudentRepo.findOne({
-    idStudent: bookOrderConfig.studentId,
+    idStudent: bookOrderConfig.idStudent,
   });
 
   if (!user || !bookdetail || !student) {
     return HandelStatus(500);
   }
-  let bookOrder = new BookOrder();
+
+  let bookOrder = plainToClass(BookOrder, bookOrderConfig);
   bookOrder.student = student;
-  bookOrder.User1 = user;
+  bookOrder.UserCheckIn = user;
   bookOrder.bookdetail = bookdetail;
-  bookOrder.BorrowDate = new Date(bookOrderConfig.BorrowDate) || new Date();
-  await BookOrderRepo.save(bookOrder);
-  return HandelStatus(200);
+  if (!bookOrder.deadline) bookOrder.deadline = new Date();
+
+  bookOrder.deadline.setDate(bookOrder.borrowDate.getDate() + 180);
+  try {
+    await BookOrderRepo.save(bookOrder);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
 };
-export const RemoveById = async (Id) => {
+const RemoveById = async (Id) => {
   let BookOrderRepo = getRepository(BookOrder);
   var bookOrder = await BookOrderRepo.findOne(Id);
   if (!bookOrder) return HandelStatus(404);
   await BookOrderRepo.remove(bookOrder);
   return HandelStatus(200);
 };
-export const PayBook = async (Id, UserId, date?: string) => {
+const PayBook = async (input: BookOrderPayDto) => {
+  if (!input || !input.idBookDetail || !input.userCheckOutId)
+    return HandelStatus(400);
+
   let BookOrderRepo = getRepository(BookOrder);
   let UserRepo = getRepository(User);
-  var bookOrder = await BookOrderRepo.createQueryBuilder("bookOrder")
-    .leftJoinAndSelect("bookOrder.bookdetail", "bookdetail")
-    .where("bookdetail.idBookDetails =:id", { id: Id })
-    .getOne();
-
-  var user = await UserRepo.findOne(UserId);
+  let bookDetail = await getRepository(BookDetail).findOne({
+    idBookDetails: input.idBookDetail,
+  });
+  var bookOrder = await BookOrderRepo.findOne({ bookdetail: bookDetail });
+  var user = await UserRepo.findOne(input.userCheckOutId);
   if (!bookOrder || !user) return HandelStatus(404);
-
-  bookOrder.PayDate = new Date();
-  if (date) {
-    bookOrder.PayDate = new Date(genBorn(date));
+  bookOrder.UserCheckOut = user;
+  bookOrder = mapObject(bookOrder, input);
+  try {
+    await BookOrderRepo.update(bookOrder.id, bookOrder);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500, e);
   }
-  bookOrder.User2 = user;
-
-  await BookOrderRepo.update(bookOrder.id, bookOrder);
-  return HandelStatus(200);
 };
-export const GetBookOrderBorrowed = async (studentId) => {
+const GetBookOrderBorrowed = async (studentId: string) => {
   let BookOrderRepo = getRepository(BookOrder);
   var bookOrders = await BookOrderRepo.createQueryBuilder("bookOrder")
     .leftJoinAndSelect("bookOrder.student", "student")
     .leftJoinAndSelect("bookOrder.bookdetail", "bookdetail")
     .leftJoinAndSelect("bookdetail.book", "book")
-    .leftJoinAndSelect("bookOrder.User1", "user")
+    .leftJoinAndSelect("bookOrder.UserCheckIn", "UserCheckIn")
     .where("bookOrder.PayDate is NULL")
     .andWhere("student.idStudent = :id", { id: studentId })
     .orderBy({ "bookOrder.BorrowDate": "DESC" })
     .getMany();
-  var result = [];
-  if (bookOrders) {
-    bookOrders.forEach((element) => {
-      result.push({
-        idBook: ((element as any).bookdetail as any).idBookDetails,
-        book: ((element as any).bookdetail as any).book.name,
-        BorrowDate: (element as any).BorrowDate,
-        user1: (element as any).User1.Name,
-      });
+  try {
+    let result = plainToClass(BookOrderGetDto, bookOrders, {
+      excludeExtraneousValues: true,
     });
+
+    return result;
+  } catch (e) {
+    return bookOrders;
   }
-  return result;
 };
-export const GetBookOrderPaid = async (studentId) => {
+const GetBookOrderPaid = async (studentId) => {
   let BookOrderRepo = getRepository(BookOrder);
   var bookOrders = await BookOrderRepo.createQueryBuilder("bookOrder")
     .leftJoinAndSelect("bookOrder.student", "student")
     .leftJoinAndSelect("bookOrder.bookdetail", "bookdetail")
     .leftJoinAndSelect("bookdetail.book", "book")
-    .leftJoinAndSelect("bookOrder.User1", "user")
+    .leftJoinAndSelect("bookOrder.UserCheckIn", "UserCheckIn")
+    .leftJoinAndSelect("bookOrder.UserCheckIn", "UserCheckOut")
     .where("bookOrder.PayDate is not NULL")
     .andWhere("student.idStudent = :id", { id: studentId })
     .orderBy({ "bookOrder.BorrowDate": "DESC" })
     .getMany();
-  var result = [];
-  if (bookOrders) {
-    bookOrders.forEach((element) => {
-      result.push({
-        idBook: ((element as any).bookdetail as any).idBookDetails,
-        book: ((element as any).bookdetail as any).book.name,
-        BorrowDate: (element as any).BorrowDate,
-        user1: (element as any).User1.Name,
-      });
+  try {
+    let result = plainToClass(BookOrderGetDto, bookOrders, {
+      excludeExtraneousValues: true,
     });
+
+    return result;
+  } catch (e) {
+    return bookOrders;
   }
-  return result;
+};
+const getById = async (id: number) => {
+  let BookOrderRepo = getRepository(BookOrder);
+  var bookOrder = await BookOrderRepo.createQueryBuilder("bookOrder")
+    .leftJoinAndSelect("bookOrder.student", "student")
+    .leftJoinAndSelect("bookOrder.bookdetail", "bookdetail")
+    .leftJoinAndSelect("bookdetail.book", "book")
+    .leftJoinAndSelect("bookOrder.UserCheckIn", "userCheckIn")
+    .leftJoinAndSelect("bookOrder.UserCheckOut", "userCheckOut")
+    .where("bookOrder.id=:id", { id: id })
+    .getOne();
+
+  try {
+    let result = plainToClass(BookOrderInfoDto, bookOrder, {
+      excludeExtraneousValues: true,
+    });
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
+};
+export const BookOrderService = {
+  Create,
+  RemoveById,
+  PayBook,
+  GetBookOrderBorrowed,
+  GetBookOrderPaid,
+  getById,
 };

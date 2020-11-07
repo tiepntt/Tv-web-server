@@ -11,7 +11,6 @@ import { User } from "../User/User";
 export class MesengerContent {
   @PrimaryGeneratedColumn()
   id: number;
-  Y;
 
   @Column({ nullable: true, type: "text", charset: "utf8" })
   content: string;

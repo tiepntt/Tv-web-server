@@ -4,33 +4,68 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from "typeorm";
+import { Comment } from "../Poster/Comment";
+import { Like } from "../Poster/Like";
+import { Poster } from "../Poster/Poster";
 import { Department } from "./Department";
 import { Role } from "./Role";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ charset: "utf8", type: "nvarchar" })
-  Name: string;
+  name: string;
 
-  @Column({ nullable: true, default: "2000-01-01" })
+  @Column({ nullable: true })
   born: Date;
-  @Column({ charset: "utf8", type: "nvarchar" })
+  @Column({ charset: "utf8", type: "nvarchar", unique: true })
   username: string;
 
   @Column({ charset: "utf8", type: "nvarchar" })
   password: string;
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+    default:
+      "https://www.minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg",
+  })
   avatar: string;
+  @Column({ nullable: true, default: "G-0" })
+  GenCode: string;
 
-  @ManyToOne((type) => Role, (role) => role.users)
+  @ManyToOne((type) => Role, (role) => role.users, {
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   role: Role;
-
-  @ManyToOne((type) => Department)
+  @ManyToOne((type) => Department, (o) => o.users, {
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   department: Department;
+  @Column({ default: false })
+  isBlock: boolean;
+  @OneToMany((type) => Poster, (o) => o.userCreate)
+  @JoinColumn()
+  posts: Poster[];
+  @OneToMany((type) => Comment, (o) => o.user)
+  @JoinColumn()
+  comments: Comment[];
+  @OneToMany((type) => Like, (o) => o.user)
+  @JoinColumn()
+  likes: Like[];
+  @CreateDateColumn()
+  create_at: Date;
+  @UpdateDateColumn()
+  update_at: Date;
+  @DeleteDateColumn()
+  delete_at: Date;
 }

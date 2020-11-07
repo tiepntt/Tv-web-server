@@ -1,22 +1,65 @@
+import {
+  CheckIsCreateOrEditBook,
+  CheckIsCreateOrEditSheet,
+} from "../controllers/Admin/Auth.Controller";
+import { BookController } from "../controllers/Book/Book.Controller";
+import { BookDetailController } from "../controllers/Book/BookDetail.Controller";
+import { BookOrderController } from "../controllers/Book/BookOrder.Controller";
+
 var express = require("express");
 var router = express.Router();
-var BookController = require("../controllers/Book/Book.Controller");
-var BookDetailsController = require("../controllers/Book/BookDetail.Controller");
-var BookOrderController = require("../controllers/Book/BookOrder.Controller");
-
-router.post("/create", BookController.Create);
-router.get("/", BookController.GetAll);
-router.put("/", BookController.Update);
+//book
+router.post("/create", CheckIsCreateOrEditBook, BookController.Create);
+router.get("/skip=:skip&&take=:take", BookController.GetAll);
+router.put("/", CheckIsCreateOrEditBook, BookController.Update);
 router.get("/:IdBook", BookController.GetById);
-router.delete("/RemoveById", BookController.RemoveById);
-router.post("/CreateBySheet", BookController.CreateBySheet);
+router.delete(
+  "/RemoveById",
+  CheckIsCreateOrEditBook,
+  BookController.RemoveById
+);
+router.post(
+  "/CreateBySheet",
+  CheckIsCreateOrEditSheet,
+  BookController.CreateBySheet
+);
 
-router.post("/bookDetail/CreateBySheet", BookDetailsController.CreateBySheet);
-router.get("/bookDetail/:IdBook", BookDetailsController.GetAll);
-router.get("/bookDetail/getById/:Id", BookDetailsController.GetById);
+//bookDetails
+router.post(
+  "/bookDetail/CreateBySheet",
+  CheckIsCreateOrEditSheet,
+  BookDetailController.CreateBySheet
+);
+router.post("/bookDetail/create", BookDetailController.Create);
 
-router.post("/bookOrder/CreateBySheet", BookOrderController.CreateBySheet);
-router.post("/bookOrder/PayBySheet", BookOrderController.PayBySheets);
-router.post("/bookOrder/create", BookOrderController.Create);
+router.get("/bookDetail/:IdBook", BookDetailController.GetById);
+router.get("/bookDetail/getById/:Id", BookDetailController.GetById);
+router.delete(
+  "/bookDetail/:id",
+  CheckIsCreateOrEditBook,
+  BookDetailController.removeById
+);
 
+//BookOrder
+router.post(
+  "/bookOrder/CreateBySheet",
+  CheckIsCreateOrEditSheet,
+  BookOrderController.CreateBySheet
+);
+router.post(
+  "/bookOrder/PayBySheet",
+  CheckIsCreateOrEditSheet,
+  BookOrderController.PayBySheets
+);
+router.post(
+  "/bookOrder/create",
+  CheckIsCreateOrEditBook,
+  BookOrderController.Create
+);
+router.post(
+  "/bookOrder/pay",
+  CheckIsCreateOrEditBook,
+  BookOrderController.Paid
+);
+router.get("/bookOrder/:id", BookOrderController.getById);
 module.exports = router;
