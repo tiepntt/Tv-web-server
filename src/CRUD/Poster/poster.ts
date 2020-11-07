@@ -1,7 +1,7 @@
 import { plainToClass } from "class-transformer";
 import { ETIMEDOUT } from "constants";
 import { getRepository } from "typeorm";
-import { mapObject } from "../../../utils/map";
+import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
   PosterDetailDto,

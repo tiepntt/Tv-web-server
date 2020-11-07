@@ -1,7 +1,7 @@
 import { plainToClass } from "class-transformer";
 import moment = require("moment");
 import { getRepository } from "typeorm";
-import { mapObject } from "../../../utils/map";
+import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import { CommentGetDto, CommentInputDto } from "../../dto/poster/comment.dto";
 import { Comment, commentConfig } from "../../entity/Poster/Comment";

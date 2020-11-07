@@ -3,7 +3,7 @@ import { type } from "os";
 import { config } from "process";
 import { getRepository } from "typeorm";
 import { deflateRawSync } from "zlib";
-import { mapObject } from "../../../utils/map";
+import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
   UserInputDto,
