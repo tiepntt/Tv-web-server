@@ -58,3 +58,14 @@ export class UserInfoTitleDto {
   @Expose()
   name?: string;
 }
+export class UserPostTitleDto {
+  @Expose()
+  id?: number;
+  @Expose()
+  name?: string;
+  @Expose()
+  @Type((type) => DepartmentTitleDto)
+  department: DepartmentTitleDto;
+  @Expose()
+  avatar: string;
+}

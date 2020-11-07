@@ -1,49 +1,51 @@
+import { plainToClass } from "class-transformer";
 import moment = require("moment");
-import { Create, DeleteById, GetAll, GetByIdDetails, UpdateById } from "../../CRUD/Poster/poster";
-import { genBorn } from "../../libs/Book";
+import { RelationQueryBuilder } from "typeorm";
+import { PosterService } from "../../CRUD/Poster/poster";
+import { PosterInputDto, PosterUpdateDto } from "../../dto/poster/poster.dto";
 import { HandelStatus } from "../HandelAction";
 
-module.exports.Create = async (req, res) => {
-  // console.log(req);
-
-  var poster = {
-    content: req.body.content,
-    userCreateId: res.locals.userId,
-    createTime: req.createTime ? new Date(genBorn(req.createTime)) : new Date(),
-    urlAssets: req.file ? req.file.path : null,
-  };
-  var result = await Create(poster);
+const Create = async (req, res) => {
+  let body = req.body;
+  let poster = plainToClass(PosterInputDto, body);
+  poster.urlAssets = req.file ? req.file.path : undefined;
+  poster.userCreateId = res.locals.userId || undefined;
+  var result = await PosterService.Create(poster);
   res.send(result);
 };
-module.exports.GetById = async (req, res) => {
+const GetById = async (req, res) => {
   var postId = req.params.id;
   if (!postId) {
     res.send(HandelStatus(204));
     return;
   }
 
-  
-  var result = await GetByIdDetails(postId);
+  var result = await PosterService.GetById(postId);
   res.json(result);
-}
-export const getAll = async (req, res) => {
-  var result = await GetAll();
+};
+const getAll = async (req, res) => {
+  let take = req.params.take || 10;
+  let skip = req.params.skip || 0;
+  var result = await PosterService.GetAll(take, skip);
   res.send(result);
-}
-export const update = async ( req, res ) =>
-{
-  var poster = {
-    id: req.body.PosterId,
-    content: req.body.content,
-    urlAssets: req.file ? req.file.path : null,
-    userCreateId : res.locals.userId || -1
-  };
-  var result = await UpdateById(poster);
+};
+const update = async (req, res) => {
+  let body = req.body;
+  let poster = plainToClass(PosterUpdateDto, body, {
+    excludeExtraneousValues: true,
+  });
+  poster.userCreateId = res.locals.userId;
+  poster.urlAssets = req.file ? req.file.path : poster.urlAssets || " ";
+  var result = await PosterService.UpdateById(poster);
   res.send(result);
-}
-export const removeById = async ( req, res ) =>
-{
-  var id = req.params.id;
-  var result = await DeleteById( {id : id, userCreateId : res.locals.userId || -1} );
-  return result;
-}
+};
+const removeById = async (req, res) => {
+  var input = req.params.id;
+  let poster = new PosterUpdateDto();
+  poster.id = input;
+  poster.userCreateId = res.locals.userId;
+
+  var result = await PosterService.DeleteById(poster);
+  return res.send(result);
+};
+export const PosterController = { Create, GetById, getAll, update, removeById };

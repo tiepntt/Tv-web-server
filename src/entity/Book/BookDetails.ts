@@ -21,7 +21,7 @@ export class BookDetail {
   id: number;
   @Column({ nullable: false, unique: true, length: 20 })
   idBookDetails: string;
-  @ManyToOne((type) => Book, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @ManyToOne((type) => Book, { onDelete: "SET NULL", onUpdate: "CASCADE" })
   @JoinColumn()
   book: Book;
   @CreateDateColumn()

@@ -24,24 +24,32 @@ const CreateBySheet = async (req, res) => {
   let Id = BookCopyId;
   let arr = await AddBySheet(Id);
   var data = (arr.result as any).data;
-  await (data as any).forEach(async (item, index) => {
+  let result = { success: 0, fail: 0 };
+  for (let index = 0; index < data.length; index++) {
     if (index > 0) {
-      let book = await BookDetailsRepo.findOne({ idBookDetails: item[0] });
-      let bookConfig = {
-        idBookDetails: item[0],
-        idBook: getIdBook(item[0]),
-      };
-      let bookdetail = plainToClass(BookDetailInputDto, bookConfig, {
-        excludeExtraneousValues: true,
-      });
-      if (book) {
-        await BookDetailService.Update(bookdetail);
-      } else {
-        await BookDetailService.Create(bookdetail);
+      let item = data[index];
+      if (index > 0) {
+        let bookConfig = {
+          idBookDetails: item[0],
+          idBook: getIdBook(item[0]),
+        };
+        let bookdetail = plainToClass(BookDetailInputDto, bookConfig, {
+          excludeExtraneousValues: true,
+        });
+
+        let r = await BookDetailService.Create(bookdetail);
+
+        if (r.status == 200) {
+          result.success++;
+        } else {
+          result.fail++;
+          console.log(r, bookdetail);
+        }
       }
     }
-  });
-  res.send(HandelStatus(200));
+  }
+
+  res.send(HandelStatus(200, null, result));
 };
 const GetAll = async (req, res) => {
   var IdBook = req.params.IdBook;

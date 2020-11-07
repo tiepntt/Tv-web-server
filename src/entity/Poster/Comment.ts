@@ -5,6 +5,7 @@ import {
   OneToMany,
   JoinColumn,
   ManyToOne,
+  CreateDateColumn,
 } from "typeorm";
 import { User } from "../User/User";
 import { Poster } from "./Poster";
@@ -25,12 +26,18 @@ export class Comment {
   content: string;
   @Column({ nullable: true })
   asset: string;
-  @ManyToOne((type) => Poster, (o) => o.likes)
+  @ManyToOne((type) => Poster, (o) => o.likes, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   poster: Poster;
-  @ManyToOne((type) => User, o => o.comments)
+  @ManyToOne((type) => User, (o) => o.comments, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   user: User;
-  @Column()
-  createTime: Date;
+  @CreateDateColumn()
+  create_at: Date;
 }

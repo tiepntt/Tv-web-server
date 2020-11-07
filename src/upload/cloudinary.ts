@@ -10,9 +10,9 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  allowedFormats: ["jpg", "jpeg", "png", 'mp4', "mp3"],
+  allowedFormats: ["jpg", "jpeg", "png", "mp4", "mp3"],
   params: {
-    folder: (req, file) => "Hello",
+    folder: (req, file) => "Samples",
   },
 });
 export const uploadMulter = multer({ storage: storage });

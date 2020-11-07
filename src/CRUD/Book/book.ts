@@ -1,7 +1,7 @@
 import { plainToClass } from "class-transformer";
 import { getRepository, IsNull, Not } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
-import { BookInputDto } from "../../dto/Book/book.dto";
+import { BookInputDto, BookTitleDto } from "../../dto/Book/book.dto";
 import { Book, BookConfig } from "../../entity/Book/Book";
 
 const Create = async (bookConfig: BookInputDto) => {
@@ -55,11 +55,19 @@ const GetAll = async (take: number, skip: number) => {
     take: take,
     skip: skip,
   });
-  return HandelStatus(200, null, books);
+  try {
+    let result = plainToClass(BookTitleDto, books, {
+      excludeExtraneousValues: true,
+    });
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500);
+  }
 };
-const GetById = async (idBook) => {
+const GetById = async (idBook: string) => {
   let BookRepo = getRepository(Book);
   let book = await BookRepo.findOne({ idBook: idBook });
+
   if (!book) return HandelStatus(404);
   return HandelStatus(200, null, book);
 };

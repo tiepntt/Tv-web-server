@@ -23,24 +23,32 @@ const CreateBySheet = async (req, res) => {
   let Id = BookId;
   let arr = await AddBySheet(BookId);
   var data = (arr.result as any).data;
-  await (data as any).forEach(async (item, index) => {
+  let result = { success: 0, fail: 0 };
+  for (let index = 0; index < data.length; index++) {
     if (index > 0) {
-      let book = await BookRepo.findOne({ idBook: item[0] });
-      let bookConfig = {
-        idBook: item[0],
-        name: item[1],
-        price: item[2],
-        amount: item[3],
-      };
-      let bookInput = plainToClass(BookInputDto, bookConfig);
-      if (book) {
-        await BookService.Update(bookInput);
-      } else {
-        await BookService.Create(bookInput);
+      let item = data[index];
+      if (index > 0) {
+        let bookConfig = {
+          idBook: item[0].trim(),
+          name: item[1],
+          price: item[2],
+          amount: item[3],
+        };
+        let bookInput = plainToClass(BookInputDto, bookConfig);
+
+        let r = await BookService.Create(bookInput);
+
+        if (r.status == 200) {
+          result.success++;
+        } else {
+          console.log(r, bookInput);
+
+          result.fail++;
+        }
       }
     }
-  });
-  res.send(HandelStatus(200));
+  }
+  return res.send(HandelStatus(200, null, result));
 };
 const GetAll = async (req, res) => {
   let skip = req.params.skip || 0;

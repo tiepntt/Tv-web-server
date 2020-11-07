@@ -1,7 +1,10 @@
 import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
-import { BookDetailGetDto, BookDetailInputDto } from "../../dto/Book/book.detail.dto";
+import {
+  BookDetailGetDto,
+  BookDetailInputDto,
+} from "../../dto/Book/book.detail.dto";
 import { Book } from "../../entity/Book/Book";
 import { BookDetail, bookDetailConfig } from "../../entity/Book/BookDetails";
 const Create = async (bookDetailConfig: BookDetailInputDto) => {
@@ -17,8 +20,13 @@ const Create = async (bookDetailConfig: BookDetailInputDto) => {
 
   let getBook = await BookRepo.findOne({ idBook: bookDetailConfig.idBook });
 
-  if (getBookD || !getBook) {
-    return HandelStatus(400);
+  if (getBookD) {
+    return HandelStatus(302, "Ma sach da ton tai");
+  }
+  if (!getBook) {
+    console.log(getBook);
+
+    return HandelStatus(404, "Khong tim thay sach");
   }
   bookDetail.book = getBook;
   bookDetail.idBookDetails = bookDetailConfig.idBookDetails;

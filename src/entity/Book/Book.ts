@@ -39,10 +39,7 @@ export class Book {
   @ManyToOne((type) => User)
   @JoinColumn()
   userDelete: User;
-  @OneToMany((type) => BookDetail, (o) => o.book, {
-    onUpdate: "CASCADE",
-    onDelete: "SET NULL",
-  })
+  @OneToMany((type) => BookDetail, (o) => o.book)
   @JoinColumn()
   bookdetails: BookDetail[];
 }

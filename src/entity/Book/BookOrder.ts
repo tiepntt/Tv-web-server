@@ -32,12 +32,12 @@ export class BookOrder {
   borrowDate: Date;
   @Column({ nullable: true })
   payDate: Date;
-  @OneToOne((type) => BookDetail)
+  @OneToOne((type) => BookDetail, { onDelete: "SET NULL", onUpdate: "CASCADE" })
   @JoinColumn()
   bookdetail: BookDetail;
   @ManyToOne((type) => Student, (o) => o.bookOrders, {
     onUpdate: "CASCADE",
-    onDelete: "SET NULL",
+    onDelete: "CASCADE",
   })
   student: Student;
   @Column({

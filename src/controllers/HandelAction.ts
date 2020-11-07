@@ -16,7 +16,7 @@ export const HandelStatus = (
     case 303: {
       return {
         status: status,
-        message: message || "Bạn không phải thành viên nhập liệu.",
+        message: message || "Bạn không có quyền làm điều này.",
       };
     }
     case 400:

@@ -4,8 +4,10 @@ import {
   Column,
   OneToMany,
   JoinColumn,
-  OneToOne,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from "typeorm";
 import { User } from "../User/User";
 import { Comment } from "./Comment";
@@ -26,21 +28,22 @@ export class Poster {
   urlAssets: string;
   @Column({ nullable: true, type: "text", charset: "utf8" })
   content: string;
-  @OneToMany((type) => Like, (o) => o.poster, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany((type) => Like, (o) => o.poster)
   @JoinColumn()
   likes: Like[];
-  @OneToMany((type) => Comment, (o) => o.poster, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany((type) => Comment, (o) => o.poster)
   @JoinColumn()
   comments: Comment[];
-  @ManyToOne((type) => User, (o) => o.posts)
+  @ManyToOne((type) => User, (o) => o.posts, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   userCreate: User;
-  @Column()
-  createTime: Date;
+  @CreateDateColumn()
+  create_at: Date;
+  @UpdateDateColumn()
+  update_at: Date;
+  @DeleteDateColumn()
+  delete_at: Date;
 }

@@ -14,14 +14,14 @@ const CreateBySheet = async (req, res) => {
   if (!req.body.url) {
     res.send(HandelStatus(204));
   }
-
   let Id = getID(req.body.url);
-  console.log(Id);
 
   let arr = await AddBySheet(Id);
   var data = (arr.result as any).data;
-  await (data as any).forEach(async (item, index) => {
+  let result = { success: 0, fail: 0 };
+  for (let index = 0; index < data.length; index++) {
     if (index > 0) {
+      let item = data[index];
       let bookConfig = {
         IdStudent: item[0],
         BorrowDate: new Date(genBorn(item[2])),
@@ -31,10 +31,15 @@ const CreateBySheet = async (req, res) => {
       let input = plainToClass(BookOrderCreateDto, bookConfig, {
         excludeExtraneousValues: true,
       });
-      var result = await BookOrderService.Create(input);
+      let r = await BookOrderService.Create(input);
+      if (r.status == 200) {
+        result.success++;
+      } else {
+        result.fail++;
+      }
     }
-  });
-  res.send(HandelStatus(200));
+  }
+  res.send(HandelStatus(200, null, result));
 };
 const PayBySheets = async (req, res) => {
   if (!req.body.url) {
@@ -42,20 +47,27 @@ const PayBySheets = async (req, res) => {
   }
 
   let Id = getID(req.body.url);
-  console.log(Id);
 
   let arr = await AddBySheet(Id);
   var data = (arr.result as any).data;
-  await (data as any).forEach(async (item, index) => {
+
+  let result = { success: 0, fail: 0 };
+  for (let index = 0; index < data.length; index++) {
     if (index > 0) {
+      let item = data[index];
       let input = new BookOrderPayDto();
       input.idBookDetail = item[1];
       input.userCheckOutId = res.locals.userId;
       input.payDate = item[3] || new Date();
-      var result = await BookOrderService.PayBook(input);
+      var r = await BookOrderService.PayBook(input);
+      if (r.status == 200) {
+        result.success++;
+      } else {
+        result.fail++;
+      }
     }
-  });
-  res.send(HandelStatus(200));
+  }
+  res.send(HandelStatus(200, null, result));
 };
 const Create = async (req, res) => {
   var BookOrder = req.body.bookOrder;
