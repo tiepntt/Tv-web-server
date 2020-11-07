@@ -1,6 +1,6 @@
 import { plainToClass } from "class-transformer";
 import { getRepository} from "typeorm";
-import { mapObject } from "../../../utils/map";
+import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
   BookOrderCreateDto,
