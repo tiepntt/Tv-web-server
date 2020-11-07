@@ -1,3 +1,4 @@
+import { fail } from "assert";
 import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
 import { BookOrderService } from "../../CRUD/Book/BookOder";
@@ -26,7 +27,9 @@ const CreateBySheets = async (req, res) => {
   }
   let arr = await AddBySheet(Id);
   var data = (arr.result as any).data;
-  await (data as any).forEach(async (item, index) => {
+  let result = { success: 0, fail: 0 };
+  for (let index = 0; index < data.length; index++) {
+    let item = data[index];
     if (index > 0) {
       let studentGet = await StudentRepo.findOne({ idStudent: item[0] });
       let studentConfig = {
@@ -36,14 +39,27 @@ const CreateBySheets = async (req, res) => {
         born: genBorn(item[2]),
       };
       let input = plainToClass(StudentInpuDto, studentConfig);
+
       if (studentGet) {
-        await StudentService.Update(input);
+        let r = await StudentService.Update(input);
+        if (r.status == 200) {
+          result.success++;
+        } else {
+          console.log(r);
+          result.fail++;
+        }
       } else {
-        await StudentService.Create(input);
+        let r = await StudentService.Create(input);
+        if (r.status == 200) {
+          result.success++;
+        } else {
+          console.log(r);
+          result.fail++;
+        }
       }
     }
-  });
-  res.send(HandelStatus(200));
+  }
+  res.send(HandelStatus(200, null, result));
 };
 
 const PushToSheets = async (req, res) => {
