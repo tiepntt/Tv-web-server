@@ -9,15 +9,7 @@ import {
 import { BookOrder } from "../Book/BookOrder";
 import { Faculty } from "./Faculty";
 
-export type StudentConfig = {
-  id?: string;
-  name?: string;
-  born?: string;
-  class?: string;
-  note?: string;
-  facultyId?: string;
-  idStudent?: string;
-};
+
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn()
@@ -29,7 +21,7 @@ export class Student {
   @Column({ nullable: true })
   born: Date;
   @Column({ nullable: true })
-  class: string;
+  grade: string;
   @Column({ nullable: true, type: "text" })
   note: string;
   @OneToMany((type) => BookOrder, (o) => o.student)

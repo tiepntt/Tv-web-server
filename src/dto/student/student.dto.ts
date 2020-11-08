@@ -12,7 +12,7 @@ export class StudentInpuDto {
   @Expose()
   born: Date;
   @Expose()
-  class: string;
+  grade: string;
   @Expose()
   note: string;
   @Expose()
@@ -28,7 +28,7 @@ export class StudentGetDto {
   @Expose()
   born: Date;
   @Expose()
-  class: string;
+  grade: string;
   @Expose()
   note: string;
   @Expose()
@@ -45,7 +45,7 @@ export class StudentSearchBookDto {
   @Expose()
   born: Date;
   @Expose()
-  class: string;
+  grade: string;
   @Expose()
   note: string;
   @Expose()

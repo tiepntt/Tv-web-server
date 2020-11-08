@@ -11,9 +11,9 @@ import * as bodyParser from "body-parser";
 import { CheckToken } from "./controllers/Admin/Auth.Controller";
 import { debug } from "console";
 import { Check } from "typeorm";
-const redis = require("redis");
-const client = redis.createClient();
-const kue = require("kue");
+// const redis = require("redis");
+// const client = redis.createClient();
+// const kue = require("kue");
 
 const options: cors.CorsOptions = {
   allowedHeaders: [
@@ -49,7 +49,7 @@ app.use("/book",CheckToken, BookRouter);
 app.use("/student", StudentRouter);
 app.use("/poster",CheckToken, PosterRouter);
 app.use("/admin", AdminRouter);
-app.use( "/kue-api/",CheckToken, kue.app );
+// app.use( "/kue-api/",CheckToken, kue.app );
 
 app.get("/", (req, res) => {
   res.send("<h1>Chào mừng bạn đến với Thư Viện Hội Sinh viên UET</h1>");
