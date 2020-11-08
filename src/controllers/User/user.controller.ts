@@ -4,9 +4,15 @@ import { UserService } from "../../CRUD/User/user";
 import { genBorn } from "../../libs/Book";
 import { plainToClass } from "class-transformer";
 import { UserInputDto, UserUpdateInputDto } from "../../dto/user/user.dto";
+import { ETIMEDOUT } from "constants";
+import { User } from "../../entity/User/User";
 
 const getAll = async (req, res) => {
-  let result = await UserService.getAll();
+  let skip = req.params.skip || 0;
+  let take = req.params.take || 10;
+  console.log(skip, take);
+
+  let result = await UserService.getAll(skip, take);
   return res.send(result);
 };
 const create = async (req, res) => {
@@ -45,7 +51,12 @@ const update = async (req, res) => {
   res.send(response);
 };
 const updateRole = async (req, res) => {
-  let result = await UserService.changeRoleOrDepartment(req.body.userConfig);
+  let user = req.body.user;
+  if (!user) return HandelStatus(400);
+  let userInput = plainToClass(UserInputDto, user, {
+    excludeExtraneousValues: true,
+  });
+  let result = await UserService.changeRoleOrDepartment(user);
   res.send(result);
 };
 const UploadFile = async (req, res, next) => {

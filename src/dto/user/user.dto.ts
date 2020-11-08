@@ -6,6 +6,8 @@ export class UserInputDto {
   @Expose()
   id?: number;
   @Expose()
+  gender: boolean;
+  @Expose()
   name?: string;
   @Expose()
   born?: Date;
@@ -19,10 +21,14 @@ export class UserInputDto {
   departmentId?: number;
   @Expose()
   avatar?: string;
+  @Expose()
+  GenCode: string;
 }
 export class UserUpdateInputDto {
   @Expose()
   id?: number;
+  @Expose()
+  gender: boolean;
   @Expose()
   name?: string;
   @Expose()
@@ -31,6 +37,8 @@ export class UserUpdateInputDto {
   born?: Date;
   @Expose()
   avatar: string;
+  @Expose()
+  GenCode: string;
 }
 export class UserTitleDto {
   @Expose()
@@ -40,10 +48,6 @@ export class UserTitleDto {
   @Expose()
   born?: Date;
   @Expose()
-  username?: string;
-  @Expose()
-  password?: string;
-  @Expose()
   @Type((type) => RoleTitleDto)
   role: RoleTitleDto;
   @Expose()
@@ -51,12 +55,20 @@ export class UserTitleDto {
   department: DepartmentTitleDto;
   @Expose()
   avatar: string;
+  @Expose()
+  GenCode: string;
+  @Expose()
+  gender: boolean;
 }
 export class UserInfoTitleDto {
   @Expose()
   id?: number;
   @Expose()
   name?: string;
+  @Expose()
+  GenCode: string;
+  @Expose()
+  gender: boolean;
 }
 export class UserPostTitleDto {
   @Expose()
@@ -68,4 +80,8 @@ export class UserPostTitleDto {
   department: DepartmentTitleDto;
   @Expose()
   avatar: string;
+  @Expose()
+  GenCode: string;
+  @Expose()
+  gender: boolean;
 }

@@ -10,11 +10,11 @@ var express = require("express");
 var router = express.Router();
 //book
 router.post("/create", CheckIsCreateOrEditBook, BookController.Create);
-router.get("/skip=:skip&&take=:take", BookController.GetAll);
+router.get("/skip=:skip&take=:take", BookController.GetAll);
 router.put("/", CheckIsCreateOrEditBook, BookController.Update);
 router.get("/:IdBook", BookController.GetById);
 router.delete(
-  "/RemoveById",
+  "/RemoveById/idBook=:idBook",
   CheckIsCreateOrEditBook,
   BookController.RemoveById
 );

@@ -10,7 +10,7 @@ import { uploadMulter } from "../upload/cloudinary";
 var express = require("express");
 var router = express.Router();
 
-router.get("/", UserController.getAll);
+router.get("/skip=:skip&take=:take", UserController.getAll);
 router.get("/role", getAllRoles);
 router.get("/department", GetAllDepartment);
 router.post(

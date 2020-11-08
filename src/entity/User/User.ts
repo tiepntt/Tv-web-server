@@ -22,7 +22,8 @@ export class User {
 
   @Column({ charset: "utf8", type: "nvarchar" })
   name: string;
-
+  @Column({ default: true, nullable: true })
+  gender: boolean;
   @Column({ nullable: true })
   born: Date;
   @Column({ charset: "utf8", type: "nvarchar", unique: true })

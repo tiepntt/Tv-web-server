@@ -57,7 +57,7 @@ const GetAll = async (req, res) => {
   res.send(result);
 };
 const RemoveById = async (req, res) => {
-  var idBook = req.body.idBook;
+  var idBook = req.params.idBook;
   if (!idBook) {
     res.send(HandelStatus(204));
   }
@@ -65,16 +65,17 @@ const RemoveById = async (req, res) => {
   res.send(result);
 };
 const GetById = async (req, res) => {
-  var idBook = req.params.IdBook;
+  var idBook = req.params.idBook;
   var result = await BookService.GetById(idBook);
   res.send(result);
 };
 const Update = async (req, res) => {
-  if (!req.body.book) {
-    res.send(HandelStatus(404));
-    return;
-  }
-  let result = await BookService.Update(req.body.book);
+  let book = req.body.book;
+  if (!book) return res.send(HandelStatus(400));
+  let bookInput = plainToClass(BookInputDto, book, {
+    excludeExtraneousValues: true,
+  });
+  let result = await BookService.Update(bookInput);
   res.send(result);
 };
 

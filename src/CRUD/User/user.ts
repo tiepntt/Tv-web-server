@@ -71,10 +71,15 @@ const update = async (config: UserUpdateInputDto, userUpdateId) => {
     return HandelStatus(500, e);
   }
 };
-const getAll = async () => {
+const getAll = async (skip: number, take: number) => {
   let UserRepo = getRepository(User);
   let users = await UserRepo.find({
     relations: ["role", "department"],
+    skip: skip || 0,
+    take: take || 10,
+    order: {
+      create_at: "DESC",
+    },
   });
   try {
     let result = deserialize(UserTitleDto, JSON.stringify(users), {
@@ -114,7 +119,7 @@ const GetUserById = async (id) => {
   let user = await UserRepo.findOne(id);
   return user;
 };
-const changeRoleOrDepartment = async (input: ConfigUser) => {
+const changeRoleOrDepartment = async (input: UserInputDto) => {
   if (!input.id || !input.roleId || !input.departmentId)
     return HandelStatus(204);
   let UserRepo = getRepository(User);
@@ -126,8 +131,12 @@ const changeRoleOrDepartment = async (input: ConfigUser) => {
   if (!user || !role || !department) return HandelStatus(404);
   user.role = role || user.role;
   user.department = department || user.department;
-  await UserRepo.update(input.id, user);
-  return HandelStatus(200);
+  try {
+    await UserRepo.update(input.id, user);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500);
+  }
 };
 const RemoveById = async (id) => {
   let UserRepo = getRepository(User);

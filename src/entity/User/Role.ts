@@ -17,6 +17,7 @@ export class Role {
   users: User[];
   @Column({ unique: true, length: 10 })
   Code: string;
+
   @Column({ default: false })
   isSendEmail: boolean;
   @Column({ default: false })
