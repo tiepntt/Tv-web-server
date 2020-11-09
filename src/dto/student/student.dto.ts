@@ -2,7 +2,7 @@ import { Expose, Type } from "class-transformer";
 import { Faculty } from "../../entity/Student/Faculty";
 import { FacutlyDto } from "./faculty.dto";
 
-export class StudentInpuDto {
+export class StudentInputDto {
   @Expose()
   id: number;
   @Expose()

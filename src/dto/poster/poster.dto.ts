@@ -27,7 +27,7 @@ export class PosterUpdateDto {
   @Expose()
   userCreateId: number;
 }
-export class PosterTiltleDto {
+export class PosterTitleDto {
   @Expose()
   id: number;
   @Expose()

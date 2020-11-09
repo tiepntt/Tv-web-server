@@ -4,7 +4,7 @@ import { getRepository } from "typeorm";
 import { BookOrderService } from "../../CRUD/Book/BookOder";
 import { StudentService } from "../../CRUD/Student/Student";
 
-import { StudentInpuDto } from "../../dto/student/student.dto";
+import { StudentInputDto } from "../../dto/student/student.dto";
 import { Student } from "../../entity/Student/Student";
 import { genBorn } from "../../libs/Book";
 import { mapToArr } from "../../libs/Map";
@@ -26,7 +26,7 @@ const CreateBySheets = async (req, res) => {
     return;
   }
   let arr = await AddBySheet(Id);
-  var data = (arr.result as any).data;
+  let data = (arr.result as any).data;
   let result = { success: 0, fail: 0 };
   for (let index = 0; index < data.length; index++) {
     let item = data[index];
@@ -38,7 +38,7 @@ const CreateBySheets = async (req, res) => {
         class: item[3],
         born: genBorn(item[2]),
       };
-      let input = plainToClass(StudentInpuDto, studentConfig);
+      let input = plainToClass(StudentInputDto, studentConfig);
 
       if (studentGet) {
         let r = await StudentService.Update(input);
@@ -73,18 +73,18 @@ const PushToSheets = async (req, res) => {
     res.send(HandelStatus(404));
     return;
   }
-  var students = await StudentService.GetAll();
-  var result = await mapToArr((students as any).result);
-  var resPush = await pushData("A1", result, Id);
+  let students = await StudentService.GetAll();
+  let result = await mapToArr((students as any).result);
+  let resPush = await pushData("A1", result, Id);
   res.send(resPush);
 };
 const GetBookBorrowed = async (req, res) => {
-  var idStudent = req.params.id;
-  var student = await StudentService.GetInfoStudentById(idStudent);
+  let idStudent = req.params.id;
+  let student = await StudentService.GetInfoStudentById(idStudent);
   if (student.status != 200) return res.send(HandelStatus(404));
 
-  var bookBorrowed = await BookOrderService.GetBookOrderBorrowed(idStudent);
-  var bookPaid = await BookOrderService.GetBookOrderPaid(idStudent);
+  let bookBorrowed = await BookOrderService.GetBookOrderBorrowed(idStudent);
+  let bookPaid = await BookOrderService.GetBookOrderPaid(idStudent);
   res.send(
     HandelStatus(200, null, {
       studentInfo: student.result,
@@ -94,27 +94,27 @@ const GetBookBorrowed = async (req, res) => {
   );
 };
 const AddToSheet = async (req, res) => {
-  var id = req.body.id;
-  var k = req.body.k;
-  var result = await getAllData(id, k);
+  let id = req.body.id;
+  let k = req.body.k;
+  let result = await getAllData(id, k);
   res.send(result);
 };
 const create = async (req, res) => {
   let studenInput = req.body.student;
   if (!studenInput) return HandelStatus(400);
-  let student = plainToClass(StudentInpuDto, studenInput, {
+  let student = plainToClass(StudentInputDto, studenInput, {
     excludeExtraneousValues: true,
   });
-  var result = await StudentService.Create(student);
+  let result = await StudentService.Create(student);
   res.send(result);
 };
 const update = async (req, res) => {
   let studenInput = req.body.student;
   if (!studenInput) return HandelStatus(400);
-  let student = plainToClass(StudentInpuDto, studenInput, {
+  let student = plainToClass(StudentInputDto, studenInput, {
     excludeExtraneousValues: true,
   });
-  var result = await StudentService.Update(student);
+  let result = await StudentService.Update(student);
   res.send(result);
 };
 const remove = async (req, res) => {

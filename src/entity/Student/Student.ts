@@ -9,7 +9,6 @@ import {
 import { BookOrder } from "../Book/BookOrder";
 import { Faculty } from "./Faculty";
 
-
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn()

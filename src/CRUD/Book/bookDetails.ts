@@ -13,7 +13,7 @@ const Create = async (bookDetailConfig: BookDetailInputDto) => {
   if (!bookDetailConfig.idBook || !bookDetailConfig.idBookDetails) {
     return HandelStatus(204);
   }
-  var bookDetail = new BookDetail();
+  let bookDetail = new BookDetail();
   let getBookD = await BookDetailsRepo.findOne({
     idBookDetails: bookDetailConfig.idBookDetails,
   });
@@ -43,7 +43,7 @@ const Update = async (bookDetailConfig: BookDetailInputDto) => {
   if (!bookDetailConfig.idBookDetails || bookDetailConfig.id) {
     return HandelStatus(204);
   }
-  var bookDetail = new BookDetail();
+  let bookDetail = new BookDetail();
   let getBookD = await BookDetailsRepo.findOne({
     idBookDetails: bookDetailConfig.idBookDetails,
   });
@@ -58,7 +58,7 @@ const Update = async (bookDetailConfig: BookDetailInputDto) => {
 };
 const GetAll = async (Idbook) => {
   let BookRepo = getRepository(Book);
-  var bookDetails = await BookRepo.createQueryBuilder("book")
+  let bookDetails = await BookRepo.createQueryBuilder("book")
     .leftJoinAndSelect("book.bookdetails", "bookdetail")
     .where("book.idBook = :id", { id: Idbook })
     .getOne();
@@ -67,7 +67,7 @@ const GetAll = async (Idbook) => {
 };
 const GetById = async (IdBookDetail: string) => {
   let BookDetailsRepo = getRepository(BookDetail);
-  var bookDetail = await BookDetailsRepo.findOne({
+  let bookDetail = await BookDetailsRepo.findOne({
     relations: ["book"],
     where: {
       idBookDetails: IdBookDetail,
@@ -81,12 +81,12 @@ const GetById = async (IdBookDetail: string) => {
     });
     return HandelStatus(200, null, result);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const RemoveById = async (IdBookDetail) => {
   let BookDetailsRepo = getRepository(BookDetail);
-  var bookDetail = await BookDetailsRepo.findOne({
+  let bookDetail = await BookDetailsRepo.findOne({
     idBookDetails: IdBookDetail,
   });
   if (!bookDetail) return HandelStatus(404);

@@ -17,7 +17,7 @@ const CreateBySheet = async (req, res) => {
   let Id = getID(req.body.url);
 
   let arr = await AddBySheet(Id);
-  var data = (arr.result as any).data;
+  let data = (arr.result as any).data;
   let result = { success: 0, fail: 0 };
   for (let index = 0; index < data.length; index++) {
     if (index > 0) {
@@ -49,7 +49,7 @@ const PayBySheets = async (req, res) => {
   let Id = getID(req.body.url);
 
   let arr = await AddBySheet(Id);
-  var data = (arr.result as any).data;
+  let data = (arr.result as any).data;
 
   let result = { success: 0, fail: 0 };
   for (let index = 0; index < data.length; index++) {
@@ -59,7 +59,7 @@ const PayBySheets = async (req, res) => {
       input.idBookDetail = item[1];
       input.userCheckOutId = res.locals.userId;
       input.payDate = item[3] || new Date();
-      var r = await BookOrderService.PayBook(input);
+      let r = await BookOrderService.PayBook(input);
       if (r.status == 200) {
         result.success++;
       } else {
@@ -70,7 +70,7 @@ const PayBySheets = async (req, res) => {
   res.send(HandelStatus(200, null, result));
 };
 const Create = async (req, res) => {
-  var BookOrder = req.body.bookOrder;
+  let BookOrder = req.body.bookOrder;
   if (!BookOrder) return HandelStatus(204);
   let input = plainToClass(BookOrderCreateDto, BookOrder, {
     excludeExtraneousValues: true,
@@ -78,11 +78,11 @@ const Create = async (req, res) => {
   input.borrowDate = BookOrder.borrowDate || new Date();
   input.userCheckInId = res.locals.userId;
 
-  var result = await BookOrderService.Create(input);
+  let result = await BookOrderService.Create(input);
   return res.send(result);
 };
 const Paid = async (req, res) => {
-  var bookDetail = req.body.bookOrder;
+  let bookDetail = req.body.bookOrder;
   if (!bookDetail) return res.send(HandelStatus(400));
   let bookOrder = plainToClass(BookOrderPayDto, bookDetail, {
     excludeExtraneousValues: true,

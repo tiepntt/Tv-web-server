@@ -7,8 +7,8 @@ import { getAllRoles } from "../controllers/User/role.controller";
 import { UserController } from "../controllers/User/user.controller";
 import { uploadMulter } from "../upload/cloudinary";
 
-var express = require("express");
-var router = express.Router();
+let express = require("express");
+let router = express.Router();
 
 router.get("/skip=:skip&take=:take", UserController.getAll);
 router.get("/role", getAllRoles);

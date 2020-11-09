@@ -29,12 +29,12 @@ const deleteComment = async (req, res) => {
   let comment = new CommentInputDto();
   comment.userId = res.locals.userId;
   comment.id = commentInput;
-  var result = await CommentService.Delete(comment);
+  let result = await CommentService.Delete(comment);
   res.send(result);
 };
 const getById = async (req, res) => {
   let id = req.params.id;
-  var result = await CommentService.GetById(id);
+  let result = await CommentService.GetById(id);
   res.send(result);
 };
 export const CommentController = {

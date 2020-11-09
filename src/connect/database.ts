@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { createConnection } from "typeorm";
-var config = require("./config");
+let config = require("./config");
 import { StaticData } from "./staticdata";
 import { Role } from "../entity/User/Role";
 
@@ -15,7 +15,7 @@ createConnection(config)
     let qRun = connection.createQueryRunner();
 
     let RoleRepository = connection.getRepository(Role);
-    var dataRole = await RoleRepository.find();
+    let dataRole = await RoleRepository.find();
     if (dataRole.length === 0) {
       StaticData.Role.forEach(async (roleData) => {
         let role = new Role();
@@ -31,17 +31,18 @@ createConnection(config)
     }
 
     let DepartmentRepository = connection.getRepository(Department);
-    var dataDepartment = await DepartmentRepository.find();
+    let dataDepartment = await DepartmentRepository.find();
 
     if (dataDepartment.length === 0) {
       StaticData.Department.forEach(async (departmentData) => {
         let department = new Department();
         department.name = departmentData.name;
+        department.Code = departmentData.Code;
         await DepartmentRepository.save(department);
       });
     }
     let FacultyRepository = connection.getRepository(Faculty);
-    var dataFaculty = await FacultyRepository.find();
+    let dataFaculty = await FacultyRepository.find();
 
     if (dataFaculty.length === 0) {
       StaticData.Faculty.forEach(async (FacultyData) => {
@@ -51,7 +52,7 @@ createConnection(config)
       });
     }
     let UserRepository = connection.getRepository(User);
-    var users = await UserRepository.find();
+    let users = await UserRepository.find();
 
     if (users.length === 0) {
       StaticData.user.forEach(async (item) => {

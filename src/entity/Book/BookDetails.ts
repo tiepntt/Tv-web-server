@@ -7,9 +7,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from "typeorm";
 import { User } from "../User/User";
 import { Book } from "./Book";
+import { BookOrder } from "./BookOrder";
 
 export type bookDetailConfig = {
   id?: string;
@@ -33,4 +35,7 @@ export class BookDetail {
   @ManyToOne((type) => User)
   @JoinColumn()
   userDelete: User;
+  @OneToMany((type) => BookOrder, (o) => o.bookdetail)
+  @JoinColumn()
+  bookOrders: BookOrder[];
 }

@@ -22,7 +22,7 @@ const CreateBySheet = async (req, res) => {
 
   let Id = BookId;
   let arr = await AddBySheet(BookId);
-  var data = (arr.result as any).data;
+  let data = (arr.result as any).data;
   let result = { success: 0, fail: 0 };
   for (let index = 0; index < data.length; index++) {
     if (index > 0) {
@@ -53,20 +53,20 @@ const CreateBySheet = async (req, res) => {
 const GetAll = async (req, res) => {
   let skip = req.params.skip || 0;
   let take = req.params.take || 10;
-  var result = await BookService.GetAll(take, skip);
+  let result = await BookService.GetAll(take, skip);
   res.send(result);
 };
 const RemoveById = async (req, res) => {
-  var idBook = req.params.idBook;
+  let idBook = req.params.idBook;
   if (!idBook) {
     res.send(HandelStatus(204));
   }
-  var result = await BookService.DeleteByIdBook(idBook);
+  let result = await BookService.DeleteByIdBook(idBook);
   res.send(result);
 };
 const GetById = async (req, res) => {
-  var idBook = req.params.idBook;
-  var result = await BookService.GetById(idBook);
+  let idBook = req.params.idBook;
+  let result = await BookService.GetById(idBook);
   res.send(result);
 };
 const Update = async (req, res) => {

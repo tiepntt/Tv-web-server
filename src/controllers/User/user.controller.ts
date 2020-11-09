@@ -1,11 +1,8 @@
 import { HandelStatus } from "../HandelAction";
 import { __dir } from "../../libs/path";
 import { UserService } from "../../CRUD/User/user";
-import { genBorn } from "../../libs/Book";
 import { plainToClass } from "class-transformer";
 import { UserInputDto, UserUpdateInputDto } from "../../dto/user/user.dto";
-import { ETIMEDOUT } from "constants";
-import { User } from "../../entity/User/User";
 
 const getAll = async (req, res) => {
   let skip = req.params.skip || 0;
@@ -16,20 +13,20 @@ const getAll = async (req, res) => {
   return res.send(result);
 };
 const create = async (req, res) => {
-  var userSend = req.body;
+  let userSend = req.body;
   let user = plainToClass(UserInputDto, userSend);
   user.born = user.born || new Date();
   user.avatar = req.file ? req.file.path : undefined;
-  var response = await UserService.create(user);
+  let response = await UserService.create(user);
   res.send(response);
 };
 const getById = async (req, res) => {
-  var id = req.params.id;
+  let id = req.params.id;
   if (!id) {
     res.send(HandelStatus(204, null, id));
     return;
   }
-  var response = await UserService.getById(id);
+  let response = await UserService.getById(id);
   res.send(response);
 };
 
@@ -46,8 +43,8 @@ const update = async (req, res) => {
     console.log(userConfig);
     return;
   }
-  var user = userConfig;
-  var response = await UserService.update(user, res.locals.userId);
+  let user = userConfig;
+  let response = await UserService.update(user, res.locals.userId);
   res.send(response);
 };
 const updateRole = async (req, res) => {
@@ -70,12 +67,12 @@ const UploadFile = async (req, res, next) => {
   }
 };
 const deleteById = async (req, res) => {
-  var id = req.params.id;
+  let id = req.params.id;
   let result = await UserService.RemoveById(id);
   res.send(result);
 };
 const GetNameFile = (str: string) => {
-  var nameFile = str.replace("/public", "");
+  let nameFile = str.replace("/public", "");
   return nameFile;
 };
 export const UserController = {

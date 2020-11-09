@@ -1,8 +1,5 @@
 import { deserialize, plainToClass } from "class-transformer";
-import { type } from "os";
-import { config } from "process";
 import { getRepository } from "typeorm";
-import { deflateRawSync } from "zlib";
 import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
@@ -13,17 +10,6 @@ import {
 import { Department } from "../../entity/User/Department";
 import { Role } from "../../entity/User/Role";
 import { User } from "../../entity/User/User";
-
-type ConfigUser = {
-  id?: number;
-  name?: string;
-  born?: Date;
-  userName?: string;
-  password?: string;
-  roleId?: number;
-  departmentId?: number;
-  avatar?: string;
-};
 
 const create = async (config: UserInputDto) => {
   if (
@@ -52,7 +38,7 @@ const create = async (config: UserInputDto) => {
     await UserRepo.save(user);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const update = async (config: UserUpdateInputDto, userUpdateId) => {
@@ -68,7 +54,7 @@ const update = async (config: UserUpdateInputDto, userUpdateId) => {
     await UserRepo.update(config.id, user);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const getAll = async (skip: number, take: number) => {
@@ -87,7 +73,7 @@ const getAll = async (skip: number, take: number) => {
     });
     return HandelStatus(200, null, result);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const getById = async (_id: string) => {

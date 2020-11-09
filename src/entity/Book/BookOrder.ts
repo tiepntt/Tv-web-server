@@ -32,7 +32,10 @@ export class BookOrder {
   borrowDate: Date;
   @Column({ nullable: true })
   payDate: Date;
-  @OneToOne((type) => BookDetail, { onDelete: "SET NULL", onUpdate: "CASCADE" })
+  @ManyToOne((type) => BookDetail, (o) => o.bookOrders, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   bookdetail: BookDetail;
   @ManyToOne((type) => Student, (o) => o.bookOrders, {
@@ -46,8 +49,8 @@ export class BookOrder {
   deadline: Date;
   @ManyToOne((type) => User)
   @JoinColumn()
-  UserCheckIn: User;
+  userCheckIn: User;
   @ManyToOne((type) => User)
   @JoinColumn()
-  UserCheckOut: User;
+  userCheckOut: User;
 }
