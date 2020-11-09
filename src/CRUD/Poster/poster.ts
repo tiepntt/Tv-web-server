@@ -1,12 +1,11 @@
 import { plainToClass } from "class-transformer";
-import { ETIMEDOUT } from "constants";
 import { getRepository } from "typeorm";
 import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
   PosterDetailDto,
   PosterInputDto,
-  PosterTiltleDto,
+  PosterTitleDto,
   PosterUpdateDto,
 } from "../../dto/poster/poster.dto";
 import { Poster } from "../../entity/Poster/Poster";
@@ -23,7 +22,7 @@ const GetAll = async (take, skip) => {
     .skip(skip || 0)
     .getMany();
   try {
-    let result = plainToClass(PosterTiltleDto, posters, {
+    let result = plainToClass(PosterTitleDto, posters, {
       excludeExtraneousValues: true,
     });
     return HandelStatus(200, null, result);
@@ -39,9 +38,9 @@ const Create = async (postConfig: PosterInputDto) => {
   ) {
     return HandelStatus(204);
   }
-  var UserRepo = getRepository(User);
+  let UserRepo = getRepository(User);
 
-  var user = await UserRepo.findOne({ id: postConfig.userCreateId });
+  let user = await UserRepo.findOne({ id: postConfig.userCreateId });
   if (!user) return HandelStatus(204);
   let post = plainToClass(Poster, postConfig);
   post.userCreate = user;
@@ -49,12 +48,12 @@ const Create = async (postConfig: PosterInputDto) => {
     await PosterRepo.save(post);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const GetById = async (id: number) => {
   let PosterRepo = getRepository(Poster);
-  var post = await PosterRepo.createQueryBuilder("poster")
+  let post = await PosterRepo.createQueryBuilder("poster")
     .leftJoinAndSelect("poster.userCreate", "userCreate")
     .leftJoinAndSelect("poster.comments", "comments")
     .leftJoinAndSelect("poster.likes", "likes")
@@ -68,7 +67,7 @@ const GetById = async (id: number) => {
     });
     return HandelStatus(200, null, result);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const UpdateById = async (input: PosterUpdateDto) => {
@@ -88,7 +87,7 @@ const UpdateById = async (input: PosterUpdateDto) => {
     await posterRepo.update(input.id, poster);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const DeleteById = async (input: PosterUpdateDto) => {

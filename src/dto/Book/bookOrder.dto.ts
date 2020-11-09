@@ -42,10 +42,10 @@ export class BookOrderInfoDto {
   bookdetail: BookDetailGetDto;
   @Expose()
   @Type((type) => UserInfoTitleDto)
-  UserCheckIn: UserInfoTitleDto;
+  userCheckIn: UserInfoTitleDto;
   @Expose()
   @Type((type) => UserInfoTitleDto)
-  UserCheckOut: UserInfoTitleDto;
+  userCheckOut: UserInfoTitleDto;
 }
 export class BookOrderPayDto {
   @Expose()

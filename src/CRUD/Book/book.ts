@@ -2,7 +2,7 @@ import { plainToClass } from "class-transformer";
 import { getRepository, IsNull, Not } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
 import { BookInputDto, BookTitleDto } from "../../dto/Book/book.dto";
-import { Book, BookConfig } from "../../entity/Book/Book";
+import { Book } from "../../entity/Book/Book";
 import { mapObject } from "../../utils/map";
 
 const Create = async (bookConfig: BookInputDto) => {
@@ -11,10 +11,10 @@ const Create = async (bookConfig: BookInputDto) => {
   if (!bookConfig.name || !bookConfig.price || !bookConfig.idBook) {
     return HandelStatus(204);
   }
-  let bookget = await BookRepo.findOne({
+  let bookGet = await BookRepo.findOne({
     idBook: bookConfig.idBook,
   });
-  if (bookget) {
+  if (bookGet) {
     return HandelStatus(302);
   }
   let book = plainToClass(Book, bookConfig);
@@ -22,7 +22,7 @@ const Create = async (bookConfig: BookInputDto) => {
     await BookRepo.save(book);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const Update = async (bookConfig: BookInputDto) => {
@@ -39,12 +39,12 @@ const Update = async (bookConfig: BookInputDto) => {
     await BookRepo.update(book.id, book);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const DeleteByIdBook = async (idBook) => {
   let BookRepo = getRepository(Book);
-  var book = await BookRepo.findOne({ idBook: idBook });
+  let book = await BookRepo.findOne({ idBook: idBook });
   if (!book) {
     return HandelStatus(404);
   }
@@ -53,7 +53,7 @@ const DeleteByIdBook = async (idBook) => {
 };
 const GetAll = async (take: number, skip: number) => {
   let BookRepo = getRepository(Book);
-  var books = await BookRepo.find({
+  let books = await BookRepo.find({
     take: take,
     skip: skip,
     order: {

@@ -2,7 +2,7 @@ import { type } from "os";
 import { config } from "process";
 import { HandelStatus } from "../../controllers/HandelAction";
 
-var nodemailer = require("nodemailer");
+let nodemailer = require("nodemailer");
 
 export type MailConfig = {
   from?: string;

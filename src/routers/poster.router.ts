@@ -3,8 +3,8 @@ import { createLike } from "../controllers/Poster/like.controller";
 import { PosterController } from "../controllers/Poster/Poster.controller";
 import { uploadMulter } from "../upload/cloudinary";
 
-var express = require("express");
-var router = express.Router();
+let express = require("express");
+let router = express.Router();
 
 //post
 router.get("/skip=:skip&&take=:take", PosterController.getAll);

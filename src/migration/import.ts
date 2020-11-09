@@ -11,7 +11,7 @@ export class HungarianStatesAndCities1564393283405
       .replace(/\s+/g, " ")
       .split(";");
     for (let i = 0; i < queries.length; i++) {
-      var qr = queries[i] + ";";
+      let qr = queries[i] + ";";
       if (
         qr.includes("--") ||
         qr.includes("/*") ||

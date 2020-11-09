@@ -7,10 +7,10 @@ import {
 import { HandelStatus } from "../controllers/HandelAction";
 import { UserController } from "../controllers/User/user.controller";
 
-var express = require("express");
-var router = express.Router();
-var multer = require("multer");
-var EMailController = require("../controllers/Email/Email.controller");
+let express = require("express");
+let router = express.Router();
+let multer = require("multer");
+let EMailController = require("../controllers/Email/Email.controller");
 const imageUploader = multer({ dest: "public/" }); // (**)
 router.post(
   "/sendEmail",

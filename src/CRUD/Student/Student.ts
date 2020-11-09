@@ -2,11 +2,11 @@ import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
 import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
-import { StudentInpuDto } from "../../dto/student/student.dto";
+import { StudentInputDto } from "../../dto/student/student.dto";
 import { Faculty } from "../../entity/Student/Faculty";
 import { Student } from "../../entity/Student/Student";
 
-const Create = async (studentConfig: StudentInpuDto) => {
+const Create = async (studentConfig: StudentInputDto) => {
   let StudentRepo = getRepository(Student);
   let FacultyRepo = getRepository(Faculty);
 
@@ -29,10 +29,10 @@ const Create = async (studentConfig: StudentInpuDto) => {
     await StudentRepo.save(student);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e.name);
+    return HandelStatus(500);
   }
 };
-const Update = async (studentConfig: StudentInpuDto) => {
+const Update = async (studentConfig: StudentInputDto) => {
   let StudentRepo = getRepository(Student);
   let FacultyRepo = getRepository(Faculty);
   if (!studentConfig.id && !studentConfig.idStudent) {
@@ -54,12 +54,12 @@ const Update = async (studentConfig: StudentInpuDto) => {
     await StudentRepo.update(student.id, student);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e.name);
+    return HandelStatus(500);
   }
 };
 const GetAll = async () => {
   let StudentRepo = getRepository(Student);
-  var result = await StudentRepo.find();
+  let result = await StudentRepo.find();
   return HandelStatus(200, null, result);
 };
 
@@ -72,7 +72,7 @@ const removeById = async (id) => {
     await StudentRepo.remove(student);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const GetBookOrderById = async (studentId) => {
@@ -80,7 +80,7 @@ const GetBookOrderById = async (studentId) => {
 };
 const GetInfoStudentById = async (idStudent) => {
   let StudentRepo = getRepository(Student);
-  var student = await StudentRepo.findOne({ idStudent: idStudent });
+  let student = await StudentRepo.findOne({ idStudent: idStudent });
   if (!student) return HandelStatus(404);
   return HandelStatus(200, null, student);
 };

@@ -23,7 +23,7 @@ const CreateBySheet = async (req, res) => {
 
   let Id = BookCopyId;
   let arr = await AddBySheet(Id);
-  var data = (arr.result as any).data;
+  let data = (arr.result as any).data;
   let result = { success: 0, fail: 0 };
   for (let index = 0; index < data.length; index++) {
     if (index > 0) {
@@ -52,19 +52,19 @@ const CreateBySheet = async (req, res) => {
   res.send(HandelStatus(200, null, result));
 };
 const GetAll = async (req, res) => {
-  var IdBook = req.params.IdBook;
-  var result = await BookDetailService.GetAll(IdBook);
+  let IdBook = req.params.IdBook;
+  let result = await BookDetailService.GetAll(IdBook);
   res.send(result);
 };
 const GetById = async (req, res) => {
-  var idBookDetails = req.params.IdBook;
+  let idBookDetails = req.params.IdBook;
 
-  var result = await BookDetailService.GetById(idBookDetails);
+  let result = await BookDetailService.GetById(idBookDetails);
   res.send(result);
 };
 const removeById = async (req, res) => {
-  var idBookDetails = req.params.id;
-  var result = await BookDetailService.RemoveById(idBookDetails);
+  let idBookDetails = req.params.id;
+  let result = await BookDetailService.RemoveById(idBookDetails);
   res.send(result);
 };
 export const BookDetailController = {

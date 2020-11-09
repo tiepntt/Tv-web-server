@@ -1,8 +1,8 @@
 export const StaticData = {
   Role: [
     {
-      name: "Lead",
-      code: "Lead",
+      name: "Manager",
+      code: "Manager",
       isSendEmail: true,
       isCreateOrEditSheet: true,
       isCreateOrEditBook: true,
@@ -29,10 +29,10 @@ export const StaticData = {
   ],
 
   Department: [
-    { name: "Ban chủ nhiệm" },
-    { name: "Ban Phục vụ bạn đọc" },
-    { name: "Ban Tổ chức sự kiện" },
-    { name: "Ban Truyền thông - Kỹ thuật" },
+    { name: "Ban chủ nhiệm", Code: "BCN" },
+    { name: "Phục vụ bạn đọc", Code: "PVBĐ" },
+    { name: "Tổ chức sự kiện", Code: "TCSK" },
+    { name: "Thông - Kỹ thuật", Code: "TT-KT" },
   ],
   Faculty: [
     { name: "Đang cập nhật" },

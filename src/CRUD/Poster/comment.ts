@@ -14,8 +14,8 @@ const Create = async (input: CommentInputDto) => {
     return HandelStatus(204);
   }
   let CommentRepo = getRepository(Comment);
-  var poster = await getRepository(Poster).findOne(input.posterId);
-  var user = await UserService.GetUserById(input.userId);
+  let poster = await getRepository(Poster).findOne(input.posterId);
+  let user = await UserService.GetUserById(input.userId);
   if (!poster || !user) {
     return HandelStatus(404);
   }
@@ -26,7 +26,7 @@ const Create = async (input: CommentInputDto) => {
     await CommentRepo.save(comment);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const Update = async (input: CommentInputDto) => {
@@ -40,7 +40,7 @@ const Update = async (input: CommentInputDto) => {
     await CommentRepo.update(input.id, comment);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const Delete = async (input: CommentInputDto) => {
@@ -55,7 +55,7 @@ const Delete = async (input: CommentInputDto) => {
     await CommentRepo.delete(input.id);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 const GetById = async (id) => {
@@ -74,7 +74,7 @@ const GetById = async (id) => {
     });
     return HandelStatus(200, null, result);
   } catch (e) {
-    return HandelStatus(500, e);
+    return HandelStatus(500);
   }
 };
 export const CommentService = { Create, Update, Delete, GetById };

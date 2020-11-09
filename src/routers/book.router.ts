@@ -6,8 +6,8 @@ import { BookController } from "../controllers/Book/Book.Controller";
 import { BookDetailController } from "../controllers/Book/BookDetail.Controller";
 import { BookOrderController } from "../controllers/Book/BookOrder.Controller";
 
-var express = require("express");
-var router = express.Router();
+let express = require("express");
+let router = express.Router();
 //book
 router.post("/create", CheckIsCreateOrEditBook, BookController.Create);
 router.get("/skip=:skip&take=:take", BookController.GetAll);

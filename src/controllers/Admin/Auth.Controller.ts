@@ -4,7 +4,7 @@ import { UserService } from "../../CRUD/User/user";
 import { User } from "../../entity/User/User";
 import { HandelStatus } from "../HandelAction";
 
-var jwt = require("jsonwebtoken");
+let jwt = require("jsonwebtoken");
 
 const Login = async (req, res) => {
   let account = req.body.account;
@@ -22,7 +22,7 @@ const Login = async (req, res) => {
     role: user.role,
     check: true,
   };
-  var token = jwt.sign(payload, process.env.TOKEN_SECRET_TV, {
+  let token = jwt.sign(payload, process.env.TOKEN_SECRET_TV, {
     expiresIn: 14400, // expires in 24 hours
   });
 
@@ -37,12 +37,12 @@ const Logout = async (req, res) => {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
-  var token = req.headers.token;
+  let token = req.headers.token;
   if (!token) {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
-  var payload = await jwt.verify(
+  let payload = await jwt.verify(
     token,
     process.env.TOKEN_SECRET_TV,
     (err, verifiedJwt) => {
@@ -57,7 +57,7 @@ const Logout = async (req, res) => {
   );
 };
 const removeToken = async (token) => {
-  var payload = await jwt.verify(
+  let payload = await jwt.verify(
     token,
     process.env.TOKEN_SECRET_TV,
     (err, verifiedJwt) => {
@@ -78,12 +78,12 @@ export const CheckToken = async (req, res, next) => {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
-  var token = req.headers.token;
+  let token = req.headers.token;
   if (!token) {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
-  var payload = await jwt.verify(
+  let payload = await jwt.verify(
     token,
     process.env.TOKEN_SECRET_TV,
     (err, verifiedJwt) => {
@@ -99,7 +99,7 @@ export const CheckToken = async (req, res, next) => {
   );
 };
 export const CheckIsCreateOrEditUser = async (req, res, next) => {
-  var user = res.locals.userLogin;
+  let user = res.locals.userLogin;
   let userRepo = getRepository(User);
   let userGet = await userRepo
     .createQueryBuilder("user")
@@ -117,7 +117,7 @@ export const CheckIsCreateOrEditUser = async (req, res, next) => {
   next();
 };
 export const CheckIsCreateOrEditStudent = async (req, res, next) => {
-  var user = res.locals.userLogin;
+  let user = res.locals.userLogin;
   let userRepo = getRepository(User);
   let userGet = await userRepo
     .createQueryBuilder("user")
@@ -135,7 +135,7 @@ export const CheckIsCreateOrEditStudent = async (req, res, next) => {
   next();
 };
 export const CheckIsCreateOrEditBook = async (req, res, next) => {
-  var user = res.locals.userLogin;
+  let user = res.locals.userLogin;
   let userRepo = getRepository(User);
   let userGet = await userRepo
     .createQueryBuilder("user")
@@ -153,7 +153,7 @@ export const CheckIsCreateOrEditBook = async (req, res, next) => {
   next();
 };
 export const CheckIsCreateOrEditSheet = async (req, res, next) => {
-  var user = res.locals.userLogin;
+  let user = res.locals.userLogin;
   let userRepo = getRepository(User);
   let userGet = await userRepo
     .createQueryBuilder("user")
@@ -171,7 +171,7 @@ export const CheckIsCreateOrEditSheet = async (req, res, next) => {
   next();
 };
 export const CheckIsSendEmail = async (req, res, next) => {
-  var user = res.locals.userLogin;
+  let user = res.locals.userLogin;
   let userRepo = getRepository(User);
   let userGet = await userRepo
     .createQueryBuilder("user")

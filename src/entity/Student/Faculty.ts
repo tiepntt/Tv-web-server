@@ -7,7 +7,6 @@ import {
 } from "typeorm";
 import { Student } from "./Student";
 
-
 @Entity()
 export class Faculty {
   @PrimaryGeneratedColumn()
