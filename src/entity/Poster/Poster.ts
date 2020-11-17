@@ -8,6 +8,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { User } from "../User/User";
 import { Comment } from "./Comment";
@@ -46,4 +48,7 @@ export class Poster {
   update_at: Date;
   @DeleteDateColumn()
   delete_at: Date;
+  @ManyToMany((type) => User, { onUpdate: "CASCADE" })
+  @JoinTable()
+  userSubscribe: User[];
 }

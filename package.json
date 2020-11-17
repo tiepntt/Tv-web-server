@@ -34,6 +34,7 @@
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.10",
     "request": "^2.88.2",
+    "socket.io": "^3.0.1",
     "swagger-express-ts": "^1.0.1",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",

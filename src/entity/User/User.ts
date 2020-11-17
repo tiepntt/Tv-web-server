@@ -8,9 +8,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToMany,
 } from "typeorm";
 import { Comment } from "../Poster/Comment";
 import { Like } from "../Poster/Like";
+import { NotificationPoster } from "../Poster/Notifical";
 import { Poster } from "../Poster/Poster";
 import { Department } from "./Department";
 import { Role } from "./Role";
@@ -69,4 +71,12 @@ export class User {
   update_at: Date;
   @DeleteDateColumn()
   delete_at: Date;
+  @ManyToMany((type) => NotificationPoster, (o) => o.userSeen, {
+    eager: true,
+  })
+  notificationSeen: NotificationPoster[];
+  @ManyToMany((type) => NotificationPoster, (o) => o.userSubscribe, {
+    eager: true,
+  })
+  notificationSubscribe: NotificationPoster[];
 }

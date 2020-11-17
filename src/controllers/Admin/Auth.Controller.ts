@@ -1,4 +1,3 @@
-import { nextTick } from "process";
 import { getRepository } from "typeorm";
 import { UserService } from "../../CRUD/User/user";
 import { User } from "../../entity/User/User";
@@ -7,8 +6,10 @@ import { HandelStatus } from "../HandelAction";
 let jwt = require("jsonwebtoken");
 
 const Login = async (req, res) => {
+  if (!req.body) return res.send(HandelStatus(400));
   let account = req.body.account;
-  if (!account) return HandelStatus(400);
+
+  if (!account) return res.send(HandelStatus(400));
   let user = await UserService.getUserByAccount(
     account.username,
     account.password
@@ -37,7 +38,7 @@ const Logout = async (req, res) => {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
-  let token = req.headers.token;
+  let token = req.headers.token || req.headers["x-access-token"];
   if (!token) {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
@@ -78,7 +79,7 @@ export const CheckToken = async (req, res, next) => {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
   }
-  let token = req.headers.token;
+  let token = req.headers.token || req.headers["x-access-token"];
   if (!token) {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
     return;
