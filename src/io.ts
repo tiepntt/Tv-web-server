@@ -8,11 +8,9 @@ export const loadIo = (server) => {
     },
   });
   io.on("connection", (client) => {
-    console.log("connection Socket");
     io.emit("connection");
     client.on("new", (data) => {
       /* … */
-      console.log("newNotification");
       io.emit("newNotification");
     });
     client.on("event", (data) => {
@@ -22,4 +20,5 @@ export const loadIo = (server) => {
       /* … */
     });
   });
+  return io;
 };

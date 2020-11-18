@@ -1,6 +1,8 @@
 import { plainToClass } from "class-transformer";
 import moment = require("moment");
 import { RelationQueryBuilder } from "typeorm";
+import { io } from "../..";
+
 import { PosterService } from "../../CRUD/Poster/poster";
 import { PosterInputDto, PosterUpdateDto } from "../../dto/poster/poster.dto";
 import { HandelStatus } from "../HandelAction";
@@ -12,6 +14,7 @@ const Create = async (req, res) => {
   poster.userCreateId = res.locals.userId || undefined;
   let result = await PosterService.Create(poster);
   res.send(result);
+  return;
 };
 const GetById = async (req, res) => {
   let postId = req.params.id;
@@ -21,7 +24,7 @@ const GetById = async (req, res) => {
   }
 
   let result = await PosterService.GetById(postId);
-  res.json(result);
+  return res.json(result);
 };
 const getAll = async (req, res) => {
   let take = req.params.take || 10;

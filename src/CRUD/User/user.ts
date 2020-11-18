@@ -42,7 +42,6 @@ const create = async (config: UserInputDto) => {
   }
 };
 const update = async (config: UserUpdateInputDto, userUpdateId) => {
-  console.log(config);
 
   if (!config.id || !userUpdateId) return HandelStatus(204);
   let UserRepo = getRepository(User);

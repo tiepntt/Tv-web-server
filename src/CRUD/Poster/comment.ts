@@ -35,7 +35,6 @@ const Create = async (input: CommentInputDto) => {
     await CommentRepo.save(comment);
     try {
       if (poster.userSubscribe.find((o) => o.id === user.id) == null) {
-        console.log("hi");
 
         poster.userSubscribe.push(user);
       }

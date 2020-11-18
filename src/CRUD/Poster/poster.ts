@@ -93,7 +93,6 @@ const UpdateById = async (input: PosterUpdateDto) => {
   if (!poster) return HandelStatus(404);
 
   poster = mapObject(poster, input);
-  console.log(poster);
 
   try {
     await posterRepo.update(input.id, poster);

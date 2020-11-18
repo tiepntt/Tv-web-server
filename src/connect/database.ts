@@ -58,7 +58,6 @@ createConnection(config)
       StaticData.user.forEach(async (item) => {
         let input = plainToClass(UserInputDto, item);
         let users = await UserService.create(input);
-        console.log(users);
       });
     }
 

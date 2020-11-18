@@ -1,0 +1,4 @@
+export const IoEmit = {
+  NEW_ORDER: "NEW_ORDER",
+  NEW_NOTIFICATION: "NEW_NOTIFICATION",
+};

@@ -52,6 +52,10 @@ export class BookOrderPayDto {
   @Expose()
   idBookDetail: string;
   @Expose()
+  id: number;
+  @Expose()
+  studentId: string;
+  @Expose()
   payDate: Date;
   @Expose()
   userCheckOutId: number;

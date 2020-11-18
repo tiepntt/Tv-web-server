@@ -59,7 +59,7 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers");
 });
 let server = http.createServer(app);
-loadIo(server);
+export const io = loadIo(server);
 server.listen(3001);
 server.on("listening", onListening);
 function onListening() {
