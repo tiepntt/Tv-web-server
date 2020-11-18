@@ -1,17 +1,19 @@
 import { plainToClass } from "class-transformer";
-import { getRepository } from "typeorm";
+import { getRepository, IsNull, LessThanOrEqual, MoreThan, Not } from "typeorm";
 import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
   BookOrderCreateDto,
   BookOrderGetDto,
   BookOrderInfoDto,
+  BookOrderList,
   BookOrderPayDto,
 } from "../../dto/Book/bookOrder.dto";
 import { BookDetail } from "../../entity/Book/BookDetails";
 import { BookOrder } from "../../entity/Book/BookOrder";
 import { Student } from "../../entity/Student/Student";
 import { User } from "../../entity/User/User";
+import { DateMap } from "../../libs/DateTime";
 
 const Create = async (bookOrderConfig: BookOrderCreateDto) => {
   console.log(bookOrderConfig);
@@ -146,6 +148,46 @@ const getById = async (id: number) => {
     return HandelStatus(500);
   }
 };
+const getBookOrderHistory = async (take: number, skip: number) => {
+  let BookOrderRepo = getRepository(BookOrder);
+  let bookOrder = await BookOrderRepo.find({
+    relations: ["bookdetail", "bookdetail.book", "student"],
+    order: {
+      update_at: "DESC",
+    },
+    cache: false,
+    take: take || 10,
+    skip: skip || 0,
+  });
+  if (bookOrder.length == 0) return HandelStatus(404);
+  try {
+    let result = plainToClass(BookOrderList, bookOrder, {
+      excludeExtraneousValues: true,
+    });
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500, e.name);
+  }
+};
+const getBookOrderHistoryCount = async (amountDay: number) => {
+  let bookOrderRepo = getRepository(BookOrder);
+  let bookOrderBorrowCount = await bookOrderRepo.count({
+    where: {
+      borrowDate: MoreThan(DateMap.addDate(new Date(), -amountDay || -7)),
+      payDate: IsNull(),
+    },
+  });
+  let bookOrderPayCount = await bookOrderRepo.count({
+    where: {
+      borrowDate: MoreThan(DateMap.addDate(new Date(), -amountDay || -7)),
+      payDate: Not(IsNull()),
+    },
+  });
+  return HandelStatus(200, null, {
+    borrow: bookOrderBorrowCount,
+    paid: bookOrderPayCount,
+  });
+};
 export const BookOrderService = {
   Create,
   RemoveById,
@@ -153,4 +195,6 @@ export const BookOrderService = {
   GetBookOrderBorrowed,
   GetBookOrderPaid,
   getById,
+  getBookOrderHistory,
+  getBookOrderHistoryCount,
 };

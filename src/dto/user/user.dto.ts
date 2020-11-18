@@ -1,4 +1,5 @@
 import { Expose, Type } from "class-transformer";
+import { NotificationGetList } from "../poster/notification.dto";
 import { DepartmentTitleDto } from "./department.dto";
 import { RoleTitleDto } from "./role.dto";
 
@@ -69,6 +70,18 @@ export class UserInfoTitleDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+}
+export class UserNotificationDto {
+  @Expose()
+  id?: number;
+  @Expose()
+  name?: string;
+  @Expose()
+  @Type((o) => NotificationGetList)
+  notificationSeen: NotificationGetList[];
+  @Expose()
+  @Type((o) => NotificationGetList)
+  notificationSubscribe: NotificationGetList[];
 }
 export class UserPostTitleDto {
   @Expose()

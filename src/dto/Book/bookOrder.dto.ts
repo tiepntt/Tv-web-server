@@ -1,4 +1,5 @@
 import { Expose, Type } from "class-transformer";
+import { StudentGetDto, StudentTitleDto } from "../student/student.dto";
 import { UserInfoTitleDto, UserTitleDto } from "../user/user.dto";
 import { BookDetailGetDto } from "./book.detail.dto";
 
@@ -54,4 +55,22 @@ export class BookOrderPayDto {
   payDate: Date;
   @Expose()
   userCheckOutId: number;
+}
+export class BookOrderList {
+  @Expose()
+  id: number;
+  @Expose()
+  @Type((o) => BookDetailGetDto)
+  bookdetail: BookDetailGetDto;
+  @Expose()
+  @Type((o) => StudentTitleDto)
+  student: StudentTitleDto;
+  @Expose()
+  type: boolean;
+  @Expose()
+  update_at: Date;
+  @Expose()
+  payDate: Date;
+  @Expose()
+  borrowDate: Date;
 }

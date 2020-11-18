@@ -62,3 +62,7 @@ export class PosterDetailDto {
   @Type((type) => CommentGetDto)
   comments: CommentGetDto[];
 }
+export class PosterNotificationDto {
+  @Expose()
+  id: number;
+}

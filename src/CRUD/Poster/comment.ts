@@ -8,13 +8,22 @@ import { Comment, commentConfig } from "../../entity/Poster/Comment";
 import { Poster } from "../../entity/Poster/Poster";
 import { User } from "../../entity/User/User";
 import { UserService } from "../User/user";
+import { NotificationInput } from "../../dto/poster/notification.dto";
+import { chat } from "googleapis/build/src/apis/chat";
+import { PosterService } from "./poster";
+import { NotificationService } from "./notification";
 
 const Create = async (input: CommentInputDto) => {
   if (!input.posterId || !input.userId || (!input.content && !input.asset)) {
     return HandelStatus(204);
   }
   let CommentRepo = getRepository(Comment);
-  let poster = await getRepository(Poster).findOne(input.posterId);
+  let poster = await getRepository(Poster).findOne({
+    relations: ["userSubscribe"],
+    where: {
+      id: input.posterId,
+    },
+  });
   let user = await UserService.GetUserById(input.userId);
   if (!poster || !user) {
     return HandelStatus(404);
@@ -24,6 +33,27 @@ const Create = async (input: CommentInputDto) => {
   comment.poster = poster;
   try {
     await CommentRepo.save(comment);
+    try {
+      if (poster.userSubscribe.find((o) => o.id === user.id) == null) {
+        console.log("hi");
+
+        poster.userSubscribe.push(user);
+      }
+
+      getRepository(Poster).save(poster);
+      let notification = new NotificationInput();
+      notification.context = "Đã thêm 1 bình luận";
+      notification.userCreate = user;
+      notification.poster = poster;
+      notification.userSubscribe = poster.userSubscribe.filter(
+        (o) => o.id != user.id
+      );
+
+      NotificationService.create(notification);
+    } catch (e) {
+      console.log(e);
+    }
+
     return HandelStatus(200);
   } catch (e) {
     return HandelStatus(500);

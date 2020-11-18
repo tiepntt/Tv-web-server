@@ -10,6 +10,8 @@ import {
 } from "../../dto/poster/poster.dto";
 import { Poster } from "../../entity/Poster/Poster";
 import { User } from "../../entity/User/User";
+import { NotificationService } from "./notification";
+import { NotificationInput } from "../../dto/poster/notification.dto";
 
 const GetAll = async (take, skip) => {
   let PosterRepo = getRepository(Poster);
@@ -44,8 +46,18 @@ const Create = async (postConfig: PosterInputDto) => {
   if (!user) return HandelStatus(204);
   let post = plainToClass(Poster, postConfig);
   post.userCreate = user;
+  post.userSubscribe = [user];
   try {
     await PosterRepo.save(post);
+    let notification = new NotificationInput();
+    notification.context = "Đã thêm 1 bài đăng.";
+    notification.poster = post;
+    notification.userSubscribe = await UserRepo.find();
+    notification.userSubscribe = notification.userSubscribe.filter(
+      (o) => o.id != user.id
+    );
+    notification.userCreate = user;
+    NotificationService.create(notification);
     return HandelStatus(200);
   } catch (e) {
     return HandelStatus(500);

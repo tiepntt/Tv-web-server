@@ -10,6 +10,7 @@ import * as cors from "cors";
 import * as bodyParser from "body-parser";
 import { CheckToken } from "./controllers/Admin/Auth.Controller";
 import { debug } from "console";
+import { loadIo } from "./io";
 // const redis = require("redis");
 // const client = redis.createClient();
 // const kue = require("kue");
@@ -25,7 +26,7 @@ const options: cors.CorsOptions = {
   credentials: true,
   methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
   origin: "*",
-  preflightContinue: false,
+  preflightContinue: true,
 };
 app.use(cors(options));
 
@@ -54,8 +55,11 @@ app.get("/", (req, res) => {
   res.send("<h1>Chào mừng bạn đến với Thư Viện Hội Sinh viên UET</h1>");
 });
 app.use(express.static(path.join(__dirname, "public")));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers");
+});
 let server = http.createServer(app);
-
+loadIo(server);
 server.listen(3001);
 server.on("listening", onListening);
 function onListening() {

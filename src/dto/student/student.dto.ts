@@ -18,6 +18,14 @@ export class StudentInputDto {
   @Expose()
   facultyId: number;
 }
+export class StudentTitleDto {
+  @Expose()
+  id: number;
+  @Expose()
+  idStudent: string;
+  @Expose()
+  name: string;
+}
 export class StudentGetDto {
   @Expose()
   id: number;

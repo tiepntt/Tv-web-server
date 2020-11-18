@@ -61,5 +61,13 @@ router.post(
   CheckIsCreateOrEditBook,
   BookOrderController.Paid
 );
+router.get(
+  "/bookOrder/history/take=:take&skip=:skip",
+  BookOrderController.getBookOrderHistory
+);
+router.get(
+  "/bookOrder/historyCount/dayLeft=:dayLeft",
+  BookOrderController.getBookOrderHistoryCount
+);
 router.get("/bookOrder/:id", BookOrderController.getById);
 module.exports = router;

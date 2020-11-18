@@ -98,10 +98,24 @@ const getById = async (req, res) => {
   let result = await BookOrderService.getById(id);
   return res.send(result);
 };
+const getBookOrderHistory = async (req, res) => {
+  let take = req.params.take || 10;
+
+  let skip = req.params.skip || 0;
+  let result = await BookOrderService.getBookOrderHistory(take, skip);
+  return res.send(result);
+};
+const getBookOrderHistoryCount = async (req, res) => {
+  let dayLeft = req.params.dayLeft;
+  let result = await BookOrderService.getBookOrderHistoryCount(dayLeft);
+  return res.send(result);
+};
 export const BookOrderController = {
   CreateBySheet,
   PayBySheets,
   Create,
   Paid,
   getById,
+  getBookOrderHistory,
+  getBookOrderHistoryCount,
 };

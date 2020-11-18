@@ -7,6 +7,7 @@ import {
   OneToOne,
   ManyToOne,
   Timestamp,
+  UpdateDateColumn,
 } from "typeorm";
 import { Student } from "../Student/Student";
 import { User } from "../User/User";
@@ -32,6 +33,9 @@ export class BookOrder {
   borrowDate: Date;
   @Column({ nullable: true })
   payDate: Date;
+  @UpdateDateColumn()
+  update_at: Date;
+
   @ManyToOne((type) => BookDetail, (o) => o.bookOrders, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
