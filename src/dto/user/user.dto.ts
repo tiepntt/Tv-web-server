@@ -1,7 +1,7 @@
 import { Expose, Type } from "class-transformer";
 import { NotificationGetList } from "../poster/notification.dto";
 import { DepartmentTitleDto } from "./department.dto";
-import { RoleTitleDto } from "./role.dto";
+import { RoleDto, RoleTitleDto } from "./role.dto";
 
 export class UserInputDto {
   @Expose()
@@ -88,6 +88,26 @@ export class UserPostTitleDto {
   id?: number;
   @Expose()
   name?: string;
+  @Expose()
+  @Type((type) => DepartmentTitleDto)
+  department: DepartmentTitleDto;
+  @Expose()
+  avatar: string;
+  @Expose()
+  GenCode: string;
+  @Expose()
+  gender: boolean;
+}
+export class UserAccountDto {
+  @Expose()
+  id?: number;
+  @Expose()
+  name?: string;
+  @Expose()
+  born?: Date;
+  @Expose()
+  @Type((type) => RoleDto)
+  role: RoleDto;
   @Expose()
   @Type((type) => DepartmentTitleDto)
   department: DepartmentTitleDto;

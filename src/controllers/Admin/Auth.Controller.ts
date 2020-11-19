@@ -1,5 +1,11 @@
+import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
 import { UserService } from "../../CRUD/User/user";
+import {
+  UserAccountDto,
+  UserInputDto,
+  UserTitleDto,
+} from "../../dto/user/user.dto";
 import { User } from "../../entity/User/User";
 import { HandelStatus } from "../HandelAction";
 
@@ -18,6 +24,9 @@ const Login = async (req, res) => {
     res.send(HandelStatus(401));
     return;
   }
+  let useSend = plainToClass(UserAccountDto, user, {
+    excludeExtraneousValues: true,
+  });
   const payload = {
     userId: user.id,
     role: user.role,
@@ -31,6 +40,7 @@ const Login = async (req, res) => {
     status: 200,
     message: "authentication done ",
     token: token,
+    account: useSend,
   });
 };
 const Logout = async (req, res) => {

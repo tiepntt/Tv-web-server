@@ -50,7 +50,7 @@ const updateRole = async (req, res) => {
   let userInput = plainToClass(UserInputDto, user, {
     excludeExtraneousValues: true,
   });
-  let result = await UserService.changeRoleOrDepartment(user);
+  let result = await UserService.changeRoleOrDepartment(userInput);
   res.send(result);
 };
 const UploadFile = async (req, res, next) => {
