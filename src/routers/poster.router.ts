@@ -10,6 +10,7 @@ let router = express.Router();
 //post
 router.get("/skip=:skip&&take=:take", PosterController.getAll);
 router.post("/create", uploadMulter.single("photo"), PosterController.Create);
+router.get("/profile", PosterController.getByUserId);
 router.get("/:id", PosterController.GetById);
 router.put("/update", uploadMulter.single("photo"), PosterController.update);
 router.delete("/:id", PosterController.removeById);

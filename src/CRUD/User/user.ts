@@ -3,6 +3,7 @@ import { getRepository } from "typeorm";
 import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
+  AccountChangePassword,
   UserInputDto,
   UserTitleDto,
   UserUpdateInputDto,
@@ -10,6 +11,9 @@ import {
 import { Department } from "../../entity/User/Department";
 import { Role } from "../../entity/User/Role";
 import { User } from "../../entity/User/User";
+import { genPassword } from "../../libs/GenPassword";
+import { SendMail } from "../../service/gmail/email";
+import { changePasswordForm } from "../../libs/constants/email.form";
 
 const create = async (config: UserInputDto) => {
   if (
@@ -17,7 +21,8 @@ const create = async (config: UserInputDto) => {
     !config.password ||
     !config.username ||
     !config.roleId ||
-    !config.departmentId
+    !config.departmentId ||
+    !config.email
   ) {
     return HandelStatus(204);
   }
@@ -27,6 +32,7 @@ const create = async (config: UserInputDto) => {
   if (userGet) return HandelStatus(302, "tên đăng nhập đã được sử dụng");
   let DepartmentRepo = getRepository(Department);
   let user = plainToClass(User, config);
+
   let role = await RoleRepo.findOne(config.roleId);
   let department = await DepartmentRepo.findOne(config.departmentId);
   if (!role || !department) {
@@ -38,22 +44,26 @@ const create = async (config: UserInputDto) => {
     await UserRepo.save(user);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500);
+    return HandelStatus(500, e);
   }
 };
 const update = async (config: UserUpdateInputDto, userUpdateId) => {
-
   if (!config.id || !userUpdateId) return HandelStatus(204);
   let UserRepo = getRepository(User);
-  let user = await UserRepo.findOne(config.id);
+  let user = await UserRepo.findOne({
+    relations: ["role", "department"],
+    where: { id: config.id },
+  });
   if (!user) return HandelStatus(404);
+
   user = mapObject(user, config);
+
   // us
   try {
     await UserRepo.update(config.id, user);
-    return HandelStatus(200);
+    return HandelStatus(200, null, user);
   } catch (e) {
-    return HandelStatus(500);
+    return HandelStatus(500, e);
   }
 };
 const getAll = async (skip: number, take: number) => {
@@ -130,6 +140,46 @@ const RemoveById = async (id) => {
   await UserRepo.remove(user);
   return HandelStatus(200);
 };
+const resetPassword = async (email) => {
+  let userRepo = getRepository(User);
+  if (!email) return HandelStatus(400);
+  let user = await userRepo.findOne({ email: email });
+  if (!user) return HandelStatus(404, "Khong ton tai email");
+  user.password = genPassword();
+
+  try {
+    let textEmail = changePasswordForm({
+      to: user.email,
+      password: user.password,
+      name: user.name,
+    });
+    let check = await SendMail(textEmail);
+    if (check.status == 200) {
+      await userRepo.save(user);
+      return HandelStatus(
+        200,
+        `Mật khẩu mới đã được gửi tới email ${user.email}.`
+      );
+    } else return HandelStatus(500);
+  } catch (e) {
+    return HandelStatus(500);
+  }
+};
+const changePassword = async (input: AccountChangePassword) => {
+  let userRepo = getRepository(User);
+  let user = await userRepo.findOne({
+    id: input.userId,
+    password: input.password,
+  });
+  if (!user) return HandelStatus(404, "password không đúng");
+  user.password = input.newPassword;
+  try {
+    await userRepo.save(user);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(500);
+  }
+};
 export const UserService = {
   create,
   update,
@@ -139,4 +189,6 @@ export const UserService = {
   GetUserById,
   changeRoleOrDepartment,
   RemoveById,
+  changePassword,
+  resetPassword,
 };

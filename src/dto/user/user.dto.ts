@@ -15,6 +15,8 @@ export class UserInputDto {
   @Expose()
   username?: string;
   @Expose()
+  email?: string;
+  @Expose()
   password?: string;
   @Expose()
   roleId?: number;
@@ -40,6 +42,8 @@ export class UserUpdateInputDto {
   avatar: string;
   @Expose()
   GenCode: string;
+  @Expose()
+  email?: string;
 }
 export class UserTitleDto {
   @Expose()
@@ -60,6 +64,8 @@ export class UserTitleDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+  @Expose()
+  email?: string;
 }
 export class UserInfoTitleDto {
   @Expose()
@@ -97,6 +103,8 @@ export class UserPostTitleDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+  @Expose()
+  email?: string;
 }
 export class UserAccountDto {
   @Expose()
@@ -117,4 +125,14 @@ export class UserAccountDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+  @Expose()
+  email?: string;
+}
+export class AccountChangePassword {
+  @Expose()
+  userId: number;
+  @Expose()
+  password: string;
+  @Expose()
+  newPassword: string;
 }

@@ -19,6 +19,7 @@ createConnection(config)
     if (dataRole.length === 0) {
       StaticData.Role.forEach(async (roleData) => {
         let role = new Role();
+        role.id = roleData.id;
         role.name = roleData.name;
         role.Code = roleData.code;
         role.isCreateOrEditBook = roleData.isCreateOrEditBook;
@@ -36,6 +37,7 @@ createConnection(config)
     if (dataDepartment.length === 0) {
       StaticData.Department.forEach(async (departmentData) => {
         let department = new Department();
+        department.id = departmentData.id;
         department.name = departmentData.name;
         department.Code = departmentData.Code;
         await DepartmentRepository.save(department);
@@ -58,6 +60,7 @@ createConnection(config)
       StaticData.user.forEach(async (item) => {
         let input = plainToClass(UserInputDto, item);
         let users = await UserService.create(input);
+        console.log(users);
       });
     }
 

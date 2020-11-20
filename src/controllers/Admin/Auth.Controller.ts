@@ -1,7 +1,9 @@
 import { plainToClass } from "class-transformer";
+import { truncateSync } from "fs";
 import { getRepository } from "typeorm";
 import { UserService } from "../../CRUD/User/user";
 import {
+  AccountChangePassword,
   UserAccountDto,
   UserInputDto,
   UserTitleDto,
@@ -84,6 +86,7 @@ const removeToken = async (token) => {
 
 const Register = (req, res) => {};
 const ResetPassWord = (req, res) => {};
+
 export const CheckToken = async (req, res, next) => {
   if (!req.header) {
     res.send(HandelStatus(401, "Bạn chưa đăng nhập"));
@@ -199,8 +202,27 @@ export const CheckIsSendEmail = async (req, res, next) => {
   }
   next();
 };
+const ResetPassword = async (req, res) => {
+  let email = req.body.email;
+
+  let result = await UserService.resetPassword(email);
+  return res.send(result);
+};
+const changePassword = async (req, res) => {
+  let input = req.body.account;
+  if (!input) return HandelStatus(400);
+  let inputGet = plainToClass(AccountChangePassword, input, {
+    excludeExtraneousValues: true,
+  });
+  inputGet.userId = res.locals.userId;
+
+  let result = await UserService.changePassword(inputGet);
+  return res.send(result);
+};
 export const AuthController = {
   Login,
   Logout,
   removeToken,
+  ResetPassword,
+  changePassword,
 };
