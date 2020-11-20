@@ -8,6 +8,7 @@ import {
   Raw,
 } from "typeorm";
 import { Alias } from "typeorm/query-builder/Alias";
+import { io } from "../..";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
   NotificationGetList,
@@ -17,11 +18,13 @@ import {
 import { UserNotificationDto } from "../../dto/user/user.dto";
 import { NotificationPoster } from "../../entity/Poster/Notifical";
 import { User } from "../../entity/User/User";
+import { IoEmit } from "../../libs/constans";
 
 const create = async (input: NotificationInput) => {
   let notification = plainToClass(NotificationPoster, input);
   try {
     await getRepository(NotificationPoster).save(notification);
+    io.emit(IoEmit.NEW_NOTIFICATION);
   } catch (e) {
     console.log(e);
   }
@@ -66,7 +69,7 @@ const getAll = async (userId: number, take, skip) => {
     .take(take || 10)
     .skip(skip || 0)
     .getRawMany();
-  let newCount = await getRepository(NotificationPoster)
+  let SubCount = await getRepository(NotificationPoster)
     .createQueryBuilder("notification")
     .innerJoin(
       "notification_poster_user_subscribe_user",
@@ -74,20 +77,31 @@ const getAll = async (userId: number, take, skip) => {
       "userSubscribe.notificationPosterId =notification.id && userSubscribe.userId=:userId",
       { userId: userId }
     )
-    .leftJoin(
+    .getCount();
+
+  let SeenCount = await getRepository(NotificationPoster)
+    .createQueryBuilder("notification")
+    .innerJoin(
+      "notification_poster_user_subscribe_user",
+      "userSubscribe",
+      "userSubscribe.notificationPosterId =notification.id && userSubscribe.userId=:userId",
+      { userId: userId }
+    )
+    .innerJoin(
       "notification_poster_user_seen_user",
       "userSeen",
       "userSeen.notificationPosterId =notification.id && userSeen.userId =:userId",
-      { userId: null }
+      { userId: userId }
     )
     .getCount();
   try {
     let result = plainToClass(NotificationGetList, notification, {
       excludeExtraneousValues: true,
     });
+
     return HandelStatus(200, null, {
       notifications: result,
-      count: newCount,
+      count: SubCount - SeenCount,
     });
   } catch (e) {
     return HandelStatus(500, e);

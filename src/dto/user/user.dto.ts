@@ -1,7 +1,7 @@
 import { Expose, Type } from "class-transformer";
 import { NotificationGetList } from "../poster/notification.dto";
 import { DepartmentTitleDto } from "./department.dto";
-import { RoleTitleDto } from "./role.dto";
+import { RoleDto, RoleTitleDto } from "./role.dto";
 
 export class UserInputDto {
   @Expose()
@@ -14,6 +14,8 @@ export class UserInputDto {
   born?: Date;
   @Expose()
   username?: string;
+  @Expose()
+  email?: string;
   @Expose()
   password?: string;
   @Expose()
@@ -40,6 +42,8 @@ export class UserUpdateInputDto {
   avatar: string;
   @Expose()
   GenCode: string;
+  @Expose()
+  email?: string;
 }
 export class UserTitleDto {
   @Expose()
@@ -60,6 +64,8 @@ export class UserTitleDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+  @Expose()
+  email?: string;
 }
 export class UserInfoTitleDto {
   @Expose()
@@ -97,4 +103,36 @@ export class UserPostTitleDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+  @Expose()
+  email?: string;
+}
+export class UserAccountDto {
+  @Expose()
+  id?: number;
+  @Expose()
+  name?: string;
+  @Expose()
+  born?: Date;
+  @Expose()
+  @Type((type) => RoleDto)
+  role: RoleDto;
+  @Expose()
+  @Type((type) => DepartmentTitleDto)
+  department: DepartmentTitleDto;
+  @Expose()
+  avatar: string;
+  @Expose()
+  GenCode: string;
+  @Expose()
+  gender: boolean;
+  @Expose()
+  email?: string;
+}
+export class AccountChangePassword {
+  @Expose()
+  userId: number;
+  @Expose()
+  password: string;
+  @Expose()
+  newPassword: string;
 }

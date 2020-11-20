@@ -1,4 +1,5 @@
 import { plainToClass } from "class-transformer";
+import { io } from "../..";
 import { CommentService } from "../../CRUD/Poster/comment";
 import { CommentInputDto } from "../../dto/poster/comment.dto";
 import { HandelStatus } from "../HandelAction";
@@ -12,6 +13,7 @@ const create = async (req, res) => {
   comment.asset = req.file ? req.file.path : undefined;
   let result = await CommentService.Create(comment);
   res.send(result);
+  
 };
 const updateComment = async (req, res) => {
   let commentInput = req.body;

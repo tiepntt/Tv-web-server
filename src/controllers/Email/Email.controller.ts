@@ -39,6 +39,6 @@ module.exports.SendEmail = async (req, res) => {
     text: text,
     attachments: attachments,
   };
-  let result = await SendMail(config);
-  res.send(result);
+  // let result = await SendMail(config);
+  res.send(500);
 };

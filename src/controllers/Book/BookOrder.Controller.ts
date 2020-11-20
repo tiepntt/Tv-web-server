@@ -103,6 +103,8 @@ const getBookOrderHistory = async (req, res) => {
 
   let skip = req.params.skip || 0;
   let result = await BookOrderService.getBookOrderHistory(take, skip);
+  console.log(result);
+
   return res.send(result);
 };
 const getBookOrderHistoryCount = async (req, res) => {

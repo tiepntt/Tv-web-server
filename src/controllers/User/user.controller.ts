@@ -7,7 +7,6 @@ import { UserInputDto, UserUpdateInputDto } from "../../dto/user/user.dto";
 const getAll = async (req, res) => {
   let skip = req.params.skip || 0;
   let take = req.params.take || 10;
-  console.log(skip, take);
 
   let result = await UserService.getAll(skip, take);
   return res.send(result);
@@ -36,11 +35,9 @@ const update = async (req, res) => {
     excludeExtraneousValues: true,
   });
   userConfig.avatar = req.file ? req.file.path : undefined;
-  console.log(userConfig);
   userConfig.id = res.locals ? res.locals.userId : undefined;
   if (!userConfig.name) {
     res.send(HandelStatus(204));
-    console.log(userConfig);
     return;
   }
   let user = userConfig;
@@ -53,7 +50,7 @@ const updateRole = async (req, res) => {
   let userInput = plainToClass(UserInputDto, user, {
     excludeExtraneousValues: true,
   });
-  let result = await UserService.changeRoleOrDepartment(user);
+  let result = await UserService.changeRoleOrDepartment(userInput);
   res.send(result);
 };
 const UploadFile = async (req, res, next) => {

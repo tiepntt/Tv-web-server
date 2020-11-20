@@ -24,8 +24,6 @@ const Create = async (bookDetailConfig: BookDetailInputDto) => {
     return HandelStatus(302, "Ma sach da ton tai");
   }
   if (!getBook) {
-    console.log(getBook);
-
     return HandelStatus(404, "Khong tim thay sach");
   }
   bookDetail.book = getBook;

@@ -21,16 +21,16 @@ import { Role } from "./Role";
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-
   @Column({ charset: "utf8", type: "nvarchar" })
   name: string;
+  @Column({ unique: true, length: 30, nullable: false })
+  email: string;
   @Column({ default: true, nullable: true })
   gender: boolean;
   @Column({ nullable: true })
   born: Date;
   @Column({ charset: "utf8", type: "nvarchar", unique: true })
   username: string;
-
   @Column({ charset: "utf8", type: "nvarchar" })
   password: string;
   @Column({
@@ -72,11 +72,11 @@ export class User {
   @DeleteDateColumn()
   delete_at: Date;
   @ManyToMany((type) => NotificationPoster, (o) => o.userSeen, {
-    eager: true,
+    eager: false,
   })
   notificationSeen: NotificationPoster[];
   @ManyToMany((type) => NotificationPoster, (o) => o.userSubscribe, {
-    eager: true,
+    eager: false,
   })
   notificationSubscribe: NotificationPoster[];
 }

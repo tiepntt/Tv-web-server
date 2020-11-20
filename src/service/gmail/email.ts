@@ -4,14 +4,15 @@ import { HandelStatus } from "../../controllers/HandelAction";
 
 let nodemailer = require("nodemailer");
 
-export type MailConfig = {
+export class MailConfig {
   from?: string;
-  to?: any;
+  to?: string;
   subject?: string;
   text?: string;
   html?: string;
   attachments?: any;
-};
+}
+
 export const SendMail = async (config: MailConfig) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -21,13 +22,19 @@ export const SendMail = async (config: MailConfig) => {
       pass: "thuvien.uet",
     },
   });
-  await transporter.sendMail({
-    from: config.from || "thuvienhsv@gmail.com",
-    to: config.to,
-    subject: config.subject || "Thông báo",
-    text: config.text || "test",
-    html: config.html || null,
-    attachments: config.attachments || null,
-  });
-  return HandelStatus(200);
+  try {
+    await transporter.sendMail({
+      from: "thuvienhsv@gmail.com",
+      to: config.to,
+      subject: config.subject || "Thông báo",
+      text: config.text || "test",
+      html: config.html || null,
+      attachments: config.attachments || null,
+    });
+    return HandelStatus(200);
+  } catch (e) {
+    console.log(e);
+
+    return HandelStatus(500, e);
+  }
 };

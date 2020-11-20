@@ -51,10 +51,10 @@ export class BookOrder {
     nullable: false,
   })
   deadline: Date;
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, { onDelete: "SET NULL", onUpdate: "CASCADE" })
   @JoinColumn()
   userCheckIn: User;
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, { onDelete: "SET NULL", onUpdate: "CASCADE" })
   @JoinColumn()
   userCheckOut: User;
 }

@@ -12,21 +12,34 @@ import { Poster } from "../../entity/Poster/Poster";
 import { User } from "../../entity/User/User";
 import { NotificationService } from "./notification";
 import { NotificationInput } from "../../dto/poster/notification.dto";
+import { Like } from "../../entity/Poster/Like";
 
-const GetAll = async (take, skip) => {
+const GetAll = async (take, skip, userId: number) => {
   let PosterRepo = getRepository(Poster);
+  let user = await getRepository(User).findOne(userId);
   let posters = await PosterRepo.createQueryBuilder("poster")
     .loadRelationCountAndMap("poster.comments", "poster.comments")
     .loadRelationCountAndMap("poster.likes", "poster.likes")
     .leftJoinAndSelect("poster.userCreate", "userCreate")
     .leftJoinAndSelect("userCreate.department", "department")
+    // .leftJoinAndSelect("poster.likes", "likes")
     .take(take || 10)
     .skip(skip || 0)
     .getMany();
+
   try {
     let result = plainToClass(PosterTitleDto, posters, {
       excludeExtraneousValues: true,
     });
+    for (let i = 0; i < posters.length; i++) {
+      let poster = posters[i];
+      let like = await getRepository(Like).findOne({
+        user: user,
+        poster: poster,
+      });
+      result[i].isLike = like ? true : false;
+    }
+
     return HandelStatus(200, null, result);
   } catch (e) {
     return HandelStatus(500, e);
@@ -93,7 +106,6 @@ const UpdateById = async (input: PosterUpdateDto) => {
   if (!poster) return HandelStatus(404);
 
   poster = mapObject(poster, input);
-  console.log(poster);
 
   try {
     await posterRepo.update(input.id, poster);
@@ -129,6 +141,44 @@ const GetPoster = async (id) => {
   if (!poster) return;
   return poster;
 };
+const getByUserId = async (take: number, skip: number, userId: number) => {
+  let PosterRepo = getRepository(Poster);
+  let user = await getRepository(User).findOne(userId);
+
+  let posters = await PosterRepo.createQueryBuilder("poster")
+    .loadRelationCountAndMap("poster.comments", "poster.comments")
+    .loadRelationCountAndMap("poster.likes", "poster.likes")
+    .leftJoinAndSelect(
+      "poster.userCreate",
+      "userCreate",
+      "userCreate.id =:id",
+      {
+        id: userId,
+      }
+    )
+    .leftJoinAndSelect("userCreate.department", "department")
+    .take(take || 10)
+    .skip(skip || 0)
+    .getMany();
+
+  try {
+    let result = plainToClass(PosterTitleDto, posters, {
+      excludeExtraneousValues: true,
+    });
+    for (let i = 0; i < posters.length; i++) {
+      let poster = posters[i];
+      let like = await getRepository(Like).findOne({
+        user: user,
+        poster: poster,
+      });
+      result[i].isLike = like ? true : false;
+    }
+
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
+};
 export const PosterService = {
   GetAll,
   Create,
@@ -136,5 +186,6 @@ export const PosterService = {
   UpdateById,
   DeleteById,
   GetPoster,
+  getByUserId,
 };
 //done

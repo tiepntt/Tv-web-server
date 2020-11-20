@@ -14,9 +14,10 @@ import { BookOrder } from "../../entity/Book/BookOrder";
 import { Student } from "../../entity/Student/Student";
 import { User } from "../../entity/User/User";
 import { DateMap } from "../../libs/DateTime";
+import { io } from "../..";
+import { IoEmit } from "../../libs/constans";
 
 const Create = async (bookOrderConfig: BookOrderCreateDto) => {
-  console.log(bookOrderConfig);
 
   let BookOrderRepo = getRepository(BookOrder);
   let UserRepo = getRepository(User);
@@ -34,6 +35,7 @@ const Create = async (bookOrderConfig: BookOrderCreateDto) => {
   let bookdetail = await BookDetailRepo.findOne({
     idBookDetails: bookOrderConfig.idBookdetail,
   });
+
   let student = await StudentRepo.findOne({
     idStudent: bookOrderConfig.idStudent,
   });
@@ -41,7 +43,12 @@ const Create = async (bookOrderConfig: BookOrderCreateDto) => {
   if (!user || !bookdetail || !student) {
     return HandelStatus(500);
   }
-
+  let bookOrderGet = await BookOrderRepo.findOne({
+    bookdetail: bookdetail,
+    student: student,
+    payDate: null,
+  });
+  if (bookOrderGet) return HandelStatus(302, "SV đã mượn cuốn sách này!");
   let bookOrder = plainToClass(BookOrder, bookOrderConfig);
   bookOrder.student = student;
   bookOrder.userCheckIn = user;
@@ -51,6 +58,7 @@ const Create = async (bookOrderConfig: BookOrderCreateDto) => {
   bookOrder.deadline.setDate(bookOrder.borrowDate.getDate() + 180);
   try {
     await BookOrderRepo.save(bookOrder);
+    io.emit(IoEmit.NEW_ORDER);
     return HandelStatus(200);
   } catch (e) {
     return HandelStatus(500, e);
@@ -60,25 +68,51 @@ const RemoveById = async (Id) => {
   let BookOrderRepo = getRepository(BookOrder);
   let bookOrder = await BookOrderRepo.findOne(Id);
   if (!bookOrder) return HandelStatus(404);
-  await BookOrderRepo.remove(bookOrder);
-  return HandelStatus(200);
+  try {
+    await BookOrderRepo.remove(bookOrder);
+    return HandelStatus(200);
+  } catch (e) {
+    return HandelStatus(404);
+  }
 };
 const PayBook = async (input: BookOrderPayDto) => {
-  if (!input || !input.idBookDetail || !input.userCheckOutId)
+  if (
+    !input ||
+    (!input.id && (!input.studentId || !input.idBookDetail)) ||
+    !input.userCheckOutId
+  )
     return HandelStatus(400);
+
 
   let BookOrderRepo = getRepository(BookOrder);
   let UserRepo = getRepository(User);
-  let bookDetail = await getRepository(BookDetail).findOne({
-    idBookDetails: input.idBookDetail,
+  let bookOrder;
+
+  let student = await getRepository(Student).findOne({
+    idStudent: input.studentId || "-1",
   });
-  let bookOrder = await BookOrderRepo.findOne({ bookdetail: bookDetail });
+  let bookdetail = await getRepository(BookDetail).findOne({
+    idBookDetails: input.idBookDetail || "-1",
+  });
+  if (input.id) {
+    bookOrder = await BookOrderRepo.findOne(input.id);
+  } else {
+    if (!student) return HandelStatus(404, "Không tìm thấy SV");
+    if (!bookdetail) return HandelStatus(404, "Không tìm thấy sách");
+    bookOrder = await BookOrderRepo.findOne({
+      student: student,
+      bookdetail: bookdetail,
+      payDate: null,
+    });
+  }
+  if (!bookOrder) return HandelStatus(404);
   let user = await UserRepo.findOne(input.userCheckOutId);
   if (!bookOrder || !user) return HandelStatus(404);
   bookOrder.userCheckOut = user;
   bookOrder = mapObject(bookOrder, input);
   try {
     await BookOrderRepo.update(bookOrder.id, bookOrder);
+    io.emit("newOrder");
     return HandelStatus(200);
   } catch (e) {
     return HandelStatus(500, e);
@@ -95,9 +129,8 @@ const GetBookOrderBorrowed = async (studentId: string) => {
     .andWhere("student.idStudent = :id", { id: studentId })
     .orderBy({ "bookOrder.BorrowDate": "DESC" })
     .getMany();
-  if (bookOrders.length == 0) return HandelStatus(404);
   try {
-    let result = plainToClass(BookOrderGetDto, bookOrders, {
+    let result = plainToClass(BookOrderInfoDto, bookOrders, {
       excludeExtraneousValues: true,
     });
 
@@ -119,7 +152,7 @@ const GetBookOrderPaid = async (studentId) => {
     .orderBy({ "bookOrder.BorrowDate": "DESC" })
     .getMany();
   try {
-    let result = plainToClass(BookOrderGetDto, bookOrders, {
+    let result = plainToClass(BookOrderInfoDto, bookOrders, {
       excludeExtraneousValues: true,
     });
 
@@ -138,7 +171,7 @@ const getById = async (id: number) => {
     .leftJoinAndSelect("bookOrder.userCheckOut", "userCheckOut")
     .where("bookOrder.id=:id", { id: id })
     .getOne();
-
+  if (!bookOrder) return HandelStatus(404);
   try {
     let result = plainToClass(BookOrderInfoDto, bookOrder, {
       excludeExtraneousValues: true,

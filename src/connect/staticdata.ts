@@ -1,6 +1,7 @@
 export const StaticData = {
   Role: [
     {
+      id: 1,
       name: "Manager",
       code: "Manager",
       isSendEmail: true,
@@ -10,6 +11,7 @@ export const StaticData = {
       createOrEditUser: true,
     },
     {
+      id: 2,
       name: "Ban chủ nhiệm",
       code: "BCN",
       isSendEmail: true,
@@ -17,22 +19,23 @@ export const StaticData = {
       isCreateOrEditBook: true,
       isCreateOrEditStudent: true,
     },
-    { name: "Thành viên", code: "TV" },
+    { id: 3, name: "Thành viên", code: "TV" },
     {
+      id: 4,
       name: "Nhập Liệu",
       code: "NL",
       isSendEmail: false,
       isCreateOrEditBook: true,
       isCreateOrEditStudent: true,
     },
-    { name: "Sự kiện", code: "SK" },
+    { id: 5, name: "Sự kiện", code: "SK" },
   ],
 
   Department: [
-    { name: "Ban chủ nhiệm", Code: "BCN" },
-    { name: "Phục vụ bạn đọc", Code: "PVBĐ" },
-    { name: "Tổ chức sự kiện", Code: "TCSK" },
-    { name: "Thông - Kỹ thuật", Code: "TT-KT" },
+    { id: 1, name: "Ban chủ nhiệm", Code: "BCN" },
+    { id: 2, name: "Phục vụ bạn đọc", Code: "PVBĐ" },
+    { id: 3, name: "Tổ chức sự kiện", Code: "TCSK" },
+    { id: 4, name: "Thông - Kỹ thuật", Code: "TT-KT" },
   ],
   Faculty: [
     { name: "Đang cập nhật" },
@@ -52,6 +55,7 @@ export const StaticData = {
       username: "admin",
       roleId: 1,
       departmentId: 1,
+      email: "thuvienhsv.uet@gmail.com",
     },
   ],
 };

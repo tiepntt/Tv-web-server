@@ -37,13 +37,14 @@ export class PosterTitleDto {
   userCreate: UserPostTitleDto;
   @Expose()
   content: string;
-
   @Expose()
   create_at: Date;
   @Expose()
   likes: number;
   @Expose()
   comments: number;
+  @Expose()
+  isLike: boolean;
 }
 export class PosterDetailDto {
   @Expose()
