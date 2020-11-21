@@ -16,6 +16,8 @@ export const changePasswordForm = (params: {
       Xin cảm ơn !! 
     </p>
     `;
-  form.subject = `Reset Password at ${new Date()}`;
+  form.subject = `Reset Password at ${new Date().toLocaleString("en-US", {
+    timeZone: "Asia/Ho_Chi_Minh",
+  })}`;
   return form;
 };

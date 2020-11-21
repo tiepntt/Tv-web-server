@@ -12,19 +12,28 @@ export class MailConfig {
   html?: string;
   attachments?: any;
 }
+const transporter = nodemailer.createTransport({
+  tls: {
+    rejectUnauthorized: false,
+  },
+  pool: true,
+  host: process.env.HOSTNAME,
+  port: process.env.PORT || 587,
+  auth: {
+    user: process.env.EMAIL_NAME,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+console.log(
+  process.env.HOSTNAME,
+  process.env.EMAIL_NAME,
+  process.env.EMAIL_PASSWORD
+);
 
 export const SendMail = async (config: MailConfig) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    port: 587,
-    auth: {
-      user: "thuvienhsv.uet@gmail.com",
-      pass: "thuvien.uet",
-    },
-  });
   try {
     await transporter.sendMail({
-      from: "thuvienhsv@gmail.com",
+      from: process.env.EMAIL_NAME,
       to: config.to,
       subject: config.subject || "Thông báo",
       text: config.text || "test",
