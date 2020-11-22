@@ -53,7 +53,10 @@ const CreateBySheet = async (req, res) => {
 const GetAll = async (req, res) => {
   let skip = req.params.skip || 0;
   let take = req.params.take || 10;
-  let result = await BookService.GetAll(take, skip);
+
+  let key = req.query.search || "";
+
+  let result = await BookService.GetAll(take, skip, key);
   res.send(result);
 };
 const RemoveById = async (req, res) => {
@@ -78,6 +81,10 @@ const Update = async (req, res) => {
   let result = await BookService.Update(bookInput);
   res.send(result);
 };
+const getCountBook = async (req, res) => {
+  let result = await BookService.getCount();
+  return res.send(result);
+};
 
 export const BookController = {
   Create,
@@ -86,4 +93,5 @@ export const BookController = {
   GetAll,
   GetById,
   Update,
+  getCountBook,
 };

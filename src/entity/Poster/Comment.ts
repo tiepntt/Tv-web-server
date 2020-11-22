@@ -7,6 +7,7 @@ import {
   ManyToOne,
   CreateDateColumn,
 } from "typeorm";
+import { transformer } from "../../libs/DateTime";
 import { User } from "../User/User";
 import { Poster } from "./Poster";
 export type commentConfig = {
@@ -38,6 +39,8 @@ export class Comment {
   })
   @JoinColumn()
   user: User;
-  @CreateDateColumn()
+  @CreateDateColumn({
+    transformer: transformer,
+  })
   create_at: Date;
 }

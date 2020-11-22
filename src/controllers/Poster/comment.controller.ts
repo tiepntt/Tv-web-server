@@ -13,7 +13,6 @@ const create = async (req, res) => {
   comment.asset = req.file ? req.file.path : undefined;
   let result = await CommentService.Create(comment);
   res.send(result);
-  
 };
 const updateComment = async (req, res) => {
   let commentInput = req.body;
@@ -39,9 +38,15 @@ const getById = async (req, res) => {
   let result = await CommentService.GetById(id);
   res.send(result);
 };
+const getByPosterId = async (req, res) => {
+  let id = req.params.id;
+  let result = await CommentService.getAllByPosterId(id);
+  res.send(result);
+};
 export const CommentController = {
   create,
   updateComment,
   deleteComment,
   getById,
+  getByPosterId,
 };

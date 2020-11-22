@@ -23,11 +23,17 @@ export class UserInputDto {
   @Expose()
   roleId?: number;
   @Expose()
+  roleCode?: string;
+  @Expose()
   departmentId?: number;
+  @Expose()
+  departmentCode?: number;
   @Expose()
   avatar?: string;
   @Expose()
   GenCode: string;
+  @Expose()
+  isBlock: boolean;
 }
 export class UserUpdateInputDto {
   @Expose()
@@ -72,6 +78,8 @@ export class UserTitleDto {
   email?: string;
   @Expose()
   phoneNumber?: string;
+  @Expose()
+  isBlock: boolean;
 }
 export class UserInfoTitleDto {
   @Expose()
@@ -82,6 +90,10 @@ export class UserInfoTitleDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+  @Expose()
+  isBlock: boolean;
+  @Expose()
+  avatar: string;
 }
 export class UserNotificationDto {
   @Expose()
@@ -145,4 +157,28 @@ export class AccountChangePassword {
   password: string;
   @Expose()
   newPassword: string;
+}
+export class UserInputSheetDto {
+  @Expose()
+  gender: boolean;
+  @Expose()
+  name?: string;
+  @Expose()
+  born?: Date;
+  @Expose()
+  username?: string;
+  @Expose()
+  email?: string;
+  @Expose()
+  phoneNumber?: string;
+  @Expose()
+  password?: string;
+  @Expose()
+  roleCode?: string;
+  @Expose()
+  departmentCode?: string;
+  @Expose()
+  avatar?: string;
+  @Expose()
+  GenCode: string;
 }

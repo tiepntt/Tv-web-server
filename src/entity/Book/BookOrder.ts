@@ -9,6 +9,7 @@ import {
   Timestamp,
   UpdateDateColumn,
 } from "typeorm";
+import { transformer } from "../../libs/DateTime";
 import { Student } from "../Student/Student";
 import { User } from "../User/User";
 import { BookDetail } from "./BookDetails";
@@ -28,12 +29,15 @@ export class BookOrder {
   id: number;
   @Column({
     nullable: true,
-    default: () => "CURRENT_TIMESTAMP",
   })
   borrowDate: Date;
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   payDate: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    transformer: transformer,
+  })
   update_at: Date;
 
   @ManyToOne((type) => BookDetail, (o) => o.bookOrders, {
@@ -49,6 +53,7 @@ export class BookOrder {
   student: Student;
   @Column({
     nullable: false,
+    transformer: transformer,
   })
   deadline: Date;
   @ManyToOne((type) => User, { onDelete: "SET NULL", onUpdate: "CASCADE" })

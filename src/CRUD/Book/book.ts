@@ -1,5 +1,5 @@
 import { plainToClass } from "class-transformer";
-import { getRepository, IsNull, Not } from "typeorm";
+import { getRepository, IsNull, Like, Not } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
 import { BookInputDto, BookTitleDto } from "../../dto/Book/book.dto";
 import { Book } from "../../entity/Book/Book";
@@ -51,14 +51,22 @@ const DeleteByIdBook = async (idBook) => {
   await BookRepo.remove(book);
   return HandelStatus(200);
 };
-const GetAll = async (take: number, skip: number) => {
+const GetAll = async (take: number, skip: number, key: string) => {
   let BookRepo = getRepository(Book);
   let books = await BookRepo.find({
-    take: take,
-    skip: skip,
     order: {
       create_at: "DESC",
     },
+    where: [
+      {
+        name: Like(`%${key}%`),
+      },
+      {
+        idBook: Like(`%${key}%`),
+      },
+    ],
+    take: take,
+    skip: skip,
   });
   try {
     let result = plainToClass(BookTitleDto, books, {
@@ -76,4 +84,15 @@ const GetById = async (idBook: string) => {
   if (!book) return HandelStatus(404);
   return HandelStatus(200, null, book);
 };
-export const BookService = { Create, Update, DeleteByIdBook, GetAll, GetById };
+const getCount = async () => {
+  let count = await getRepository(Book).count();
+  return HandelStatus(200, null, { count });
+};
+export const BookService = {
+  Create,
+  Update,
+  DeleteByIdBook,
+  GetAll,
+  GetById,
+  getCount,
+};

@@ -10,6 +10,7 @@ import {
   DeleteDateColumn,
   ManyToMany,
 } from "typeorm";
+import { transformer } from "../../libs/DateTime";
 import { Comment } from "../Poster/Comment";
 import { Like } from "../Poster/Like";
 import { NotificationPoster } from "../Poster/Notifical";
@@ -23,10 +24,11 @@ export class User {
   id: number;
   @Column({ charset: "utf8", type: "nvarchar" })
   name: string;
-  @Column({ unique: true, length: 30, nullable: false })
+  @Column({ length: 30, nullable: false })
   email: string;
   @Column({
-    length: 30, nullable: true
+    length: 30,
+    nullable: true,
   })
   phoneNumber: string;
   @Column({ default: true, nullable: true })
@@ -69,9 +71,13 @@ export class User {
   @OneToMany((type) => Like, (o) => o.user)
   @JoinColumn()
   likes: Like[];
-  @CreateDateColumn()
+  @CreateDateColumn({
+    transformer: transformer,
+  })
   create_at: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    transformer: transformer,
+  })
   update_at: Date;
   @DeleteDateColumn()
   delete_at: Date;

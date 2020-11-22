@@ -80,15 +80,16 @@ const Create = async (postConfig: PosterInputDto) => {
 const GetById = async (id: number) => {
   let PosterRepo = getRepository(Poster);
   let post = await PosterRepo.createQueryBuilder("poster")
+    .loadRelationCountAndMap("poster.comments", "poster.comments")
+    .loadRelationCountAndMap("poster.likes", "poster.likes")
     .leftJoinAndSelect("poster.userCreate", "userCreate")
-    .leftJoinAndSelect("poster.comments", "comments")
-    .leftJoinAndSelect("poster.likes", "likes")
-    .leftJoinAndSelect("comments.user", "comment.user")
-    .leftJoinAndSelect("likes.user", "likes.user")
+    .leftJoinAndSelect("userCreate.department", "department")
+    // .leftJoinAndSelect("poster.likes", "likes")
+    .orderBy("poster.create_at", "DESC")
     .where("poster.id=:id", { id: id })
     .getOne();
   try {
-    let result = plainToClass(PosterDetailDto, post, {
+    let result = plainToClass(PosterTitleDto, post, {
       excludeExtraneousValues: true,
     });
     return HandelStatus(200, null, result);

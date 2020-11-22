@@ -11,6 +11,7 @@ import {
   ManyToMany,
   JoinTable,
 } from "typeorm";
+import { transformer } from "../../libs/DateTime";
 import { User } from "../User/User";
 import { Comment } from "./Comment";
 
@@ -28,7 +29,9 @@ export class NotificationPoster {
   @ManyToOne((type) => User, { onDelete: "CASCADE" })
   @JoinColumn()
   userCreate: User;
-  @CreateDateColumn()
+  @CreateDateColumn({
+    transformer: transformer,
+  })
   creat_at: Date;
   @ManyToMany((type) => User, (o) => o.notificationSeen, {
     onUpdate: "CASCADE",

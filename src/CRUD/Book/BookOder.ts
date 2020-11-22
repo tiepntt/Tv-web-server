@@ -16,9 +16,9 @@ import { User } from "../../entity/User/User";
 import { DateMap } from "../../libs/DateTime";
 import { io } from "../..";
 import { IoEmit } from "../../libs/constans";
+import { Book } from "../../entity/Book/Book";
 
 const Create = async (bookOrderConfig: BookOrderCreateDto) => {
-
   let BookOrderRepo = getRepository(BookOrder);
   let UserRepo = getRepository(User);
   let BookDetailRepo = getRepository(BookDetail);
@@ -82,7 +82,6 @@ const PayBook = async (input: BookOrderPayDto) => {
     !input.userCheckOutId
   )
     return HandelStatus(400);
-
 
   let BookOrderRepo = getRepository(BookOrder);
   let UserRepo = getRepository(User);
@@ -204,6 +203,8 @@ const getBookOrderHistory = async (take: number, skip: number) => {
 };
 const getBookOrderHistoryCount = async (amountDay: number) => {
   let bookOrderRepo = getRepository(BookOrder);
+  // console.log(DateMap.addDate(new Date(), -amountDay || -7));
+
   let bookOrderBorrowCount = await bookOrderRepo.count({
     where: {
       borrowDate: MoreThan(DateMap.addDate(new Date(), -amountDay || -7)),
@@ -221,6 +222,7 @@ const getBookOrderHistoryCount = async (amountDay: number) => {
     paid: bookOrderPayCount,
   });
 };
+
 export const BookOrderService = {
   Create,
   RemoveById,

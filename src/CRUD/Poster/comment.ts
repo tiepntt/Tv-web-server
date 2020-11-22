@@ -12,6 +12,7 @@ import { NotificationInput } from "../../dto/poster/notification.dto";
 import { chat } from "googleapis/build/src/apis/chat";
 import { PosterService } from "./poster";
 import { NotificationService } from "./notification";
+import { posix } from "path";
 
 const Create = async (input: CommentInputDto) => {
   if (!input.posterId || !input.userId || (!input.content && !input.asset)) {
@@ -35,7 +36,6 @@ const Create = async (input: CommentInputDto) => {
     await CommentRepo.save(comment);
     try {
       if (poster.userSubscribe.find((o) => o.id === user.id) == null) {
-
         poster.userSubscribe.push(user);
       }
 
@@ -106,4 +106,29 @@ const GetById = async (id) => {
     return HandelStatus(500);
   }
 };
-export const CommentService = { Create, Update, Delete, GetById };
+const getAllByPosterId = async (posterId: number) => {
+  let poster = await getRepository(Poster).findOne(posterId || -1);
+  if (!poster) return HandelStatus(404, "Poster not found");
+  let comments = await getRepository(Comment).find({
+    relations: ["user"],
+    where: { poster: poster },
+    order: {
+      create_at: "ASC",
+    },
+  });
+  try {
+    let result = plainToClass(CommentGetDto, comments, {
+      excludeExtraneousValues: true,
+    });
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500);
+  }
+};
+export const CommentService = {
+  Create,
+  Update,
+  Delete,
+  GetById,
+  getAllByPosterId,
+};
