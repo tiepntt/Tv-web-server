@@ -1,5 +1,5 @@
 import { deserialize, plainToClass } from "class-transformer";
-import { getRepository } from "typeorm";
+import { Any, getRepository, In, IsNull, Like, Not } from "typeorm";
 import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
@@ -14,6 +14,7 @@ import { User } from "../../entity/User/User";
 import { genPassword } from "../../libs/GenPassword";
 import { SendMail } from "../../service/gmail/email";
 import { changePasswordForm } from "../../libs/constants/email.form";
+import { checkEmail, checkPhoneNumer } from "../../utils/regex";
 
 const create = async (config: UserInputDto) => {
   if (
@@ -26,6 +27,9 @@ const create = async (config: UserInputDto) => {
   ) {
     return HandelStatus(204);
   }
+  if (config.phoneNumber && !checkPhoneNumer(config.phoneNumber))
+    return HandelStatus(400, "Số điện thoại không hợp lệ.");
+  if (!checkEmail(config.email)) return HandelStatus(400, "Email không hợp lệ");
   let UserRepo = getRepository(User);
   let RoleRepo = getRepository(Role);
   let userGet = await UserRepo.findOne({ username: config.username });
@@ -66,12 +70,37 @@ const update = async (config: UserUpdateInputDto, userUpdateId) => {
     return HandelStatus(500, e);
   }
 };
-const getAll = async (skip: number, take: number) => {
+const getAll = async (skip: number, take: number, key: string) => {
   let UserRepo = getRepository(User);
+  let department = await getRepository(Department).findOne({
+    where: {
+      name: Like(`%${key}%`),
+    },
+  });
+  let role = await getRepository(Role).findOne({
+    where: {
+      name: Like(`%${key}%`),
+    },
+  });
+  let condition = [
+    {
+      name: Like(`%${key}%`),
+    },
+    {
+      department: department,
+    },
+    {
+      role: role,
+    },
+    {
+      GenCode: Like(`%${key}%`),
+    },
+  ];
   let users = await UserRepo.find({
     relations: ["role", "department"],
     skip: skip || 0,
     take: take || 10,
+    where: condition,
     order: {
       create_at: "DESC",
     },

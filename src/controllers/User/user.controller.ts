@@ -7,8 +7,9 @@ import { UserInputDto, UserUpdateInputDto } from "../../dto/user/user.dto";
 const getAll = async (req, res) => {
   let skip = req.params.skip || 0;
   let take = req.params.take || 10;
+  let key = req.query.search || "";
 
-  let result = await UserService.getAll(skip, take);
+  let result = await UserService.getAll(skip, take, key);
   return res.send(result);
 };
 const create = async (req, res) => {

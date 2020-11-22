@@ -25,6 +25,10 @@ export class User {
   name: string;
   @Column({ unique: true, length: 30, nullable: false })
   email: string;
+  @Column({
+    length: 30, nullable: true
+  })
+  phoneNumber: string;
   @Column({ default: true, nullable: true })
   gender: boolean;
   @Column({ nullable: true })
