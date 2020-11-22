@@ -14,4 +14,10 @@ const getAll = async (req, res) => {
   let result = await NotificationService.getAll(userId, take, skip);
   return res.send(result);
 };
-export const NotificationController = { seen, getAll };
+
+const getNews = async (req, res) => {
+  let userId = res.locals.userId;
+  let result = await NotificationService.getNews(userId);
+  return res.send(result);
+};
+export const NotificationController = { seen, getAll, getNews };

@@ -28,4 +28,6 @@ export class Role {
   isCreateOrEditUser: boolean;
   @Column({ default: false })
   isCreateOrEditStudent: boolean;
+  @Column({ default: false })
+  isCreatePost: boolean;
 }

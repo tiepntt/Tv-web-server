@@ -17,15 +17,23 @@ export class UserInputDto {
   @Expose()
   email?: string;
   @Expose()
+  phoneNumber?: string;
+  @Expose()
   password?: string;
   @Expose()
   roleId?: number;
   @Expose()
+  roleCode?: string;
+  @Expose()
   departmentId?: number;
+  @Expose()
+  departmentCode?: number;
   @Expose()
   avatar?: string;
   @Expose()
   GenCode: string;
+  @Expose()
+  isBlock: boolean;
 }
 export class UserUpdateInputDto {
   @Expose()
@@ -36,6 +44,8 @@ export class UserUpdateInputDto {
   name?: string;
   @Expose()
   password?: string;
+  @Expose()
+  phoneNumber?: string;
   @Expose()
   born?: Date;
   @Expose()
@@ -66,6 +76,10 @@ export class UserTitleDto {
   gender: boolean;
   @Expose()
   email?: string;
+  @Expose()
+  phoneNumber?: string;
+  @Expose()
+  isBlock: boolean;
 }
 export class UserInfoTitleDto {
   @Expose()
@@ -76,6 +90,10 @@ export class UserInfoTitleDto {
   GenCode: string;
   @Expose()
   gender: boolean;
+  @Expose()
+  isBlock: boolean;
+  @Expose()
+  avatar: string;
 }
 export class UserNotificationDto {
   @Expose()
@@ -105,6 +123,8 @@ export class UserPostTitleDto {
   gender: boolean;
   @Expose()
   email?: string;
+  @Expose()
+  phoneNumber?: string;
 }
 export class UserAccountDto {
   @Expose()
@@ -127,6 +147,8 @@ export class UserAccountDto {
   gender: boolean;
   @Expose()
   email?: string;
+  @Expose()
+  phoneNumber?: string;
 }
 export class AccountChangePassword {
   @Expose()
@@ -135,4 +157,28 @@ export class AccountChangePassword {
   password: string;
   @Expose()
   newPassword: string;
+}
+export class UserInputSheetDto {
+  @Expose()
+  gender: boolean;
+  @Expose()
+  name?: string;
+  @Expose()
+  born?: Date;
+  @Expose()
+  username?: string;
+  @Expose()
+  email?: string;
+  @Expose()
+  phoneNumber?: string;
+  @Expose()
+  password?: string;
+  @Expose()
+  roleCode?: string;
+  @Expose()
+  departmentCode?: string;
+  @Expose()
+  avatar?: string;
+  @Expose()
+  GenCode: string;
 }

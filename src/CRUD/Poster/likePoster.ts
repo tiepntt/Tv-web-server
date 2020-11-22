@@ -1,6 +1,7 @@
+import { plainToClass } from "class-transformer";
 import { getRepository } from "typeorm";
 import { HandelStatus } from "../../controllers/HandelAction";
-import { LikeInputDto } from "../../dto/poster/like.dto";
+import { LikeGetDto, LikeInputDto } from "../../dto/poster/like.dto";
 import { NotificationInput } from "../../dto/poster/notification.dto";
 import { Like, LikeConfig } from "../../entity/Poster/Like";
 import { Poster } from "../../entity/Poster/Poster";
@@ -43,5 +44,23 @@ export const Create = async (likeConfig: LikeInputDto) => {
     } catch (e) {
       return HandelStatus(500);
     }
+  }
+};
+export const getAllLikeByPosterId = async (posterId: number) => {
+  let poster = await getRepository(Poster).findOne(posterId || -1);
+  if (!poster) return HandelStatus(404, "Poster Not found");
+  let likes = await getRepository(Like).find({
+    relations: ["user"],
+    where: {
+      poster: poster,
+    },
+  });
+  try {
+    let result = plainToClass(LikeGetDto, likes, {
+      excludeExtraneousValues: true,
+    });
+    return HandelStatus(200, null, result);
+  } catch (e) {
+    return HandelStatus(500);
   }
 };

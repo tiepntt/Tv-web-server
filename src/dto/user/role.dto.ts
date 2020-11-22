@@ -17,6 +17,8 @@ export class RoleDto {
   isCreateOrEditUser: boolean;
   @Expose()
   isCreateOrEditStudent: boolean;
+  @Expose()
+  isCreatePost: boolean;
 }
 export class RoleTitleDto {
   @Expose()

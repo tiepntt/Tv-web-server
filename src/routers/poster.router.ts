@@ -1,5 +1,8 @@
 import { CommentController } from "../controllers/Poster/comment.controller";
-import { createLike } from "../controllers/Poster/like.controller";
+import {
+  createLike,
+  getAllByPosterId,
+} from "../controllers/Poster/like.controller";
 import { NotificationController } from "../controllers/Poster/notification.controller";
 import { PosterController } from "../controllers/Poster/Poster.controller";
 import { uploadMulter } from "../upload/cloudinary";
@@ -17,7 +20,7 @@ router.delete("/:id", PosterController.removeById);
 
 //comment
 router.post("/comment", uploadMulter.single("photo"), CommentController.create);
-router.get("/comment/:id", CommentController.getById);
+router.get("/comment/:id", CommentController.getByPosterId);
 router.put(
   "/comment",
   uploadMulter.single("photo"),
@@ -26,9 +29,11 @@ router.put(
 router.delete("/comment/:id", CommentController.deleteComment);
 //like
 router.post("/like", createLike);
+router.get("/likes", getAllByPosterId);
 router.post("/seenNotification", NotificationController.seen);
 router.get(
   "/notifications/skip=:skip&take=:take",
   NotificationController.getAll
 );
+router.get("/notifications/getNews", NotificationController.getNews);
 module.exports = router;

@@ -1,5 +1,5 @@
 import { plainToClass } from "class-transformer";
-import { Create } from "../../CRUD/Poster/likePoster";
+import { Create, getAllLikeByPosterId } from "../../CRUD/Poster/likePoster";
 import { LikeInputDto } from "../../dto/poster/like.dto";
 import { HandelStatus } from "../HandelAction";
 
@@ -10,5 +10,10 @@ export const createLike = async (req, res) => {
   });
   like.userId = res.locals.userId;
   let result = await Create(like);
+  res.send(result);
+};
+export const getAllByPosterId = async (req, res) => {
+  let posterId = req.body.id;
+  let result = await getAllLikeByPosterId(posterId);
   res.send(result);
 };

@@ -1,5 +1,5 @@
 import { deserialize, plainToClass } from "class-transformer";
-import { getRepository } from "typeorm";
+import { Any, getRepository, In, IsNull, Like, Not } from "typeorm";
 import { mapObject } from "../../utils/map";
 import { HandelStatus } from "../../controllers/HandelAction";
 import {
@@ -13,18 +13,27 @@ import { Role } from "../../entity/User/Role";
 import { User } from "../../entity/User/User";
 import { genPassword } from "../../libs/GenPassword";
 import { SendMail } from "../../service/gmail/email";
-import { changePasswordForm } from "../../libs/constants/email.form";
+import {
+  changePasswordForm,
+  CreateAccountEmail,
+} from "../../libs/constants/email.form";
+import { checkEmail, checkPhoneNumer } from "../../utils/regex";
 
 const create = async (config: UserInputDto) => {
   if (
     !config.name ||
-    !config.password ||
     !config.username ||
-    !config.roleId ||
-    !config.departmentId ||
+    (!config.roleId && !config.roleCode) ||
+    (!config.departmentId && !config.departmentCode) ||
     !config.email
   ) {
-    return HandelStatus(204);
+    return HandelStatus(204, null, config);
+  }
+
+  if (config.phoneNumber && !checkPhoneNumer(config.phoneNumber))
+    return HandelStatus(400, "Số điện thoại không hợp lệ.");
+  if (!checkEmail(config.email)) {
+    return HandelStatus(400, "Email không hợp lệ");
   }
   let UserRepo = getRepository(User);
   let RoleRepo = getRepository(Role);
@@ -32,9 +41,28 @@ const create = async (config: UserInputDto) => {
   if (userGet) return HandelStatus(302, "tên đăng nhập đã được sử dụng");
   let DepartmentRepo = getRepository(Department);
   let user = plainToClass(User, config);
+  user.password = config.password || genPassword();
 
-  let role = await RoleRepo.findOne(config.roleId);
-  let department = await DepartmentRepo.findOne(config.departmentId);
+  let role = await RoleRepo.findOne({
+    where: [
+      {
+        id: config.roleId,
+      },
+      {
+        Code: config.roleCode,
+      },
+    ],
+  });
+  let department = await DepartmentRepo.findOne({
+    where: [
+      {
+        id: config.departmentId,
+      },
+      {
+        Code: config.departmentCode,
+      },
+    ],
+  });
   if (!role || !department) {
     return HandelStatus(404);
   }
@@ -42,6 +70,14 @@ const create = async (config: UserInputDto) => {
   user.department = department;
   try {
     await UserRepo.save(user);
+    let formEmail = CreateAccountEmail({
+      username: user.username,
+      password: user.password,
+      name: user.name,
+      to: user.email,
+      genCode: user.GenCode,
+    });
+    SendMail(formEmail);
     return HandelStatus(200);
   } catch (e) {
     return HandelStatus(500, e);
@@ -66,12 +102,37 @@ const update = async (config: UserUpdateInputDto, userUpdateId) => {
     return HandelStatus(500, e);
   }
 };
-const getAll = async (skip: number, take: number) => {
+const getAll = async (skip: number, take: number, key: string) => {
   let UserRepo = getRepository(User);
+  let department = await getRepository(Department).findOne({
+    where: {
+      name: Like(`%${key}%`),
+    },
+  });
+  let role = await getRepository(Role).findOne({
+    where: {
+      name: Like(`%${key}%`),
+    },
+  });
+  let condition = [
+    {
+      name: Like(`%${key}%`),
+    },
+    {
+      department: department,
+    },
+    {
+      role: role,
+    },
+    {
+      GenCode: Like(`%${key}%`),
+    },
+  ];
   let users = await UserRepo.find({
     relations: ["role", "department"],
     skip: skip || 0,
     take: take || 10,
+    where: condition,
     order: {
       create_at: "DESC",
     },
@@ -180,6 +241,17 @@ const changePassword = async (input: AccountChangePassword) => {
     return HandelStatus(500);
   }
 };
+const blockUser = async (userId: number) => {
+  let userRepo = getRepository(User);
+  let user = await userRepo.findOne(userId);
+  user.isBlock = !user.isBlock;
+  try {
+    await userRepo.save(user);
+    return HandelStatus(200, null, { isBlock: user.isBlock });
+  } catch (e) {
+    return HandelStatus(500, e.name);
+  }
+};
 export const UserService = {
   create,
   update,
@@ -191,4 +263,5 @@ export const UserService = {
   RemoveById,
   changePassword,
   resetPassword,
+  blockUser,
 };

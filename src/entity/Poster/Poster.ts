@@ -11,6 +11,7 @@ import {
   ManyToMany,
   JoinTable,
 } from "typeorm";
+import { transformer } from "../../libs/DateTime";
 import { User } from "../User/User";
 import { Comment } from "./Comment";
 import { Like } from "./Like";
@@ -42,9 +43,13 @@ export class Poster {
   })
   @JoinColumn()
   userCreate: User;
-  @CreateDateColumn()
+  @CreateDateColumn({
+    transformer: transformer,
+  })
   create_at: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    transformer: transformer,
+  })
   update_at: Date;
   @DeleteDateColumn()
   delete_at: Date;

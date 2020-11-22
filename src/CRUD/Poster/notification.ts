@@ -69,6 +69,20 @@ const getAll = async (userId: number, take, skip) => {
     .take(take || 10)
     .skip(skip || 0)
     .getRawMany();
+
+  try {
+    let result = plainToClass(NotificationGetList, notification, {
+      excludeExtraneousValues: true,
+    });
+
+    return HandelStatus(200, null, {
+      notifications: result,
+    });
+  } catch (e) {
+    return HandelStatus(500, e);
+  }
+};
+const getNews = async (userId: number) => {
   let SubCount = await getRepository(NotificationPoster)
     .createQueryBuilder("notification")
     .innerJoin(
@@ -94,17 +108,9 @@ const getAll = async (userId: number, take, skip) => {
       { userId: userId }
     )
     .getCount();
-  try {
-    let result = plainToClass(NotificationGetList, notification, {
-      excludeExtraneousValues: true,
-    });
 
-    return HandelStatus(200, null, {
-      notifications: result,
-      count: SubCount - SeenCount,
-    });
-  } catch (e) {
-    return HandelStatus(500, e);
-  }
+  return HandelStatus(200, null, {
+    count: SubCount - SeenCount,
+  });
 };
-export const NotificationService = { create, seen, getAll };
+export const NotificationService = { create, seen, getAll, getNews };

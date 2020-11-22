@@ -12,6 +12,7 @@ let router = express.Router();
 router.post("/create", CheckIsCreateOrEditBook, BookController.Create);
 router.get("/skip=:skip&take=:take", BookController.GetAll);
 router.put("/", CheckIsCreateOrEditBook, BookController.Update);
+router.get("/count", BookController.getCountBook);
 router.get("/:IdBook", BookController.GetById);
 router.delete(
   "/RemoveById/idBook=:idBook",
@@ -30,10 +31,12 @@ router.post(
   CheckIsCreateOrEditSheet,
   BookDetailController.CreateBySheet
 );
+
 router.post("/bookDetail/create", BookDetailController.Create);
 
 router.get("/bookDetail/:IdBook", BookDetailController.GetById);
 router.get("/bookDetail/getById/:Id", BookDetailController.GetById);
+
 router.delete(
   "/bookDetail/:id",
   CheckIsCreateOrEditBook,

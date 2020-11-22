@@ -20,10 +20,17 @@ router.post(
   uploadMulter.single("avatar"),
   UserController.create
 );
+router.post(
+  "/createBySheet",
+  CheckToken,
+  CheckIsCreateOrEditUser,
+  UserController.CreateBySheets
+);
 router.get("/:id", UserController.getById);
 router.delete("/:id", CheckIsCreateOrEditUser, UserController.deleteById);
 router.put("/update", uploadMulter.single("avatar"), UserController.update);
 router.put("/updateRole", CheckIsCreateOrEditUser, UserController.updateRole);
+router.put("/block", CheckIsCreateOrEditUser, UserController.blockUser);
 router.post("/upload", uploadMulter.single("photo"), (req, res) => {
   res.send(req.file);
 });

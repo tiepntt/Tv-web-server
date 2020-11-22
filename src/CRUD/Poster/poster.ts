@@ -23,6 +23,7 @@ const GetAll = async (take, skip, userId: number) => {
     .leftJoinAndSelect("poster.userCreate", "userCreate")
     .leftJoinAndSelect("userCreate.department", "department")
     // .leftJoinAndSelect("poster.likes", "likes")
+    .orderBy("poster.create_at", "DESC")
     .take(take || 10)
     .skip(skip || 0)
     .getMany();
@@ -79,15 +80,16 @@ const Create = async (postConfig: PosterInputDto) => {
 const GetById = async (id: number) => {
   let PosterRepo = getRepository(Poster);
   let post = await PosterRepo.createQueryBuilder("poster")
+    .loadRelationCountAndMap("poster.comments", "poster.comments")
+    .loadRelationCountAndMap("poster.likes", "poster.likes")
     .leftJoinAndSelect("poster.userCreate", "userCreate")
-    .leftJoinAndSelect("poster.comments", "comments")
-    .leftJoinAndSelect("poster.likes", "likes")
-    .leftJoinAndSelect("comments.user", "comment.user")
-    .leftJoinAndSelect("likes.user", "likes.user")
+    .leftJoinAndSelect("userCreate.department", "department")
+    // .leftJoinAndSelect("poster.likes", "likes")
+    .orderBy("poster.create_at", "DESC")
     .where("poster.id=:id", { id: id })
     .getOne();
   try {
-    let result = plainToClass(PosterDetailDto, post, {
+    let result = plainToClass(PosterTitleDto, post, {
       excludeExtraneousValues: true,
     });
     return HandelStatus(200, null, result);
@@ -103,7 +105,7 @@ const UpdateById = async (input: PosterUpdateDto) => {
   }
   let user = (await userRepo.findOne(input.userCreateId)) || undefined;
   let poster = await posterRepo.findOne({ id: input.id, userCreate: user });
-  if (!poster) return HandelStatus(404);
+  if (!poster) return HandelStatus(404, "Bạn không có quyền làm điều này");
 
   poster = mapObject(poster, input);
 
@@ -127,7 +129,7 @@ const DeleteById = async (input: PosterUpdateDto) => {
     relations: ["userCreate"],
     where: { id: input.id, userCreate: user },
   });
-  if (!poster) return HandelStatus(404);
+  if (!poster) return HandelStatus(404, "Bạn không có quyền làm điều này");
   try {
     await posterRepo.softDelete(input.id);
     return HandelStatus(200);
@@ -157,6 +159,7 @@ const getByUserId = async (take: number, skip: number, userId: number) => {
       }
     )
     .leftJoinAndSelect("userCreate.department", "department")
+    .orderBy("poster.create_at", "DESC")
     .take(take || 10)
     .skip(skip || 0)
     .getMany();

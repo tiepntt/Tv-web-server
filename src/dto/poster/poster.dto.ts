@@ -55,6 +55,8 @@ export class PosterDetailDto {
   @Type((type) => UserInfoTitleDto)
   userCreate: UserInfoTitleDto;
   @Expose()
+  create_at: Date;
+  @Expose()
   content: string;
   @Expose()
   @Type((type) => LikeGetDto)

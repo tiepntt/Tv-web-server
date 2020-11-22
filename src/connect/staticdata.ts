@@ -9,6 +9,7 @@ export const StaticData = {
       isCreateOrEditBook: true,
       isCreateOrEditStudent: true,
       createOrEditUser: true,
+      isCreatePost: true,
     },
     {
       id: 2,
@@ -18,6 +19,7 @@ export const StaticData = {
       isCreateOrEditSheet: true,
       isCreateOrEditBook: true,
       isCreateOrEditStudent: true,
+      isCreatePost: true,
     },
     { id: 3, name: "Thành viên", code: "TV" },
     {
@@ -55,7 +57,7 @@ export const StaticData = {
       username: "admin",
       roleId: 1,
       departmentId: 1,
-      email: "thuvienhsv.uet@gmail.com",
+      email: "nguyenthaitiep206@gmail.com",
     },
   ],
 };
