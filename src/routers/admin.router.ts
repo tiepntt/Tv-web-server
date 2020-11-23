@@ -21,7 +21,7 @@ router.post(
 );
 router.post("/login", AuthController.Login);
 router.post("/resetPassWord", AuthController.ResetPassword);
-router.put("/changePassword", AuthController.changePassword);
+router.put("/changePassword", CheckToken, AuthController.changePassword);
 router.post("/logout", AuthController.Logout);
 router.post("/checkLogin", CheckToken, (req, res) => {
   req.send(HandelStatus(200));

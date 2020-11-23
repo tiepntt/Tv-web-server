@@ -66,6 +66,7 @@ const getAll = async (userId: number, take, skip) => {
     .leftJoinAndSelect("notification.userCreate", "userCreate")
     .leftJoinAndSelect("notification.poster", "poster")
     .addSelect("IF(userSeen.userId IS NOT NULL, true, false)", "isSeen")
+    .orderBy("notification.creat_at", "DESC")
     .take(take || 10)
     .skip(skip || 0)
     .getRawMany();

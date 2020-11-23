@@ -228,17 +228,19 @@ const resetPassword = async (email) => {
 };
 const changePassword = async (input: AccountChangePassword) => {
   let userRepo = getRepository(User);
+  if (!input.newPassword) return HandelStatus(500);
   let user = await userRepo.findOne({
     id: input.userId,
     password: input.password,
   });
+
   if (!user) return HandelStatus(404, "password không đúng");
   user.password = input.newPassword;
   try {
-    await userRepo.save(user);
+    await userRepo.update(user.id, user);
     return HandelStatus(200);
   } catch (e) {
-    return HandelStatus(500);
+    return HandelStatus(500, e);
   }
 };
 const blockUser = async (userId: number) => {
