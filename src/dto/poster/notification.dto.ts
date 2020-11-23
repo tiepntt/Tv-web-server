@@ -22,8 +22,11 @@ export class NotificationGetList {
   notification_posterId: number;
   @Expose()
   notification_userCreateId: number;
+
   @Expose()
   userCreate_name: string;
+  @Expose()
+  userCreate_avatar: string;
   @Expose()
   isSeen: boolean;
 }

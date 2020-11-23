@@ -120,6 +120,7 @@ const CreateBySheets = async (req, res) => {
         result.success++;
       } else {
         result.fail++;
+        console.log(r.status == 400 ? input : null);
       }
     }
   }

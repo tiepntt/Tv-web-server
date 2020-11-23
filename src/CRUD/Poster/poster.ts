@@ -27,7 +27,6 @@ const GetAll = async (take, skip, userId: number) => {
     .take(take || 10)
     .skip(skip || 0)
     .getMany();
-
   try {
     let result = plainToClass(PosterTitleDto, posters, {
       excludeExtraneousValues: true,
@@ -88,6 +87,7 @@ const GetById = async (id: number) => {
     .orderBy("poster.create_at", "DESC")
     .where("poster.id=:id", { id: id })
     .getOne();
+  if (!post) return HandelStatus(404, "Bài viết không tồn tại hoặc đã bị xóa");
   try {
     let result = plainToClass(PosterTitleDto, post, {
       excludeExtraneousValues: true,
@@ -131,7 +131,7 @@ const DeleteById = async (input: PosterUpdateDto) => {
   });
   if (!poster) return HandelStatus(404, "Bạn không có quyền làm điều này");
   try {
-    await posterRepo.softDelete(input.id);
+    await posterRepo.delete(input.id);
     return HandelStatus(200);
   } catch (e) {
     return HandelStatus(500);
